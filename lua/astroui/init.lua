@@ -5,7 +5,7 @@ M.config = require "astroui.config"
 function M.setup(opts) M.config = vim.tbl_deep_extend("force", M.config, opts) end
 
 --- Get an icon from the AstroNvim internal icons if it is available and return it
----@param kind string The kind of icon in astronvim.icons to retrieve
+---@param kind string The kind of icon in astroui.icons to retrieve
 ---@param padding? integer Padding to add to the end of the icon
 ---@param no_fallback? boolean Whether or not to disable fallback to text icon
 ---@return string icon
