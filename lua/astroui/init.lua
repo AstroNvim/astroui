@@ -2,7 +2,31 @@ local M = {}
 
 M.config = require "astroui.config"
 
-function M.setup(opts) M.config = vim.tbl_deep_extend("force", M.config, opts) end
+function M.setup(opts)
+  M.config = vim.tbl_deep_extend("force", M.config, opts)
+
+  vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
+    desc = "Load custom highlights from user configuration",
+    group = vim.api.nvim_create_augroup("astronvim_highlights", { clear = true }),
+    callback = function()
+      if vim.g.colors_name then
+        for _, module in ipairs { "init", vim.g.colors_name } do
+          for group, spec in pairs(M.config.highlights[module] or {}) do
+            vim.api.nvim_set_hl(0, group, spec)
+          end
+        end
+      end
+      vim.schedule(
+        function() vim.api.nvim_exec_autocmds("User", { pattern = "AstroColorScheme", modeline = false }) end
+      )
+    end,
+  })
+
+  local colorscheme = M.config.colorscheme
+  if colorscheme and not pcall(vim.cmd.colorscheme, colorscheme) then
+    vim.notify(("Error setting up colorscheme: `%s`"):format(colorscheme), vim.log.levels.ERROR, { title = "AstroUI" })
+  end
+end
 
 --- Get an icon from the AstroNvim internal icons if it is available and return it
 ---@param kind string The kind of icon in astroui.icons to retrieve
