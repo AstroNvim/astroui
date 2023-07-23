@@ -294,8 +294,8 @@ function M.filename(opts)
     modify = ":t",
   }, opts)
   return function(self)
-    local filename = vim.fn.fnamemodify(opts.fname(self and self.bufnr or 0), opts.modify)
-    return status_utils.stylize((filename == "" and opts.fallback or filename), opts)
+    local path = opts.fname(self and self.bufnr or 0)
+    return status_utils.stylize((path == "" and opts.fallback or vim.fn.fnamemodify(path, opts.modify)), opts)
   end
 end
 
