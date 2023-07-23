@@ -289,7 +289,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.filename(opts)
   opts = extend_tbl({
-    fallback = "Empty",
+    fallback = "Untitled",
     fname = function(nr) return vim.api.nvim_buf_get_name(nr) end,
     modify = ":t",
   }, opts)
