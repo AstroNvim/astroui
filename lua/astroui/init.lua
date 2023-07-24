@@ -5,7 +5,7 @@ M.config = require "astroui.config"
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts)
 
-  vim.api.nvim_create_autocmd({ "VimEnter", "ColorScheme" }, {
+  vim.api.nvim_create_autocmd("ColorScheme", {
     desc = "Load custom highlights from user configuration",
     group = vim.api.nvim_create_augroup("astronvim_highlights", { clear = true }),
     callback = function()
@@ -16,9 +16,7 @@ function M.setup(opts)
           end
         end
       end
-      vim.schedule(
-        function() vim.api.nvim_exec_autocmds("User", { pattern = "AstroColorScheme", modeline = false }) end
-      )
+      vim.api.nvim_exec_autocmds("User", { pattern = "AstroColorScheme", modeline = false })
     end,
   })
 
