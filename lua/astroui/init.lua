@@ -32,8 +32,9 @@ end
 ---@param no_fallback? boolean Whether or not to disable fallback to text icon
 ---@return string icon
 function M.get_icon(kind, padding, no_fallback)
-  if not M.config.icons_enabled and no_fallback then return "" end
-  local icon_pack = M.config[M.config.icons_enabled and "icons" or "text_icons"]
+  local icons_enabled = vim.g.icons_enabled ~= false
+  if not icons_enabled and no_fallback then return "" end
+  local icon_pack = assert(M.config[icons_enabled and "icons" or "text_icons"])
   local icon = icon_pack[kind]
   return icon and icon .. string.rep(" ", padding or 0) or ""
 end

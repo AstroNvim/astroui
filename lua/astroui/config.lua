@@ -11,7 +11,6 @@ return {
     separators = {},
     sign_handlers = {},
   },
-  icons_enabled = true,
   icons = {},
   text_icons = {},
 }
