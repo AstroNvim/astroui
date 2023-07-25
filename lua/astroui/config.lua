@@ -9,6 +9,7 @@ return {
     icon_highlights = {},
     modes = {},
     separators = {},
+    setup_colors = nil,
     sign_handlers = {},
   },
   icons = {},
