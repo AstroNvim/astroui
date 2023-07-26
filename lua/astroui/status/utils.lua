@@ -10,11 +10,11 @@
 
 local M = {}
 
+local astro = require "astrocore"
 local ui = require "astroui"
 local config = ui.config.status
 local get_icon = ui.get_icon
-local utils = require "astrocore.utils"
-local extend_tbl = utils.extend_tbl
+local extend_tbl = astro.extend_tbl
 
 --- Convert a component parameter table to a table that can be used with the component builder
 ---@param opts? table a table of provider options

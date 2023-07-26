@@ -10,15 +10,15 @@
 
 local M = {}
 
+local astro = require "astrocore"
+local extend_tbl = astro.extend_tbl
+local luv = vim.uv or vim.loop -- TODO: REMOVE WHEN DROPPING SUPPORT FOR Neovim v0.9
+
 local ui = require "astroui"
 local config = ui.config.status
 local get_icon = ui.get_icon
 local condition = require "astroui.status.condition"
 local status_utils = require "astroui.status.utils"
-
-local utils = require "astrocore.utils"
-local extend_tbl = utils.extend_tbl
-local luv = vim.uv or vim.loop -- TODO: REMOVE WHEN DROPPING SUPPORT FOR Neovim v0.9
 
 --- A provider function for the fill string
 ---@return string # the statusline string for filling the empty space

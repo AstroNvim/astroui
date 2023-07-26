@@ -10,6 +10,11 @@
 
 local M = {}
 
+local astro = require "astrocore"
+local buf_utils = require "astrocore.buffer"
+local extend_tbl = astro.extend_tbl
+local is_available = astro.is_available
+
 local ui = require "astroui"
 local config = ui.config.status
 local get_icon = ui.get_icon
@@ -18,11 +23,6 @@ local hl = require "astroui.status.hl"
 local init = require "astroui.status.init"
 local provider = require "astroui.status.provider"
 local status_utils = require "astroui.status.utils"
-
-local utils = require "astrocore.utils"
-local buf_utils = require "astrocore.buffer"
-local extend_tbl = utils.extend_tbl
-local is_available = utils.is_available
 
 --- A Heirline component for filling in the empty space of the bar
 ---@param opts? table options for configuring the other fields of the heirline component

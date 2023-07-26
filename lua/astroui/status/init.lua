@@ -10,15 +10,14 @@
 
 local M = {}
 
+local astro = require "astrocore"
 local ui = require "astroui"
 local config = ui.config.status
 local get_icon = ui.get_icon
+local extend_tbl = astro.extend_tbl
 
 local provider = require "astroui.status.provider"
 local status_utils = require "astroui.status.utils"
-
-local utils = require "astrocore.utils"
-local extend_tbl = utils.extend_tbl
 
 --- An `init` function to build a set of children components for LSP breadcrumbs
 ---@param opts? table # options for configuring the breadcrumbs (default: `{ max_depth = 5, separator = "  ", icon = { enabled = true, hl = false }, padding = { left = 0, right = 0 } }`)
