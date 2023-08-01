@@ -1,3 +1,13 @@
+--- ### AstroNvim UI Utilities
+--
+-- UI utility functions to use within AstroNvim and user configurations.
+--
+-- This module can be loaded with `local astro = require "astroui"`
+--
+-- @module astroui
+-- @copyright 2023
+-- @license GNU General Public License v3.0
+
 local M = {}
 
 M.config = require "astroui.config"
