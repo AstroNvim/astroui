@@ -12,6 +12,9 @@ local M = {}
 
 M.config = require "astroui.config"
 
+--- Setup and configure AstroUI
+---@param opts AstroUIConfig
+---@see astroui.config
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts)
 
