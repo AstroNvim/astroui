@@ -1,20 +1,18 @@
---- ### AstroNvim UI Utilities
---
--- UI utility functions to use within AstroNvim and user configurations.
---
--- This module can be loaded with `local astro = require "astroui"`
---
--- @module astroui
--- @copyright 2023
--- @license GNU General Public License v3.0
-
+---AstroNvim UI Utilities
+---
+---UI utility functions to use within AstroNvim and user configurations.
+---
+---This module can be loaded with `local astro = require "astroui"`
+---
+---copyright 2023
+---license GNU General Public License v3.0
+---@class astroui
 local M = {}
 
 M.config = require "astroui.config"
 
 --- Setup and configure AstroUI
----@param opts AstroUIConfig
----@see astroui.config
+---@param opts AstroUIOpts
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts)
 

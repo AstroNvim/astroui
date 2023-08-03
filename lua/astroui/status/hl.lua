@@ -1,13 +1,12 @@
---- ### AstroNvim Status Highlighting
---
--- Statusline related highlighting utilities
---
--- This module can be loaded with `local hl = require "astroui.status.hl"`
---
--- @module astroui.status.hl
--- @copyright 2023
--- @license GNU General Public License v3.0
-
+---AstroNvim Status Highlighting
+---
+---Statusline related highlighting utilities
+---
+---This module can be loaded with `local hl = require "astroui.status.hl"`
+---
+---copyright 2023
+---license GNU General Public License v3.0
+---@class astroui.status.hl
 local M = {}
 
 local config = require("astroui").config.status

@@ -1,13 +1,12 @@
---- ### AstroNvim Status Utilities
---
--- Statusline related uitility functions
---
--- This module can be loaded with `local status_utils = require "astroui.status.utils"`
---
--- @module astroui.status.utils
--- @copyright 2023
--- @license GNU General Public License v3.0
-
+---AstroNvim Status Utilities
+---
+---Statusline related uitility functions
+---
+---This module can be loaded with `local status_utils = require "astroui.status.utils"`
+---
+---copyright 2023
+---license GNU General Public License v3.0
+---@class astroui.status.utils
 local M = {}
 
 local astro = require "astrocore"

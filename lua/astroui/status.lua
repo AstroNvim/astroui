@@ -1,13 +1,11 @@
---- ### AstroNvim Status Utilities
+-- AstroNvim Status Utilities
 --
 -- Status utility functions to use within AstroNvim and user configurations.
 --
 -- This module can be loaded with `local astro = require "astroui.status"`
 --
--- @module astroui.status
--- @see astroui
--- @copyright 2023
--- @license GNU General Public License v3.0
+-- copyright 2023
+-- license GNU General Public License v3.0
 
 return {
   --- @see astroui.status.component

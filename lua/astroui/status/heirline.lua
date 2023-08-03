@@ -1,13 +1,12 @@
---- ### AstroNvim Status Heirline Extensions
---
--- Statusline related heirline specific extensions
---
--- This module can be loaded with `local astro_heirline = require "astroui.status.heirline"`
---
--- @module astroui.status.heirline
--- @copyright 2023
--- @license GNU General Public License v3.0
-
+---AstroNvim Status Heirline Extensions
+---
+---Statusline related heirline specific extensions
+---
+---This module can be loaded with `local astro_heirline = require "astroui.status.heirline"`
+---
+---copyright 2023
+---license GNU General Public License v3.0
+---@class astroui.status.heirline
 local M = {}
 
 local hl = require "astroui.status.hl"

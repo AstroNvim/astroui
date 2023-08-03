@@ -1,4 +1,4 @@
--- ### AstroUI C Extensions
+-- AstroUI C Extensions
 
 local ffi = require "ffi"
 

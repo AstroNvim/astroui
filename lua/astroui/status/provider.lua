@@ -1,13 +1,12 @@
---- ### AstroNvim Status Providers
---
--- Statusline related provider functions for building statusline components
---
--- This module can be loaded with `local provider = require "astroui.status.provider"`
---
--- @module astroui.status.provider
--- @copyright 2023
--- @license GNU General Public License v3.0
-
+---AstroNvim Status Providers
+---
+---Statusline related provider functions for building statusline components
+---
+---This module can be loaded with `local provider = require "astroui.status.provider"`
+---
+---copyright 2023
+---license GNU General Public License v3.0
+---@class astroui.status.provider
 local M = {}
 
 local astro = require "astrocore"

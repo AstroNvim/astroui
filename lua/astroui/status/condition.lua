@@ -1,13 +1,12 @@
---- ### AstroNvim Status Conditions
---
--- Statusline related condition functions to use with Heirline
---
--- This module can be loaded with `local condition = require "astroui.status.condition"`
---
--- @module astroui.status.condition
--- @copyright 2023
--- @license GNU General Public License v3.0
-
+---AstroNvim Status Conditions
+---
+---Statusline related condition functions to use with Heirline
+---
+---This module can be loaded with `local condition = require "astroui.status.condition"`
+---
+---copyright 2023
+---license GNU General Public License v3.0
+---@class astroui.status.condition
 local M = {}
 
 local config = require("astroui").config.status
