@@ -1,14 +1,1806 @@
-*astroui.txt*          For Neovim >= 0.9.0         Last change: 2023 August 03
+*astroui.txt*          For Neovim >= 0.9.0         Last change: 2023 August 04
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
 
 1. AstroUI                                                   |astroui-astroui|
+2. Lua API                                                   |astroui-lua-api|
+  - astroui                                          |astroui-lua-api-astroui|
+  - astroui.status.component        |astroui-lua-api-astroui.status.component|
+  - astroui.status.condition        |astroui-lua-api-astroui.status.condition|
+  - astroui.status.heirline          |astroui-lua-api-astroui.status.heirline|
+  - astroui.status.hl                      |astroui-lua-api-astroui.status.hl|
+  - astroui.status.init                  |astroui-lua-api-astroui.status.init|
+  - astroui.status.provider          |astroui-lua-api-astroui.status.provider|
+  - astroui.status.utils                |astroui-lua-api-astroui.status.utils|
 
 ==============================================================================
 1. AstroUI                                                   *astroui-astroui*
 
 UI tooling built for AstroNvim
+
+
+==============================================================================
+2. Lua API                                                   *astroui-lua-api*
+
+astroui API documentation
+
+
+ASTROUI                                              *astroui-lua-api-astroui*
+
+AstroNvim UI Utilities
+
+UI utility functions to use within AstroNvim and user configurations.
+
+This module can be loaded with `local astro = require "astroui"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+CONFIG ~
+
+>lua
+    AstroUIOpts
+<
+
+
+GET_ICON ~
+
+>lua
+    function astroui.get_icon(kind: string, padding?: integer, no_fallback?: boolean)
+      -> icon: string
+<
+
+Get an icon from the AstroNvim internal icons if it is available and return it
+
+_param_ `kind` — The kind of icon in astroui.icons to retrieve
+
+_param_ `padding` — Padding to add to the end of the icon
+
+_param_ `no_fallback` — Whether or not to disable fallback to text icon
+
+
+GET_SPINNER ~
+
+>lua
+    function astroui.get_spinner(kind: string, ...any)
+      -> spinners: string[]|nil
+<
+
+Get a icon spinner table if it is available in the AstroNvim icons. Icons in
+format `kind1`,`kind2`, `kind3`, …
+
+_param_ `kind` — The kind of icon to check for sequential entries of
+
+_return_ `spinners` — A collected table of spinning icons in sequential order
+or nil if none exist
+
+
+SETUP ~
+
+>lua
+    function astroui.setup(opts: AstroUIOpts)
+<
+
+Setup and configure AstroUI
+
+
+ASTROUI.STATUS.COMPONENT            *astroui-lua-api-astroui.status.component*
+
+AstroNvim Status Components
+
+Statusline related component functions to use with Heirline
+
+This module can be loaded with `local component = require
+"astroui.status.component"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+BREADCRUMBS ~
+
+>lua
+    function astroui.status.component.breadcrumbs(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for an LSP breadcrumbs section
+
+_param_ `opts` — options for configuring breadcrumbs and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.breadcumbs()
+
+
+BUILDER ~
+
+>lua
+    function astroui.status.component.builder(opts?: table)
+      -> table
+<
+
+A general function to build a section of astronvim status providers with
+highlights, conditions, and section surrounding
+
+_param_ `opts` — a list of components to build into a section
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").components.builder({ { provider = "file_icon", opts =
+{ padding = { right = 1 } } }, { provider = "filename" } })
+
+
+CMD_INFO ~
+
+>lua
+    function astroui.status.component.cmd_info(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for information shown in the
+cmdline
+
+_param_ `opts` — options for configuring macro recording, search count, and
+the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.cmd_info()
+
+
+DIAGNOSTICS ~
+
+>lua
+    function astroui.status.component.diagnostics(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for a diagnostics section
+
+_param_ `opts` — options for configuring diagnostic providers and the overall
+padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.diagnostics()
+
+
+FILE_INFO ~
+
+>lua
+    function astroui.status.component.file_info(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for an entire file information
+section
+
+_param_ `opts` — options for configuring file_icon, filename, filetype,
+file_modified, file_read_only, and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.file_info()
+
+
+FILL ~
+
+>lua
+    function astroui.status.component.fill(opts?: table)
+      -> table
+<
+
+A Heirline component for filling in the empty space of the bar
+
+_param_ `opts` — options for configuring the other fields of the heirline
+component
+
+_return_ — The heirline component table
+
+@usage local heirline_component = require("astroui.status").component.fill()
+
+
+FOLDCOLUMN ~
+
+>lua
+    function astroui.status.component.foldcolumn(opts?: table)
+      -> table
+<
+
+A function to build a set of components for a foldcolumn section in a
+statuscolumn
+
+_param_ `opts` — options for configuring foldcolumn and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.foldcolumn()
+
+
+GIT_BRANCH ~
+
+>lua
+    function astroui.status.component.git_branch(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for a git branch section
+
+_param_ `opts` — options for configuring git branch and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.git_branch()
+
+
+GIT_DIFF ~
+
+>lua
+    function astroui.status.component.git_diff(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for a git difference section
+
+_param_ `opts` — options for configuring git changes and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.git_diff()
+
+
+LSP ~
+
+>lua
+    function astroui.status.component.lsp(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for an LSP section
+
+_param_ `opts` — options for configuring lsp progress and client_name
+providers and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component = require("astroui.status").component.lsp()
+
+
+MODE ~
+
+>lua
+    function astroui.status.component.mode(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for a mode section
+
+_param_ `opts` — options for configuring mode_text, paste, spell, and the
+overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component = require("astroui.status").component.mode {
+mode_text = true }
+
+
+NAV ~
+
+>lua
+    function astroui.status.component.nav(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for an entire navigation
+section
+
+_param_ `opts` — options for configuring ruler, percentage, scrollbar, and
+the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component = require("astroui.status").component.nav()
+
+
+NUMBERCOLUMN ~
+
+>lua
+    function astroui.status.component.numbercolumn(opts?: table)
+      -> table
+<
+
+A function to build a set of components for a numbercolumn section in
+statuscolumn
+
+_param_ `opts` — options for configuring numbercolumn and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.numbercolumn()
+
+
+SEPARATED_PATH ~
+
+>lua
+    function astroui.status.component.separated_path(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for the current file path
+
+_param_ `opts` — options for configuring path and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.separated_path()
+
+
+SIGNCOLUMN ~
+
+>lua
+    function astroui.status.component.signcolumn(opts?: table)
+      -> table
+<
+
+A function to build a set of components for a signcolumn section in
+statuscolumn
+
+_param_ `opts` — options for configuring signcolumn and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.signcolumn()
+
+
+TABLINE_FILE_INFO ~
+
+>lua
+    function astroui.status.component.tabline_file_info(opts?: table)
+      -> table
+<
+
+A function with different file_info defaults specifically for use in the
+tabline
+
+_param_ `opts` — options for configuring file_icon, filename, filetype,
+file_modified, file_read_only, and the overall padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.tabline_file_info()
+
+
+TREESITTER ~
+
+>lua
+    function astroui.status.component.treesitter(opts?: table)
+      -> table
+<
+
+A function to build a set of children components for a Treesitter section
+
+_param_ `opts` — options for configuring diagnostic providers and the overall
+padding
+
+_return_ — The Heirline component table
+
+@usage local heirline_component =
+require("astroui.status").component.treesitter()
+
+
+ASTROUI.STATUS.CONDITION            *astroui-lua-api-astroui.status.condition*
+
+AstroNvim Status Conditions
+
+Statusline related condition functions to use with Heirline
+
+This module can be loaded with `local condition = require
+"astroui.status.condition"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+AERIAL_AVAILABLE ~
+
+>lua
+    function astroui.status.condition.aerial_available()
+      -> boolean
+<
+
+A condition function if Aerial is available
+
+_return_ — whether or not aerial plugin is installed
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.aerial_available } function
+M.aerial_available() return is_available "aerial.nvim" end
+
+
+BUFFER_MATCHES ~
+
+>lua
+    function astroui.status.condition.buffer_matches(patterns: table, bufnr: number)
+      -> boolean
+<
+
+A condition function if the buffer filetype,buftype,bufname match a pattern
+
+_param_ `patterns` — the table of patterns to match
+
+_param_ `bufnr` — of the buffer to match (Default: 0 [current])
+
+_return_ — whether or not LSP is attached
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+function() return require("astroui.status").condition.buffer_matches { buftype
+= { "terminal" } } end }
+
+
+FILE_MODIFIED ~
+
+>lua
+    function astroui.status.condition.file_modified(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if the current buffer is modified
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not the current buffer is modified
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.file_modified }
+
+
+FILE_READ_ONLY ~
+
+>lua
+    function astroui.status.condition.file_read_only(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if the current buffer is read only
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not the current buffer is read only or not modifiable
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.file_read_only }
+
+
+FOLDCOLUMN_ENABLED ~
+
+>lua
+    function astroui.status.condition.foldcolumn_enabled()
+      -> boolean
+<
+
+A condition function if the foldcolumn is enabled
+
+_return_ — true if vim.opt.foldcolumn > 0, false if vim.opt.foldcolumn == 0
+
+
+GIT_CHANGED ~
+
+>lua
+    function astroui.status.condition.git_changed(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if there are any git changes
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not there are any git changes
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.git_changed }
+
+
+HAS_DIAGNOSTICS ~
+
+>lua
+    function astroui.status.condition.has_diagnostics(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if the current file has any diagnostics
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not the current file has any diagnostics
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.has_diagnostics }
+
+
+HAS_FILETYPE ~
+
+>lua
+    function astroui.status.condition.has_filetype(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if there is a defined filetype
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not there is a filetype
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.has_filetype }
+
+
+IS_ACTIVE ~
+
+>lua
+    function astroui.status.condition.is_active()
+      -> boolean
+<
+
+A condition function if the window is currently active
+
+_return_ — whether or not the window is currently actie
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.is_active }
+
+
+IS_GIT_REPO ~
+
+>lua
+    function astroui.status.condition.is_git_repo(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if the current file is in a git repo
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not the current file is in a git repo
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.is_git_repo }
+
+
+IS_HLSEARCH ~
+
+>lua
+    function astroui.status.condition.is_hlsearch()
+      -> boolean
+<
+
+A condition function if search is visible
+
+_return_ — whether or not searching is currently visible
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.is_hlsearch }
+
+
+IS_MACRO_RECORDING ~
+
+>lua
+    function astroui.status.condition.is_macro_recording()
+      -> boolean
+<
+
+A condition function if a macro is being recorded
+
+_return_ — whether or not a macro is currently being recorded
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.is_macro_recording }
+
+
+IS_STATUSLINE_SHOWCMD ~
+
+>lua
+    function astroui.status.condition.is_statusline_showcmd()
+      -> boolean
+<
+
+A condition function if showcmdloc is set to statusline
+
+_return_ — whether or not statusline showcmd is enabled
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.is_statusline_showcmd }
+
+
+LSP_ATTACHED ~
+
+>lua
+    function astroui.status.condition.lsp_attached(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if LSP is attached
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not LSP is attached
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.lsp_attached }
+
+
+NUMBERCOLUMN_ENABLED ~
+
+>lua
+    function astroui.status.condition.numbercolumn_enabled()
+      -> boolean
+<
+
+A condition function if the number column is enabled
+
+_return_ — true if vim.opt.number or vim.opt.relativenumber, false if neither
+
+
+TREESITTER_AVAILABLE ~
+
+>lua
+    function astroui.status.condition.treesitter_available(bufnr: integer|table)
+      -> boolean
+<
+
+A condition function if treesitter is in use
+
+_param_ `bufnr` — a buffer number to check the condition for, a table with
+bufnr property, or nil to get the current buffer
+
+_return_ — whether or not treesitter is active
+
+@usage local heirline_component = { provider = "Example Provider", condition =
+require("astroui.status").condition.treesitter_available }
+
+
+ASTROUI.STATUS.HEIRLINE              *astroui-lua-api-astroui.status.heirline*
+
+AstroNvim Status Heirline Extensions
+
+Statusline related heirline specific extensions
+
+This module can be loaded with `local astro_heirline = require
+"astroui.status.heirline"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+BUFFER_PICKER ~
+
+>lua
+    function astroui.status.heirline.buffer_picker(callback: function)
+<
+
+Run the buffer picker and execute the callback function on the selected buffer
+
+_param_ `callback` — with a single parameter of the buffer number
+
+
+MAKE_BUFLIST ~
+
+>lua
+    function astroui.status.heirline.make_buflist(component: table)
+      -> table
+<
+
+Make a list of buffers, rendering each buffer with the provided component
+
+
+MAKE_TABLIST ~
+
+>lua
+    function astroui.status.heirline.make_tablist(...any)
+<
+
+Alias to require("heirline.utils").make_tablist
+
+
+TAB_TYPE ~
+
+>lua
+    function astroui.status.heirline.tab_type(self: table, prefix?: string)
+      -> string
+<
+
+A helper function to get the type a tab or buffer is
+
+_param_ `self` — the self table from a heirline component function
+
+_param_ `prefix` — the prefix of the type, either "tab" or "buffer" (Default:
+"buffer")
+
+_return_ — the string of prefix with the type (i.e. “_active” or
+“_visible”)
+
+
+ASTROUI.STATUS.HL                          *astroui-lua-api-astroui.status.hl*
+
+AstroNvim Status Highlighting
+
+Statusline related highlighting utilities
+
+This module can be loaded with `local hl = require "astroui.status.hl"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+FILE_ICON ~
+
+>lua
+    function astroui.status.hl.file_icon(name: string)
+      -> function
+<
+
+Enable filetype color highlight if enabled in icon_highlights.file_icon options
+
+_param_ `name` — the icon_highlights.file_icon table element
+
+_return_ — for setting hl property in a component
+
+@usage local heirline_component = { provider = "Example Provider", hl =
+require("astroui.status").hl.file_icon("winbar") },
+
+
+FILETYPE_COLOR ~
+
+>lua
+    function astroui.status.hl.filetype_color(self: astroui.status.hl)
+      -> table
+<
+
+Get the foreground color group for the current filetype
+
+_return_ — the highlight group for the current filetype foreground
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.fileicon(), hl =
+require("astroui.status").hl.filetype_color },
+
+
+GET_ATTRIBUTES ~
+
+>lua
+    function astroui.status.hl.get_attributes(name: string, include_bg?: boolean)
+      -> table
+<
+
+Merge the color and attributes from user settings for a given name
+
+_param_ `name` — the name of the element to get the attributes and colors for
+
+_param_ `include_bg` — whether or not to include background color (Default:
+false)
+
+_return_ — a table of highlight information
+
+@usage local heirline_component = { provider = "Example Provider", hl =
+require("astroui.status").hl.get_attributes("treesitter") },
+
+
+LUALINE_MODE ~
+
+>lua
+    function astroui.status.hl.lualine_mode(mode: string, fallback: string)
+      -> string
+<
+
+Get the highlight background color of the lualine theme for the current
+colorscheme
+
+_param_ `mode` — the neovim mode to get the color of
+
+_param_ `fallback` — the color to fallback on if a lualine theme is not
+present
+
+_return_ — The background color of the lualine theme or the fallback
+parameter if one doesn’t exist
+
+
+MODE ~
+
+>lua
+    function astroui.status.hl.mode()
+      -> table
+<
+
+Get the highlight for the current mode
+
+_return_ — the highlight group for the current mode
+
+@usage local heirline_component = { provider = "Example Provider", hl =
+require("astroui.status").hl.mode },
+
+
+MODE_BG ~
+
+>lua
+    function astroui.status.hl.mode_bg()
+      -> string
+<
+
+
+ASTROUI.STATUS.INIT                      *astroui-lua-api-astroui.status.init*
+
+AstroNvim Status Initializers
+
+Statusline related init functions for building dynamic statusline components
+
+This module can be loaded with `local init = require "astroui.status.init"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+BREADCRUMBS ~
+
+>lua
+    function astroui.status.init.breadcrumbs(opts?: table)
+      -> function
+<
+
+An `init` function to build a set of children components for LSP breadcrumbs
+
+_param_ `opts` — options for configuring the breadcrumbs (default: `{
+max_depth = 5, separator = " ", icon = { enabled = true, hl = false }, padding
+= { left = 0, right = 0 } }`)
+
+_return_ — The Heirline init function
+
+@usage local heirline_component = { init =
+require("astroui.status").init.breadcrumbs { padding = { left = 1 } } }
+
+
+SEPARATED_PATH ~
+
+>lua
+    function astroui.status.init.separated_path(opts?: table)
+      -> function
+<
+
+An `init` function to build a set of children components for a separated path
+to file
+
+_param_ `opts` — options for configuring the breadcrumbs (default: `{
+max_depth = 3, path_func = provider.unique_path(), separator = " ", suffix =
+true, padding = { left = 0, right = 0 } }`)
+
+_return_ — The Heirline init function
+
+@usage local heirline_component = { init =
+require("astroui.status").init.separated_path { padding = { left = 1 } } }
+
+
+UPDATE_EVENTS ~
+
+>lua
+    function astroui.status.init.update_events(opts: any[])
+      -> function
+<
+
+An `init` function to build multiple update events which is not supported yet
+by Heirline’s update field
+
+_param_ `opts` — an array like table of autocmd events as either just a
+string or a table with custom patterns and callbacks.
+
+_return_ — The Heirline init function
+
+@usage local heirline_component = { init =
+require("astroui.status").init.update_events { "BufEnter", { "User", pattern =
+"LspProgressUpdate" } } }
+
+
+ASTROUI.STATUS.PROVIDER              *astroui-lua-api-astroui.status.provider*
+
+AstroNvim Status Providers
+
+Statusline related provider functions for building statusline components
+
+This module can be loaded with `local provider = require
+"astroui.status.provider"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+CLOSE_BUTTON ~
+
+>lua
+    function astroui.status.provider.close_button(opts?: table)
+      -> string
+<
+
+A provider to simply show a close button icon
+
+_param_ `opts` — options passed to the stylize function and the kind of icon
+to use
+
+_return_ — the stylized icon
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.close_button() } @see
+astroui.status.utils.stylize
+
+
+DIAGNOSTICS ~
+
+>lua
+    function astroui.status.provider.diagnostics(opts: table)
+      -> function|nil
+<
+
+A provider function for showing the current diagnostic count of a specific
+severity
+
+_param_ `opts` — options for severity of diagnostic and options passed to the
+stylize function
+
+_return_ — the function for outputting the diagnostic count
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.diagnostics({ severity = "ERROR" }) } @see
+astroui.status.utils.stylize
+
+
+FILE_ENCODING ~
+
+>lua
+    function astroui.status.provider.file_encoding(opts?: table)
+      -> function
+<
+
+A provider function for showing the current file encoding
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the file encoding
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.file_encoding() } @see
+astroui.status.utils.stylize
+
+
+FILE_FORMAT ~
+
+>lua
+    function astroui.status.provider.file_format(opts?: table)
+      -> function
+<
+
+A provider function for showing the current file format
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the file format
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.file_format() } @see
+astroui.status.utils.stylize
+
+
+FILE_ICON ~
+
+>lua
+    function astroui.status.provider.file_icon(opts?: table)
+      -> function
+<
+
+A provider function for showing the current filetype icon
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the filetype icon
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.file_icon() } @see
+astroui.status.utils.stylize
+
+
+FILE_MODIFIED ~
+
+>lua
+    function astroui.status.provider.file_modified(opts?: table)
+      -> function
+<
+
+A provider function for showing if the current file is modifiable
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the indicator if the file is modified
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.file_modified() } @see
+astroui.status.utils.stylize
+
+
+FILE_READ_ONLY ~
+
+>lua
+    function astroui.status.provider.file_read_only(opts?: table)
+      -> function
+<
+
+A provider function for showing if the current file is read-only
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the indicator if the file is read-only
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.file_read_only() } @see
+astroui.status.utils.stylize
+
+
+FILENAME ~
+
+>lua
+    function astroui.status.provider.filename(opts?: table)
+      -> function
+<
+
+A provider function for showing the current filename
+
+_param_ `opts` — options for argument to fnamemodify to format filename and
+options passed to the stylize function
+
+_return_ — the function for outputting the filename
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.filename() } @see
+astroui.status.utils.stylize
+
+
+FILETYPE ~
+
+>lua
+    function astroui.status.provider.filetype(opts?: table)
+      -> function
+<
+
+A provider function for showing the current filetype
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the filetype
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.filetype() } @see
+astroui.status.utils.stylize
+
+
+FILL ~
+
+>lua
+    function astroui.status.provider.fill()
+      -> string
+<
+
+A provider function for the fill string
+
+_return_ — the statusline string for filling the empty space
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.fill }
+
+
+FOLDCOLUMN ~
+
+>lua
+    function astroui.status.provider.foldcolumn(opts?: table)
+      -> function
+<
+
+A provider function for building a foldcolumn
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — a custom foldcolumn function for the statuscolumn that doesn’t
+show the nest levels
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.foldcolumn } @see
+astroui.status.utils.stylize
+
+
+GIT_BRANCH ~
+
+>lua
+    function astroui.status.provider.git_branch(opts: table)
+      -> function
+<
+
+A provider function for showing the current git branch
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the git branch
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.git_branch() } @see
+astroui.status.utils.stylize
+
+
+GIT_DIFF ~
+
+>lua
+    function astroui.status.provider.git_diff(opts?: table)
+      -> function|nil
+<
+
+A provider function for showing the current git diff count of a specific type
+
+_param_ `opts` — options for type of git diff and options passed to the
+stylize function
+
+_return_ — the function for outputting the git diff
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.git_diff({ type = "added" }) } @see
+astroui.status.utils.stylize
+
+
+LSP_CLIENT_NAMES ~
+
+>lua
+    function astroui.status.provider.lsp_client_names(opts?: table)
+      -> function
+<
+
+A provider function for showing the connected LSP client names
+
+_param_ `opts` — options for explanding null_ls clients, max width
+percentage, and options passed to the stylize function
+
+_return_ — the function for outputting the LSP client names
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.lsp_client_names({ expand_null_ls = true,
+truncate = 0.25 }) } @see astroui.status.utils.stylize
+
+
+LSP_PROGRESS ~
+
+>lua
+    function astroui.status.provider.lsp_progress(opts?: table)
+      -> function
+<
+
+A provider function for showing the current progress of loading language
+servers
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the LSP progress
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.lsp_progress() } @see
+astroui.status.utils.stylize
+
+
+MACRO_RECORDING ~
+
+>lua
+    function astroui.status.provider.macro_recording(opts?: table)
+      -> function
+<
+
+A provider function for displaying if a macro is currently being recorded
+
+_param_ `opts` — a prefix before the recording register and options passed to
+the stylize function
+
+_return_ — a function that returns a string of the current recording status
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.macro_recording() } @see
+astroui.status.utils.stylize
+
+
+MODE_TEXT ~
+
+>lua
+    function astroui.status.provider.mode_text(opts?: table)
+      -> function
+<
+
+A provider function for showing the text of the current vim mode
+
+_param_ `opts` — options for padding the text and options passed to the
+stylize function
+
+_return_ — the function for displaying the text of the current vim mode
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.mode_text() } @see
+astroui.status.utils.stylize
+
+
+NUMBERCOLUMN ~
+
+>lua
+    function astroui.status.provider.numbercolumn(opts?: table)
+      -> function
+<
+
+A provider function for the numbercolumn string
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the statuscolumn string for adding the numbercolumn
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.numbercolumn } @see
+astroui.status.utils.stylize
+
+
+PASTE ~
+
+>lua
+    function astroui.status.provider.paste(opts?: table)
+      -> function
+<
+
+A provider function for showing if paste is enabled
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting if paste is enabled
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.paste() } @see astroui.status.utils.stylize
+
+
+PERCENTAGE ~
+
+>lua
+    function astroui.status.provider.percentage(opts?: table)
+      -> function
+<
+
+A provider function for showing the percentage of the current location in a
+document
+
+_param_ `opts` — options for Top/Bot text, fixed width, and options passed to
+the stylize function
+
+_return_ — the statusline string for displaying the percentage of current
+document location
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.percentage() } @see
+astroui.status.utils.stylize
+
+
+RULER ~
+
+>lua
+    function astroui.status.provider.ruler(opts?: table)
+      -> function
+<
+
+A provider function for showing the current line and character in a document
+
+_param_ `opts` — options for padding the line and character locations and
+options passed to the stylize function
+
+_return_ — the statusline string for showing location in document
+line_num:char_num
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.ruler({ pad_ruler = { line = 3, char = 2 }
+}) } @see astroui.status.utils.stylize
+
+
+SCROLLBAR ~
+
+>lua
+    function astroui.status.provider.scrollbar(opts?: table)
+      -> function
+<
+
+A provider function for showing the current location as a scrollbar
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting the scrollbar
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.scrollbar() } @see
+astroui.status.utils.stylize
+
+
+SEARCH_COUNT ~
+
+>lua
+    function astroui.status.provider.search_count(opts?: table)
+      -> function
+<
+
+A provider function for displaying the current search count
+
+_param_ `opts` — options for `vim.fn.searchcount` and options passed to the
+stylize function
+
+_return_ — a function that returns a string of the current search location
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.search_count() } @see
+astroui.status.utils.stylize
+
+
+SHOWCMD ~
+
+>lua
+    function astroui.status.provider.showcmd(opts?: table)
+      -> string
+<
+
+A provider function for displaying the current command
+
+_param_ `opts` — of options passed to the stylize function
+
+_return_ — the statusline string for showing the current command
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.showcmd() } @see
+astroui.status.utils.stylize
+
+
+SIGNCOLUMN ~
+
+>lua
+    function astroui.status.provider.signcolumn(opts?: table)
+      -> string
+<
+
+A provider function for the signcolumn string
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the statuscolumn string for adding the signcolumn
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.signcolumn } @see
+astroui.status.utils.stylize
+
+
+SPELL ~
+
+>lua
+    function astroui.status.provider.spell(opts?: table)
+      -> function
+<
+
+A provider function for showing if spellcheck is on
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the function for outputting if spell is enabled
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.spell() } @see astroui.status.utils.stylize
+
+
+STR ~
+
+>lua
+    function astroui.status.provider.str(opts?: table)
+      -> string
+<
+
+A provider function for displaying a single string
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — the stylized statusline string
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.str({ str = "Hello" }) } @see
+astroui.status.utils.stylize
+
+
+TABNR ~
+
+>lua
+    function astroui.status.provider.tabnr()
+      -> function
+<
+
+A provider function for the current tab numbre
+
+_return_ — the statusline function to return a string for a tab number
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.tabnr() }
+
+
+TREESITTER_STATUS ~
+
+>lua
+    function astroui.status.provider.treesitter_status(opts?: table)
+      -> function
+<
+
+A provider function for showing if treesitter is connected
+
+_param_ `opts` — options passed to the stylize function
+
+_return_ — function for outputting TS if treesitter is connected
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.treesitter_status() } @see
+astroui.status.utils.stylize
+
+
+UNIQUE_PATH ~
+
+>lua
+    function astroui.status.provider.unique_path(opts?: table)
+      -> function
+<
+
+Get a unique filepath between all buffers
+
+_param_ `opts` — options for function to get the buffer name, a buffer
+number, max length, and options passed to the stylize function
+
+_return_ — path to file that uniquely identifies each buffer
+
+@usage local heirline_component = { provider =
+require("astroui.status").provider.unique_path() } @see
+astroui.status.utils.stylize
+
+
+ASTROUI.STATUS.UTILS                    *astroui-lua-api-astroui.status.utils*
+
+AstroNvim Status Utilities
+
+Statusline related uitility functions
+
+This module can be loaded with `local status_utils = require
+"astroui.status.utils"`
+
+copyright 2023 license GNU General Public License v3.0
+
+
+BUILD_PROVIDER ~
+
+>lua
+    function astroui.status.utils.build_provider(opts?: table, provider?: string|function, _: any)
+      -> table|false
+<
+
+Convert a component parameter table to a table that can be used with the
+component builder
+
+_param_ `opts` — a table of provider options
+
+_param_ `provider` — a provider in `M.providers`
+
+_return_ — the provider table that can be used in `M.component.builder`
+
+>lua
+    return 1:
+        | false
+<
+
+
+DECODE_POS ~
+
+>lua
+    function astroui.status.utils.decode_pos(c: integer)
+      -> line: integer
+      2. column: integer
+      3. window: integer
+<
+
+Decode a previously encoded position to it’s sub parts
+
+_param_ `c` — the encoded position
+
+
+ENCODE_POS ~
+
+>lua
+    function astroui.status.utils.encode_pos(line: integer, col: integer, winnr: integer)
+      -> the: integer
+<
+
+Encode a position to a single value that can be decoded later
+
+_param_ `line` — line number of position
+
+_param_ `col` — column number of position
+
+_param_ `winnr` — a window number
+
+_return_ `the` — encoded position
+
+
+NULL_LS_PROVIDERS ~
+
+>lua
+    function astroui.status.utils.null_ls_providers(filetype: string)
+      -> table
+<
+
+Get a list of registered null-ls providers for a given filetype
+
+_param_ `filetype` — the filetype to search null-ls for
+
+_return_ — a table of null-ls sources
+
+
+NULL_LS_SOURCES ~
+
+>lua
+    function astroui.status.utils.null_ls_sources(filetype: string, method: string)
+      -> string[]
+<
+
+Get the null-ls sources for a given null-ls method
+
+_param_ `filetype` — the filetype to search null-ls for
+
+_param_ `method` — the null-ls method (check null-ls documentation for
+available methods)
+
+_return_ — the available sources for the given filetype and method
+
+
+PAD_STRING ~
+
+>lua
+    function astroui.status.utils.pad_string(str: string, padding: table)
+      -> string
+<
+
+Add left and/or right padding to a string
+
+_param_ `str` — the string to add padding to
+
+_param_ `padding` — a table of the format `{ left = 0, right = 0}` that
+defines the number of spaces to include to the left and the right of the string
+
+_return_ — the padded string
+
+
+SETUP_PROVIDERS ~
+
+>lua
+    function astroui.status.utils.setup_providers(opts: table, providers: string[], setup?: function)
+      -> table
+<
+
+Convert key/value table of options to an array of providers for the component
+builder
+
+_param_ `opts` — the table of options for the components
+
+_param_ `providers` — an ordered list like array of providers that are
+configured in the options table
+
+_param_ `setup` — a function that takes provider options table, provider
+name, provider index and returns the setup provider table, optional, default is
+`M.build_provider`
+
+_return_ — the fully setup options table with the appropriately ordered
+providers
+
+
+STATUSCOLUMN_CLICKARGS ~
+
+>lua
+    function astroui.status.utils.statuscolumn_clickargs(self: any, minwid: any, clicks: any, button: any, mods: any)
+      -> table
+<
+
+A helper function for decoding statuscolumn click events with mouse click
+pressed, modifier keys, as well as which signcolumn sign was clicked if any
+
+_param_ `self` — the self parameter from Heirline component on_click.callback
+function call
+
+_param_ `minwid` — the minwid parameter from Heirline component
+on_click.callback function call
+
+_param_ `clicks` — the clicks parameter from Heirline component
+on_click.callback function call
+
+_param_ `button` — the button parameter from Heirline component
+on_click.callback function call
+
+_param_ `mods` — the button parameter from Heirline component
+on_click.callback function call
+
+_return_ — the argument table with the decoded mouse information and
+signcolumn signs information
+
+@usage local heirline_component = { on_click = { callback = function(…) local
+args = require("astroui.status").utils.statuscolumn_clickargs(…) end } }
+
+
+STYLIZE ~
+
+>lua
+    function astroui.status.utils.stylize(str?: string, opts?: table)
+      -> string
+<
+
+A utility function to stylize a string with an icon from lspkind, separators,
+and left/right padding
+
+_param_ `str` — the string to stylize
+
+_param_ `opts` — options of `{ padding = { left = 0, right = 0 }, separator =
+{ left = "|", right = "|" }, escape = true, show_empty = false, icon = { kind =
+"NONE", padding = { left = 0, right = 0 } } }`
+
+_return_ — the stylized string
+
+@usage local string = require("astroui.status").utils.stylize("Hello", {
+padding = { left = 1, right = 1 }, icon = { kind = "String" } })
+
+
+SURROUND ~
+
+>lua
+    function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function)
+      -> table
+<
+
+Surround component with separator and color adjustment
+
+_param_ `separator` — the separator index to use in the `separators` table
+
+_param_ `color` — the color to use as the separator foreground/component
+background
+
+_param_ `component` — the component to surround
+
+_param_ `condition` — the condition for displaying the surrounded component
+
+_return_ — the new surrounded component
+
+
+WIDTH ~
+
+>lua
+    function astroui.status.utils.width(is_winbar?: boolean)
+      -> integer
+<
+
+A utility function to get the width of the bar
+
+_param_ `is_winbar` — true if you want the width of the winbar, false if you
+want the statusline width
+
+_return_ — the width of the specified bar
+
+==============================================================================
+3. Links                                                       *astroui-links*
+
+1. *@usage*: 
+2. *@usage*: 
+3. *@usage*: 
+4. *@usage*: 
+5. *@usage*: 
+6. *@usage*: 
+7. *@usage*: 
+8. *@usage*: 
+9. *@usage*: 
+10. *@usage*: 
+11. *@usage*: 
+12. *@usage*: 
+13. *@usage*: 
+14. *@usage*: 
+15. *@usage*: 
+16. *@usage*: 
+17. *@usage*: 
+18. *@usage*: 
+19. *@usage*: 
+20. *@usage*: 
+21. *@usage*: 
+22. *@usage*: 
+23. *@usage*: 
+24. *@usage*: 
+25. *@usage*: 
+26. *@usage*: 
+27. *@usage*: 
+28. *@usage*: 
+29. *@usage*: 
+30. *@usage*: 
+31. *@usage*: 
+32. *@usage*: 
+33. *@usage*: 
+34. *@usage*: 
+35. *@usage*: 
+36. *@usage*: 
+37. *@usage*: 
+38. *@usage*: 
+39. *@usage*: 
+40. *@see*: 
+41. *@usage*: 
+42. *@see*: 
+43. *@usage*: 
+44. *@see*: 
+45. *@usage*: 
+46. *@see*: 
+47. *@usage*: 
+48. *@see*: 
+49. *@usage*: 
+50. *@see*: 
+51. *@usage*: 
+52. *@see*: 
+53. *@usage*: 
+54. *@see*: 
+55. *@usage*: 
+56. *@see*: 
+57. *@usage*: 
+58. *@usage*: 
+59. *@see*: 
+60. *@usage*: 
+61. *@see*: 
+62. *@usage*: 
+63. *@see*: 
+64. *@usage*: 
+65. *@see*: 
+66. *@usage*: 
+67. *@see*: 
+68. *@usage*: 
+69. *@see*: 
+70. *@usage*: 
+71. *@see*: 
+72. *@usage*: 
+73. *@see*: 
+74. *@usage*: 
+75. *@see*: 
+76. *@usage*: 
+77. *@see*: 
+78. *@usage*: 
+79. *@see*: 
+80. *@usage*: 
+81. *@see*: 
+82. *@usage*: 
+83. *@see*: 
+84. *@usage*: 
+85. *@see*: 
+86. *@usage*: 
+87. *@see*: 
+88. *@usage*: 
+89. *@see*: 
+90. *@usage*: 
+91. *@see*: 
+92. *@usage*: 
+93. *@usage*: 
+94. *@see*: 
+95. *@usage*: 
+96. *@see*: 
+97. *@usage*: 
+98. *@usage*: 
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
