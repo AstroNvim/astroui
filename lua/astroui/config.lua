@@ -83,7 +83,7 @@
 ---  ["n"] = {
 ---    "NORMAL", -- readable name
 ---    "normal", -- color name
----  }
+---  },
 ---  ["no"] = {
 ---    "OP",     -- readable name
 ---    "normal", -- color name
@@ -165,10 +165,10 @@
 ---status = {
 ---  attributes = {
 ---    git_branch = { bold = true },
----  }
+---  },
 ---  colors = {
 ---    git_branch_fg = "#ABCDEF",
----  }
+---  },
 ---  icon_highlights = {
 ---    breadcrumbs = false,
 ---    file_icon = {
