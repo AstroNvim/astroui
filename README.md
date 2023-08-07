@@ -23,7 +23,7 @@ Install the plugin with your plugin manager of choice:
 {
   "AstroNvim/astroui",
   lazy = false, -- disable lazy loading
-  prioirty = 10000, -- load AstroUI first
+  priority = 10000, -- load AstroUI first
   opts = {
     -- set configuration options  as described below
   }
