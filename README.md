@@ -111,5 +111,9 @@ require("astroui").setup({
 
 **AstroUI** provides a Lua API with utility functions. This can be viewed with `:h astroui` or in the repository at [doc/api.md](doc/api.md)
 
+## 🚀 Contributing
+
+If you plan to contribute, please check the [contribution guidelines](https://github.com/AstroNvim/.github/blob/main/CONTRIBUTING.md) first.
+
 [astrocore]: https://github.com/AstroNvim/astrocore
 [lazy]: https://github.com/folke/lazy.nvim
