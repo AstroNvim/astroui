@@ -9,6 +9,7 @@ Table of Contents                                  *astroui-table-of-contents*
   - Installation                                |astroui-astroui-installation|
   - Configuration                              |astroui-astroui-configuration|
   - API                                                  |astroui-astroui-api|
+  - Contributing                                |astroui-astroui-contributing|
 2. Lua API                                                   |astroui-lua-api|
   - astroui                                          |astroui-lua-api-astroui|
   - astroui.status.component        |astroui-lua-api-astroui.status.component|
@@ -141,6 +142,12 @@ API                                                      *astroui-astroui-api*
 
 **AstroUI** provides a Lua API with utility functions. This can be viewed with
 `:h astroui` or in the repository at doc/api.md <doc/api.md>
+
+
+CONTRIBUTING                                    *astroui-astroui-contributing*
+
+If you plan to contribute, please check the contribution guidelines
+<https://github.com/AstroNvim/.github/blob/main/CONTRIBUTING.md> first.
 
 
 ==============================================================================
