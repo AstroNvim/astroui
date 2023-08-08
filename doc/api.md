@@ -638,6 +638,15 @@ function astroui.status.heirline.make_tablist(...any)
 
  Alias to require("heirline.utils").make_tablist
 
+### refresh_colors
+
+
+```lua
+function astroui.status.heirline.refresh_colors()
+```
+
+ Refresh heirline colors
+
 ### tab_type
 
 

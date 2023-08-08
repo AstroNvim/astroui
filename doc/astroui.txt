@@ -849,6 +849,15 @@ MAKE_TABLIST ~
 Alias to require("heirline.utils").make_tablist
 
 
+REFRESH_COLORS ~
+
+>lua
+    function astroui.status.heirline.refresh_colors()
+<
+
+Refresh heirline colors
+
+
 TAB_TYPE ~
 
 >lua
