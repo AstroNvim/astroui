@@ -7,7 +7,7 @@
 -- copyright 2023
 -- license GNU General Public License v3.0
 
----@alias AstroUIIconTable table<string,string>
+---@alias StringMap table<string,string>
 ---@alias AstroUIIconHighlight (fun(self:table):boolean)|boolean
 
 ---@class AstroUIFileIconHighlights
@@ -57,10 +57,10 @@
 ---  git_branch_fg = "#ABCDEF",
 ---}
 ---```
----@field colors table<string,string>?
+---@field colors (StringMap|(fun(colors:StringMap):StringMap))?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---A table of fallback colors if a colorscheme used by the user does not have a highlight group, the entry point to this are typically through the `status.colors` option.
----@field fallback_colors table<string,string>?
+---@field fallback_colors StringMap?
 ---Configure which icons that are highlighted based on context
 ---Example:
 ---
@@ -148,7 +148,7 @@
 ---  GitAdd = "",
 ---}
 ---```
----@field icons AstroUIIconTable?
+---@field icons StringMap?
 --- A table of only text "icons" used when icons are disabled
 ---Example:
 ---
@@ -157,7 +157,7 @@
 ---  GitAdd = "[+]",
 ---}
 ---```
----@field text_icons AstroUIIconTable?
+---@field text_icons StringMap?
 ---Configuration options for the AstroNvim lines and bars built with the `status` API.
 ---Example:
 ---
