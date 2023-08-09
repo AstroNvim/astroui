@@ -73,7 +73,7 @@
 ---  }
 ---}
 ---```
----@field icon_hignlights AstroUIIconHighlights?
+---@field icon_highlights AstroUIIconHighlights?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---Conversion table of vim mode text to readable text and color name to be used
 ---Example:
