@@ -22,7 +22,9 @@ function M.setup(opts)
     callback = function()
       if vim.g.colors_name then
         for _, module in ipairs { "init", vim.g.colors_name } do
-          for group, spec in pairs(M.config.highlights[module] or {}) do
+          local highlights = M.config.highlights[module]
+          if type(highlights) == "function" then highlights = highlights() end
+          for group, spec in pairs(highlights or {}) do
             vim.api.nvim_set_hl(0, group, spec)
           end
         end

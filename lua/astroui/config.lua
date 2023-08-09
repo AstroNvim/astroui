@@ -139,7 +139,7 @@
 ---     },
 ---}
 ---```
----@field highlights  table<string,table<string,table>>?
+---@field highlights  table<string,(table<string,table>|fun():table<string,table>)>?
 ---A table of icons in the UI using NERD fonts
 ---Example:
 ---
