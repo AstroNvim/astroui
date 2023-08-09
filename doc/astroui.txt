@@ -1,4 +1,4 @@
-*astroui.txt*          For Neovim >= 0.9.0         Last change: 2023 August 08
+*astroui.txt*          For Neovim >= 0.9.0         Last change: 2023 August 09
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
