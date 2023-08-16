@@ -78,7 +78,10 @@ M.make_buflist = function(component)
     ),
     { provider = get_icon "ArrowLeft" .. " ", hl = overflow_hl },
     { provider = get_icon "ArrowRight" .. " ", hl = overflow_hl },
-    function() return vim.t.bufs or {} end, -- use astronvim bufs variable
+    function()
+      vim.t.bufs = vim.tbl_filter(buf_utils.is_valid, vim.t.bufs or {})
+      return vim.t.bufs
+    end, -- use astronvim bufs variable
     false -- disable internal caching
   )
 end
