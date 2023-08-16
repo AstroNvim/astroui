@@ -343,6 +343,22 @@ function astroui.status.component.treesitter(opts?: table)
 
  @usage local heirline_component = require("astroui.status").component.treesitter()
 
+### virtual_env
+
+
+```lua
+function astroui.status.component.virtual_env(opts?: table)
+  -> table
+```
+
+ A function to build a set of children components for a git branch section
+
+*param* `opts` — options for configuring git branch and the overall padding
+
+*return* — The Heirline component table
+
+ @usage local heirline_component = require("astroui.status").component.git_branch()
+
 
 ## astroui.status.condition
 
@@ -479,6 +495,20 @@ function astroui.status.condition.has_filetype(bufnr: integer|table)
 *return* — whether or not there is a filetype
 
  @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_filetype }
+
+### has_virtual_env
+
+
+```lua
+function astroui.status.condition.has_virtual_env()
+  -> boolean
+```
+
+ A condition function if a virtual environment is activated
+
+*return* — whether or not virtual environment is activated
+
+ @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_virtual_env }
 
 ### is_active
 
@@ -1335,6 +1365,23 @@ function astroui.status.provider.unique_path(opts?: table)
 *return* — path to file that uniquely identifies each buffer
 
  @usage local heirline_component = { provider = require("astroui.status").provider.unique_path() }
+ @see astroui.status.utils.stylize
+
+### virtual_env
+
+
+```lua
+function astroui.status.provider.virtual_env(opts: table)
+  -> function
+```
+
+ A provider function for showing the current virtual environment name
+
+*param* `opts` — options passed to the stylize function
+
+*return* — the function for outputting the virtual environment
+
+ @usage local heirline_component = { provider = require("astroui.status").provider.virtual_env() }
  @see astroui.status.utils.stylize
 
 
