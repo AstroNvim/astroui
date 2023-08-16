@@ -503,6 +503,24 @@ function M.lsp_client_names(opts)
   end
 end
 
+--- A provider function for showing the current virtual environment name
+---@param opts table options passed to the stylize function
+---@return function # the function for outputting the virtual environment
+-- @usage local heirline_component = { provider = require("astroui.status").provider.virtual_env() }
+-- @see astroui.status.utils.stylize
+function M.virtual_env(opts)
+  opts = extend_tbl({ env_names = { "env", ".env", "venv", ".venv" } }, opts)
+  return function()
+    local venv = vim.env.VIRTUAL_ENV
+    if venv then
+      local path = vim.fn.split(venv, "/")
+      local venv_name = path[#path]
+      if #path > 1 and vim.tbl_contains(opts.env_names, venv_name) then venv_name = path[#path - 1] end
+      return status_utils.stylize(opts.format and opts.format:format(venv_name) or venv_name, opts)
+    end
+  end
+end
+
 --- A provider function for showing if treesitter is connected
 ---@param opts? table options passed to the stylize function
 ---@return function # function for outputting TS if treesitter is connected
