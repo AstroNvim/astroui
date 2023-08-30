@@ -509,15 +509,20 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.virtual_env() }
 -- @see astroui.status.utils.stylize
 function M.virtual_env(opts)
-  opts = extend_tbl({ env_names = { "env", ".env", "venv", ".venv" } }, opts)
+  opts =
+    extend_tbl({ env_names = { "env", ".env", "venv", ".venv" }, conda = { enabled = true, ignore_base = true } }, opts)
   return function()
+    local conda = vim.env.CONDA_DEFAULT_ENV
     local venv = vim.env.VIRTUAL_ENV
+    local env_str
     if venv then
       local path = vim.fn.split(venv, "/")
-      local venv_name = path[#path]
-      if #path > 1 and vim.tbl_contains(opts.env_names, venv_name) then venv_name = path[#path - 1] end
-      return status_utils.stylize(opts.format and opts.format:format(venv_name) or venv_name, opts)
+      env_str = path[#path]
+      if #path > 1 and vim.tbl_contains(opts.env_names, env_str) then env_str = path[#path - 1] end
+    elseif opts.conda.enabled and conda then
+      if conda ~= "base" or not opts.conda.ignore_base then env_str = conda end
     end
+    if env_str then return status_utils.stylize(opts.format and opts.format:format(env_str) or env_str, opts) end
   end
 end
 

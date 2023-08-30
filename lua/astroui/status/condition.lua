@@ -103,7 +103,7 @@ end
 --- A condition function if a virtual environment is activated
 ---@return boolean # whether or not virtual environment is activated
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_virtual_env }
-function M.has_virtual_env() return vim.env.VIRTUAL_ENV ~= nil end
+function M.has_virtual_env() return vim.env.VIRTUAL_ENV ~= nil or vim.env.CONDA_DEFAULT_ENV ~= nil end
 
 --- A condition function if Aerial is available
 ---@return boolean # whether or not aerial plugin is installed
