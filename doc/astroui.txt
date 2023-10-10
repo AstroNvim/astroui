@@ -1,4 +1,4 @@
-*astroui.txt*          For Neovim >= 0.9.0         Last change: 2023 August 30
+*astroui.txt*         For Neovim >= 0.9.0         Last change: 2023 October 10
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -88,16 +88,16 @@ are descriptions of the options and some example usages:
       highlights = {
         -- this table overrides highlights in all colorschemes
         init = {
-          Normal = { bg = "000000" },
+          Normal = { bg = "#000000" },
         },
         -- a table of overrides/changes when applying astrotheme
         astrotheme = {
-          Normal = { bg = "000000" },
+          Normal = { bg = "#000000" },
         },
       },
       -- A table of icons in the UI using NERD fonts
       icons = {
-        GitAdd = "",
+        GitAdd = "",
       },
       -- A table of only text "icons" used when icons are disabled
       text_icons = {
@@ -111,7 +111,7 @@ are descriptions of the options and some example usages:
         },
         -- Configure colors of components defined in the `status` API. Check the AstroNvim documentation for a complete list of color names.
         colors = {
-          git_branch_fg = "ABCDEF",
+          git_branch_fg = "#ABCDEF",
         },
         -- Configure which icons that are highlighted based on context
         icon_highlights = {
@@ -129,9 +129,9 @@ are descriptions of the options and some example usages:
           left = { "", "  " },
           right = { "  ", "" },
           center = { "  ", "  " },
-          tab = { "", "" },
-          breadcrumbs = "  ",
-          path = "  ",
+          tab = { "", "" },
+          breadcrumbs = "  ",
+          path = "  ",
         },
       },
     }
@@ -821,6 +821,18 @@ A condition function if the number column is enabled
 _return_ — true if vim.opt.number or vim.opt.relativenumber, false if neither
 
 
+SIGNCOLUMN_ENABLED ~
+
+>lua
+    function astroui.status.condition.signcolumn_enabled()
+      -> boolean
+<
+
+A condition function if the signcolumn is enabled
+
+_return_ — false if vim.opt.signcolumn == "no", true otherwise
+
+
 TREESITTER_AVAILABLE ~
 
 >lua
@@ -1035,8 +1047,8 @@ BREADCRUMBS ~
 An `init` function to build a set of children components for LSP breadcrumbs
 
 _param_ `opts` — options for configuring the breadcrumbs (default: `{
-max_depth = 5, separator = " ", icon = { enabled = true, hl = false }, padding
-= { left = 0, right = 0 } }`)
+max_depth = 5, separator = "  ", icon = { enabled = true, hl = false },
+padding = { left = 0, right = 0 } }`)
 
 _return_ — The Heirline init function
 
@@ -1055,8 +1067,8 @@ An `init` function to build a set of children components for a separated path
 to file
 
 _param_ `opts` — options for configuring the breadcrumbs (default: `{
-max_depth = 3, path_func = provider.unique_path(), separator = " ", suffix =
-true, padding = { left = 0, right = 0 } }`)
+max_depth = 3, path_func = provider.unique_path(), separator = "  ", suffix
+= true, padding = { left = 0, right = 0 } }`)
 
 _return_ — The Heirline init function
 
@@ -1692,7 +1704,7 @@ _param_ `provider` — a provider in `M.providers`
 _return_ — the provider table that can be used in `M.component.builder`
 
 >lua
-    return 1:
+    return #1:
         | false
 <
 

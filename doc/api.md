@@ -610,6 +610,18 @@ function astroui.status.condition.numbercolumn_enabled()
 
 *return* — true if vim.opt.number or vim.opt.relativenumber, false if neither
 
+### signcolumn_enabled
+
+
+```lua
+function astroui.status.condition.signcolumn_enabled()
+  -> boolean
+```
+
+ A condition function if the signcolumn is enabled
+
+*return* — false if vim.opt.signcolumn == "no", true otherwise
+
 ### treesitter_available
 
 
