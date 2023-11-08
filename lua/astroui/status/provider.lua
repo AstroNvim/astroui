@@ -486,7 +486,8 @@ function M.lsp_client_names(opts)
   opts = extend_tbl({ expand_null_ls = true, truncate = 0.25 }, opts)
   return function(self)
     local buf_client_names = {}
-    for _, client in pairs(vim.lsp.get_active_clients { bufnr = self and self.bufnr or 0 }) do
+    -- TODO: remove get_active_clients when dropping support for Neovim 0.9
+    for _, client in pairs((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = self and self.bufnr or 0 }) do
       if client.name == "null-ls" and opts.expand_null_ls then
         local null_ls_sources = {}
         for _, type in ipairs { "FORMATTING", "DIAGNOSTICS" } do
