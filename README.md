@@ -1,4 +1,4 @@
-# 🎨 AstroUI
+# 🎨 AstroUI - TEST COMMIT
 
 AstroUI provides a simple API for configuring and setting up the user interface in [AstroNvim](https://github.com/AstroNvim/AstroNvim).
 
@@ -33,13 +33,13 @@ Install the plugin with your plugin manager of choice:
 [**packer.nvim**](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use({
+use {
   "AstroNvim/astroui",
-})
+}
 
-require("astroui").setup({
+require("astroui").setup {
   -- set configuration options  as described below
-})
+}
 ```
 
 ## ⚙️ Configuration
