@@ -35,10 +35,11 @@ function M.fill(opts) return extend_tbl({ provider = provider.fill() }, opts) en
 -- @usage local heirline_component = require("astroui.status").component.file_info()
 function M.file_info(opts)
   opts = extend_tbl({
-    file_icon = { hl = hl.file_icon "statusline", padding = { left = 1, right = 1 } },
-    filename = {},
-    file_modified = { padding = { left = 1 } },
-    file_read_only = { padding = { left = 1 } },
+    file_icon = { hl = hl.file_icon "statusline", padding = { left = 1, right = 1 }, condition = condition.is_file },
+    filename = false,
+    filetype = {},
+    file_modified = false,
+    file_read_only = { padding = { left = 1, right = 1 }, condition = condition.is_file },
     surround = { separator = "left", color = "file_info_bg", condition = condition.has_filetype },
     hl = hl.get_attributes "file_info",
   }, opts)
@@ -63,6 +64,8 @@ function M.tabline_file_info(opts)
       condition = function(self) return not self._show_picker end,
       hl = hl.file_icon "tabline",
     },
+    filename = {},
+    filetype = false,
     unique_path = {
       hl = function(self) return hl.get_attributes(self.tab_type .. "_path") end,
     },
