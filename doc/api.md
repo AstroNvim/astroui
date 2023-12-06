@@ -524,6 +524,22 @@ function astroui.status.condition.is_active()
 
  @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_active }
 
+### is_file
+
+
+```lua
+function astroui.status.condition.is_file(bufnr: integer|table)
+  -> boolean
+```
+
+ A condition function if a buffer is a file
+
+*param* `bufnr` — a buffer number to check the condition for, a table with bufnr property, or nil to get the current buffer
+
+*return* — whether or not the buffer is a file
+
+ @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_file }
+
 ### is_git_repo
 
 
