@@ -11,6 +11,7 @@ local M = {}
 
 local astro = require "astrocore"
 local extend_tbl = astro.extend_tbl
+local is_available = astro.is_available
 local luv = vim.uv or vim.loop -- TODO: REMOVE WHEN DROPPING SUPPORT FOR Neovim v0.9
 
 local ui = require "astroui"
@@ -483,7 +484,14 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }) }
 -- @see astroui.status.utils.stylize
 function M.lsp_client_names(opts)
-  opts = extend_tbl({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }, opts)
+  opts = extend_tbl({
+    integrations = {
+      null_ls = is_available "none-ls.nvim",
+      conform = is_available "conform.nvim",
+      lint = is_available "nvim-lint",
+    },
+    truncate = 0.25,
+  }, opts)
   return function(self)
     local bufnr = self and self.bufnr or 0
     local buf_client_names = {}

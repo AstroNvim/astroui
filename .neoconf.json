@@ -2,7 +2,15 @@
   "neodev": {
     "library": {
       "enabled": true,
-      "plugins": ["heirline.nvim"]
+      "plugins": [
+        "astrocore",
+        "astrolsp",
+        "conform.nvim",
+        "heirline.nvim",
+        "none-ls.nvim",
+        "nvim-lint",
+        "nvim-web-devicons"
+      ]
     }
   },
   "neoconf": {
