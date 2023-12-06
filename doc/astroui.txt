@@ -1360,8 +1360,9 @@ percentage, and options passed to the stylize function
 _return_ — the function for outputting the LSP client names
 
 @usage local heirline_component = { provider =
-require("astroui.status").provider.lsp_client_names({ expand_null_ls = true,
-truncate = 0.25 }) } @see astroui.status.utils.stylize
+require("astroui.status").provider.lsp_client_names({ integrations = { null_ls
+= true, conform = true, lint = true }, truncate = 0.25 }) } @see
+astroui.status.utils.stylize
 
 
 LSP_PROGRESS ~

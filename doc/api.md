@@ -1107,7 +1107,7 @@ function astroui.status.provider.lsp_client_names(opts?: table)
 
 *return* — the function for outputting the LSP client names
 
- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ expand_null_ls = true, truncate = 0.25 }) }
+ @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }) }
  @see astroui.status.utils.stylize
 
 ### lsp_progress
