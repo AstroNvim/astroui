@@ -488,7 +488,6 @@ function M.lsp_client_names(opts)
     integrations = {
       null_ls = is_available "none-ls.nvim",
       conform = is_available "conform.nvim",
-      lint = is_available "nvim-lint",
     },
     truncate = 0.25,
   }, opts)
@@ -509,15 +508,11 @@ function M.lsp_client_names(opts)
         table.insert(buf_client_names, client.name)
       end
     end
-    if opts.integrations.lint then -- nvim-lint integration
-      local lint_avail, lint = pcall(require, "lint")
-      if lint_avail then vim.list_extend(buf_client_names, lint.get_running(bufnr)) end
-    end
-    if opts.integrations.conform then -- conform integration
-      local conform_avail, conform = pcall(require, "conform")
-      if conform_avail then
-        vim.list_extend(buf_client_names, vim.tbl_map(function(c) return c.name end, conform.list_formatters(bufnr)))
-      end
+    if opts.integrations.conform and package.loaded["conform"] then -- conform integration
+      vim.list_extend(
+        buf_client_names,
+        vim.tbl_map(function(c) return c.name end, require("conform").list_formatters(bufnr))
+      )
     end
     local str = table.concat(buf_client_names, ", ")
     if type(opts.truncate) == "number" then

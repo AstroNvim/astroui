@@ -126,10 +126,12 @@ function M.aerial_available() return package.loaded["aerial"] end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.lsp_attached }
 function M.lsp_attached(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  return package.loaded["astrolsp"]
+  return (
+    package.loaded["astrolsp"]
     -- HACK: Check for lsp utilities loaded first, get_active_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
     -- TODO: remove get_active_clients when dropping support for Neovim 0.9
     and next((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr or 0 }) ~= nil
+  ) or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
 end
 
 --- A condition function if treesitter is in use
