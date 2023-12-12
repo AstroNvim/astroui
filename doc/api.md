@@ -390,7 +390,7 @@ function astroui.status.condition.aerial_available()
 
 
 ```lua
-function astroui.status.condition.buffer_matches(patterns: table, bufnr: number)
+function astroui.status.condition.buffer_matches(patterns: table<"bufname"|"buftype"|"filetype", string|string[]>, bufnr?: integer, op?: "and"|"or")
   -> boolean
 ```
 
@@ -400,9 +400,17 @@ function astroui.status.condition.buffer_matches(patterns: table, bufnr: number)
 
 *param* `bufnr` — of the buffer to match (Default: 0 [current])
 
+*param* `op` — whether or not to require all pattern types to match or any (Default: "or")
+
 *return* — whether or not LSP is attached
 
  @usage local heirline_component = { provider = "Example Provider", condition = function() return require("astroui.status").condition.buffer_matches { buftype = { "terminal" } } end }
+
+```lua
+op:
+    | "and"
+    | "or"
+```
 
 ### file_modified
 
