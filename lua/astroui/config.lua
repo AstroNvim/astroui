@@ -9,6 +9,8 @@
 
 ---@alias StringMap table<string,string>
 ---@alias AstroUIIconHighlight (fun(self:table):boolean)|boolean
+---@alias AstroUIHighlight vim.api.keyset.highlight
+---@alias AstroUIHighlights table<string,vim.api.keyset.highlight>
 
 ---@class AstroUIFileIconHighlights
 ---@field tabline AstroUIIconHighlight? enable or disabling file icon highlighting in the tabline
@@ -136,7 +138,7 @@
 ---     },
 ---}
 ---```
----@field highlights  table<string,(table<string,table>|fun():table<string,table>)>?
+---@field highlights  table<string,(AstroUIHighlights|fun():AstroUIHighlights)>?
 ---A table of icons in the UI using NERD fonts
 ---Example:
 ---
