@@ -9,24 +9,58 @@
 ---@class astroui.status.condition
 local M = {}
 
-local config = require("astroui").config.status
+---@alias BufMatcherPattern string
+---@alias BufMatcherPatterns BufMatcherPattern|BufMatcherPattern[]
+---@alias BufMatcherKinds "filetype"|"buftype"|"bufname"
+---@alias BufMatcher fun(patterns: BufMatcherPatterns, bufnr: integer): boolean
+
+---@param str BufMatcherPattern
+---@param patterns BufMatcherPatterns
+---@return boolean
+local function pattern_match(str, patterns)
+  if type(patterns) == "string" then patterns = { patterns } end
+  for _, pattern in ipairs(patterns) do
+    if str:find(pattern) then return true end
+  end
+  return false
+end
+
+---@type table<BufMatcherKinds, BufMatcher>
+local buf_matchers = {
+  filetype = function(pattern_list, bufnr) return pattern_match(vim.bo[bufnr].filetype, pattern_list) end,
+  buftype = function(pattern_list, bufnr) return pattern_match(vim.bo[bufnr].buftype, pattern_list) end,
+  bufname = function(pattern_list, bufnr)
+    local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+    ---@cast bufname -nil
+    return pattern_match(bufname, pattern_list)
+  end,
+}
+
+--- A condition function if the buffer filetype,buftype,bufname match a pattern
+---@param patterns table<BufMatcherKinds, BufMatcherPatterns> the table of patterns to match
+---@param bufnr integer? of the buffer to match (Default: 0 [current])
+---@param op "and"|"or"? whether or not to require all pattern types to match or any (Default: "or")
+---@return boolean # whether or not LSP is attached
+-- @usage local heirline_component = { provider = "Example Provider", condition = function() return require("astroui.status").condition.buffer_matches { buftype = { "terminal" } } end }
+function M.buffer_matches(patterns, bufnr, op)
+  if not op then op = "or" end
+  if not bufnr then bufnr = 0 end
+  if require("astrocore.buffer").is_valid(bufnr) then
+    for kind, pattern_list in pairs(patterns) do
+      if buf_matchers[kind](pattern_list, bufnr) then
+        if op == "or" then return true end
+      else
+        if op == "and" then return false end
+      end
+    end
+  end
+  return op == "and"
+end
 
 --- A condition function if the window is currently active
 ---@return boolean # whether or not the window is currently actie
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_active }
 function M.is_active() return vim.api.nvim_get_current_win() == tonumber(vim.g.actual_curwin) end
-
---- A condition function if the buffer filetype,buftype,bufname match a pattern
----@param patterns table the table of patterns to match
----@param bufnr number of the buffer to match (Default: 0 [current])
----@return boolean # whether or not LSP is attached
--- @usage local heirline_component = { provider = "Example Provider", condition = function() return require("astroui.status").condition.buffer_matches { buftype = { "terminal" } } end }
-function M.buffer_matches(patterns, bufnr)
-  for kind, pattern_list in pairs(patterns) do
-    if config.buf_matchers[kind](pattern_list, bufnr) then return true end
-  end
-  return false
-end
 
 --- A condition function if a macro is being recorded
 ---@return boolean # whether or not a macro is currently being recorded

@@ -46,9 +46,6 @@
 ---}
 ---```
 ---@field attributes table<string,table>?
----**MEANT FOR INTERNAL USE ONLY**
----A table of functions used for matching buffers to various attributes
----@field buf_matchers table<string,fun(pattern_list:string[],bufnr:integer):boolean>?
 ---Configure colors of components defined in the `status` API. Check the AstroNvim documentation for a complete list of color names.
 ---Example:
 ---
@@ -191,7 +188,6 @@ local M = {
   text_icons = {},
   status = {
     attributes = {},
-    buf_matchers = {},
     colors = {},
     fallback_colors = {},
     icon_highlights = {},
