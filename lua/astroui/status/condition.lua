@@ -45,7 +45,7 @@ local buf_matchers = {
 function M.buffer_matches(patterns, bufnr, op)
   if not op then op = "or" end
   if not bufnr then bufnr = 0 end
-  if require("astrocore.buffer").is_valid(bufnr) then
+  if vim.api.nvim_buf_is_valid(bufnr) then
     for kind, pattern_list in pairs(patterns) do
       if buf_matchers[kind](pattern_list, bufnr) then
         if op == "or" then return true end
