@@ -45,7 +45,7 @@ function M.breadcrumbs(opts)
     for i, d in ipairs(data) do
       if i > start_idx then
         local child = {
-          { provider = string.gsub(d.name, "%%", "%%%%"):gsub("%s*->%s*", "") }, -- add symbol name
+          { provider = d.name:gsub("%%", "%%%%"):gsub("%s*->%s*", "") }, -- add symbol name
           on_click = { -- add on click function
             minwid = status_utils.encode_pos(d.lnum, d.col, self.winnr),
             callback = function(_, minwid)
@@ -58,9 +58,9 @@ function M.breadcrumbs(opts)
         if opts.icon.enabled then -- add icon and highlight if enabled
           local hl = opts.icon.hl
           if type(hl) == "function" then hl = hl(self) end
-          local hlgroup = string.format("Aerial%sIcon", d.kind)
+          local hlgroup = ("Aerial%sIcon"):format(d.kind)
           table.insert(child, 1, {
-            provider = string.format("%s ", d.icon),
+            provider = ("%s "):format(d.icon),
             hl = (hl and vim.fn.hlexists(hlgroup) == 1) and hlgroup or nil,
           })
         end

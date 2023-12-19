@@ -58,7 +58,7 @@ end
 ---@return string # the padded string
 function M.pad_string(str, padding)
   padding = padding or {}
-  return str and str ~= "" and string.rep(" ", padding.left or 0) .. str .. string.rep(" ", padding.right or 0) or ""
+  return str and str ~= "" and (" "):rep(padding.left or 0) .. str .. (" "):rep(padding.right or 0) or ""
 end
 
 local function escape(str) return str:gsub("%%", "%%%%") end

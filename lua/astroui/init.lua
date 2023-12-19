@@ -49,7 +49,7 @@ function M.get_icon(kind, padding, no_fallback)
   if not icons_enabled and no_fallback then return "" end
   local icon_pack = assert(M.config[icons_enabled and "icons" or "text_icons"])
   local icon = icon_pack[kind]
-  return icon and icon .. string.rep(" ", padding or 0) or ""
+  return icon and icon .. (" "):rep(padding or 0) or ""
 end
 
 --- Get a icon spinner table if it is available in the AstroNvim icons. Icons in format `kind1`,`kind2`, `kind3`, ...

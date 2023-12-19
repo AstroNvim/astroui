@@ -58,7 +58,7 @@ function M.numbercolumn(opts)
     else
       local cur = relnum and (rnum > 0 and rnum or (num and lnum or 0)) or lnum
       if opts.thousands and cur > 999 then
-        cur = string.reverse(cur):gsub("%d%d%d", "%1" .. opts.thousands):reverse():gsub("^%" .. opts.thousands, "")
+        cur = cur:reverse():gsub("%d%d%d", "%1" .. opts.thousands):reverse():gsub("^%" .. opts.thousands, "")
       end
       str = (rnum == 0 and not opts.culright and relnum) and cur .. "%=" or "%=" .. cur
     end
@@ -178,8 +178,7 @@ function M.search_count(opts)
     local search_ok, search = pcall(search_func)
     if search_ok and type(search) == "table" and search.total then
       return status_utils.stylize(
-        string.format(
-          "%s%d/%s%d",
+        ("%s%d/%s%d"):format(
           search.current > search.maxcount and ">" or "",
           math.min(search.current, search.maxcount),
           search.incomplete == 2 and ">" or "",
@@ -203,11 +202,12 @@ function M.mode_text(opts)
     if opts and opts.pad_text then
       local padding = max_length - #text
       if opts.pad_text == "right" then
-        text = string.rep(" ", padding) .. text
+        text = (" "):rep(padding) .. text
       elseif opts.pad_text == "left" then
-        text = text .. string.rep(" ", padding)
+        text = text .. (" "):rep(padding)
       elseif opts.pad_text == "center" then
-        text = string.rep(" ", math.floor(padding / 2)) .. text .. string.rep(" ", math.ceil(padding / 2))
+        local half_pad = padding / 2
+        text = (" "):rep(math.floor(half_pad)) .. text .. (" "):rep(math.ceil(half_pad))
       end
     end
     return status_utils.stylize(text, opts)
@@ -242,11 +242,11 @@ end
 -- @see astroui.status.utils.stylize
 function M.ruler(opts)
   opts = extend_tbl({ pad_ruler = { line = 3, char = 2 } }, opts)
-  local padding_str = string.format("%%%dd:%%-%dd", opts.pad_ruler.line, opts.pad_ruler.char)
+  local padding_str = ("%%%dd:%%-%dd"):format(opts.pad_ruler.line, opts.pad_ruler.char)
   return function()
     local line = vim.fn.line "."
     local char = vim.fn.virtcol "."
-    return status_utils.stylize(string.format(padding_str, line, char), opts)
+    return status_utils.stylize(padding_str:format(line, char), opts)
   end
 end
 
@@ -261,7 +261,7 @@ function M.scrollbar(opts)
     local curr_line = vim.api.nvim_win_get_cursor(0)[1]
     local lines = vim.api.nvim_buf_line_count(0)
     local i = math.floor((curr_line - 1) / lines * #sbar) + 1
-    if sbar[i] then return status_utils.stylize(string.rep(sbar[i], 2), opts) end
+    if sbar[i] then return status_utils.stylize(sbar[i]:rep(2), opts) end
   end
 end
 
@@ -283,7 +283,7 @@ end
 function M.filetype(opts)
   return function(self)
     local buffer = vim.bo[self and self.bufnr or 0]
-    return status_utils.stylize(string.lower(buffer.filetype), opts)
+    return status_utils.stylize(buffer.filetype:lower(), opts)
   end
 end
 
@@ -312,7 +312,7 @@ end
 function M.file_encoding(opts)
   return function(self)
     local buf_enc = vim.bo[self and self.bufnr or 0].fenc
-    return status_utils.stylize(string.upper(buf_enc ~= "" and buf_enc or vim.o.enc), opts)
+    return status_utils.stylize((buf_enc ~= "" and buf_enc or vim.o.enc):upper(), opts)
   end
 end
 
@@ -324,7 +324,7 @@ end
 function M.file_format(opts)
   return function(self)
     local buf_format = vim.bo[self and self.bufnr or 0].fileformat
-    return status_utils.stylize(string.upper(buf_format ~= "" and buf_format or vim.o.fileformat), opts)
+    return status_utils.stylize((buf_format ~= "" and buf_format or vim.o.fileformat):upper(), opts)
   end
 end
 
@@ -369,7 +369,7 @@ function M.unique_path(opts)
       (
         opts.max_length > 0
         and #unique_path > opts.max_length
-        and string.sub(unique_path, 1, opts.max_length - 2) .. get_icon "Ellipsis" .. "/"
+        and unique_path:sub(1, opts.max_length - 2) .. get_icon "Ellipsis" .. "/"
       ) or unique_path,
       opts
     )
@@ -517,7 +517,7 @@ function M.lsp_client_names(opts)
     local str = table.concat(buf_client_names, ", ")
     if type(opts.truncate) == "number" then
       local max_width = math.floor(status_utils.width() * opts.truncate)
-      if #str > max_width then str = string.sub(str, 0, max_width) .. "…" end
+      if #str > max_width then str = str:sub(0, max_width) .. "…" end
     end
     return status_utils.stylize(str, opts)
   end
