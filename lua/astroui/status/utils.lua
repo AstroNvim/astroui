@@ -88,7 +88,7 @@ end
 ---@param color function|string|table the color to use as the separator foreground/component background
 ---@param component table the component to surround
 ---@param condition boolean|function the condition for displaying the surrounded component
----@param update any? the condition for displaying the surrounded component
+---@param update AstroUIUpdateEvents? the condition for displaying the surrounded component
 ---@return table # the new surrounded component
 function M.surround(separator, color, component, condition, update)
   local function surround_color(self)
