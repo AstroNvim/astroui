@@ -88,8 +88,9 @@ end
 ---@param color function|string|table the color to use as the separator foreground/component background
 ---@param component table the component to surround
 ---@param condition boolean|function the condition for displaying the surrounded component
+---@param update any? the condition for displaying the surrounded component
 ---@return table # the new surrounded component
-function M.surround(separator, color, component, condition)
+function M.surround(separator, color, component, condition, update)
   local function surround_color(self)
     local colors = type(color) == "function" and color(self) or color
     return type(colors) == "string" and { main = colors } or colors
@@ -100,19 +101,23 @@ function M.surround(separator, color, component, condition)
   if separator[1] ~= "" then
     table.insert(surrounded, {
       provider = separator[1],
+      update = function() return false end,
+      init = update and require("astroui.status.init").update_events(update),
       hl = function(self)
         local s_color = surround_color(self)
         if s_color then return { fg = s_color.main, bg = s_color.left } end
       end,
     })
   end
-  table.insert(surrounded, {
-    hl = function(self)
-      local s_color = surround_color(self)
-      if s_color then return { bg = s_color.main } end
-    end,
-    extend_tbl(component, {}),
-  })
+  local component_hl = component.hl
+  component.hl = function(self)
+    local hl = {}
+    if component_hl then hl = type(component_hl) == "table" and vim.deepcopy(component_hl) or component_hl(self) end
+    local s_color = surround_color(self)
+    if s_color then hl.bg = s_color.main end
+    return hl
+  end
+  table.insert(surrounded, component)
   if separator[2] ~= "" then
     table.insert(surrounded, {
       provider = separator[2],
@@ -120,6 +125,8 @@ function M.surround(separator, color, component, condition)
         local s_color = surround_color(self)
         if s_color then return { fg = s_color.main, bg = s_color.right } end
       end,
+      update = function() return false end,
+      init = update and require("astroui.status.init").update_events(update),
     })
   end
   return surrounded

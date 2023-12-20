@@ -27,7 +27,9 @@ local status_utils = require "astroui.status.utils"
 ---@param opts? table options for configuring the other fields of the heirline component
 ---@return table # The heirline component table
 -- @usage local heirline_component = require("astroui.status").component.fill()
-function M.fill(opts) return extend_tbl({ provider = provider.fill() }, opts) end
+function M.fill(opts)
+  return extend_tbl({ provider = provider.fill(), update = function() return false end }, opts)
+end
 
 --- A function to build a set of children components for an entire file information section
 ---@param opts? table options for configuring file_icon, filename, filetype, file_modified, file_read_only, and the overall padding
@@ -147,7 +149,7 @@ function M.mode(opts)
     mode_text = false,
     paste = false,
     spell = false,
-    surround = { separator = "left", color = hl.mode_bg },
+    surround = { separator = "left", color = hl.mode_bg, update = { "ModeChanged", pattern = "*:*" } },
     hl = hl.get_attributes "mode",
     update = {
       "ModeChanged",
@@ -443,7 +445,13 @@ function M.builder(opts)
     table.insert(children, { provider = status_utils.pad_string(" ", { right = opts.padding.right - 1 }) })
   end
   return opts.surround
-      and status_utils.surround(opts.surround.separator, opts.surround.color, children, opts.surround.condition)
+      and status_utils.surround(
+        opts.surround.separator,
+        opts.surround.color,
+        children,
+        opts.surround.condition,
+        opts.surround.update
+      )
     or children
 end
 

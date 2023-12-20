@@ -127,10 +127,11 @@ function M.separated_path(opts)
 end
 
 --- An `init` function to build multiple update events which is not supported yet by Heirline's update field
----@param opts any[] an array like table of autocmd events as either just a string or a table with custom patterns and callbacks.
+---@param opts any an array like table of autocmd events as either just a string or a table with custom patterns and callbacks. TODO: UPDATE TYPE
 ---@return function # The Heirline init function
 -- @usage local heirline_component = { init = require("astroui.status").init.update_events { "BufEnter", { "User", pattern = "LspProgressUpdate" } } }
 function M.update_events(opts)
+  if not vim.tbl_isarray(opts) then opts = { opts } end
   return function(self)
     if not rawget(self, "once") then
       local clear_cache = function() self._win_cache = nil end
