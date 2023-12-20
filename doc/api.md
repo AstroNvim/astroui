@@ -875,7 +875,7 @@ function astroui.status.init.separated_path(opts?: table)
 
 
 ```lua
-function astroui.status.init.update_events(opts: any)
+function astroui.status.init.update_events(opts: AstroUIUpdateEvent|AstroUIUpdateEvent[])
   -> function
 ```
 
@@ -1595,7 +1595,7 @@ function astroui.status.utils.stylize(str?: string, opts?: table)
 
 
 ```lua
-function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: any)
+function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: AstroUIUpdateEvent|AstroUIUpdateEvent[])
   -> table
 ```
 
