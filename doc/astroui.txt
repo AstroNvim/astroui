@@ -978,11 +978,13 @@ require("astroui.status").hl.file_icon("winbar") },
 FILETYPE_COLOR ~
 
 >lua
-    function astroui.status.hl.filetype_color(self: astroui.status.hl)
+    function astroui.status.hl.filetype_color(self?: { bufnr: integer })
       -> table
 <
 
 Get the foreground color group for the current filetype
+
+_param_ `self` — component state that may hold the buffer number
 
 _return_ — the highlight group for the current filetype foreground
 

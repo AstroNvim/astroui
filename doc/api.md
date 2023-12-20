@@ -761,11 +761,13 @@ function astroui.status.hl.file_icon(name: string)
 
 
 ```lua
-function astroui.status.hl.filetype_color(self: astroui.status.hl)
+function astroui.status.hl.filetype_color(self?: { bufnr: integer })
   -> table
 ```
 
  Get the foreground color group for the current filetype
+
+*param* `self` — component state that may hold the buffer number
 
 *return* — the highlight group for the current filetype foreground
 
