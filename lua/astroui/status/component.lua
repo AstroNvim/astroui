@@ -15,7 +15,7 @@ local extend_tbl = astro.extend_tbl
 local is_available = astro.is_available
 
 local ui = require "astroui"
-local config = ui.config.status
+local config = assert(ui.config.status)
 local get_icon = ui.get_icon
 local condition = require "astroui.status.condition"
 local hl = require "astroui.status.hl"
@@ -411,9 +411,8 @@ function M.signcolumn(opts)
       name = "sign_click",
       callback = function(...)
         local args = status_utils.statuscolumn_clickargs(...)
-        if args.sign and args.sign.name and config.sign_handlers[args.sign.name] then
-          config.sign_handlers[args.sign.name](args)
-        end
+        local handler = vim.tbl_get(config, "sign_handlers", vim.tbl_get(args, "sign", "name"))
+        if handler then handler(args) end
       end,
     },
   }, opts)

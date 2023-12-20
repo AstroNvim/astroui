@@ -56,7 +56,7 @@ M.make_buflist = function(component)
           condition = function(self) return self._show_picker end,
           update = false,
           init = function(self)
-            if not (self.label and self._picker_labels[self.label]) then
+            if not vim.tbl_get(self._picker_labels, self.label) then
               local bufname = provider.filename()(self)
               local label = bufname:sub(1, 1)
               local i = 2
@@ -98,7 +98,7 @@ function M.buffer_picker(callback)
   if prev_showtabline ~= 2 then vim.opt.showtabline = 2 end
   vim.cmd.redrawtabline()
   ---@diagnostic disable-next-line: undefined-field
-  local buflist = tabline and tabline._buflist and tabline._buflist[1]
+  local buflist = vim.tbl_get(tabline, "_buflist", 1)
   if buflist then
     buflist._picker_labels = {}
     buflist._show_picker = true

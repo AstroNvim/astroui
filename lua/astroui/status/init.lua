@@ -11,7 +11,7 @@ local M = {}
 
 local astro = require "astrocore"
 local ui = require "astroui"
-local config = ui.config.status
+local config = assert(ui.config.status)
 local get_icon = ui.get_icon
 local extend_tbl = astro.extend_tbl
 
@@ -50,7 +50,7 @@ function M.breadcrumbs(opts)
             minwid = status_utils.encode_pos(d.lnum, d.col, self.winnr),
             callback = function(_, minwid)
               local lnum, col, winnr = status_utils.decode_pos(minwid)
-              vim.api.nvim_win_set_cursor(vim.fn.win_getid(winnr), { lnum, col })
+              vim.api.nvim_win_set_cursor(assert(vim.fn.win_getid(winnr)), { lnum, col })
             end,
             name = "heirline_breadcrumbs",
           },

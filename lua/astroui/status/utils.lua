@@ -11,7 +11,7 @@ local M = {}
 
 local astro = require "astrocore"
 local ui = require "astroui"
-local config = ui.config.status
+local config = assert(ui.config.status)
 local get_icon = ui.get_icon
 local extend_tbl = astro.extend_tbl
 
@@ -201,7 +201,7 @@ function M.statuscolumn_clickargs(self, minwid, clicks, button, mods)
   if args.char == " " then args.char = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol - 1) end
   args.sign = self.signs[args.char]
   if not args.sign then -- update signs if not found on first click
-    for _, sign_def in ipairs(vim.fn.sign_getdefined()) do
+    for _, sign_def in ipairs(assert(vim.fn.sign_getdefined())) do
       if sign_def.text then self.signs[sign_def.text:gsub("%s", "")] = sign_def end
     end
     args.sign = self.signs[args.char]

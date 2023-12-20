@@ -15,7 +15,7 @@ local is_available = astro.is_available
 local luv = vim.uv or vim.loop -- TODO: REMOVE WHEN DROPPING SUPPORT FOR Neovim v0.9
 
 local ui = require "astroui"
-local config = ui.config.status
+local config = assert(ui.config.status)
 local get_icon = ui.get_icon
 local condition = require "astroui.status.condition"
 local status_utils = require "astroui.status.utils"
@@ -495,6 +495,7 @@ function M.lsp_client_names(opts)
     local bufnr = self and self.bufnr or 0
     local buf_client_names = {}
     -- TODO: remove get_active_clients when dropping support for Neovim 0.9
+    ---@diagnostic disable-next-line: deprecated
     for _, client in pairs((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) do
       if client.name == "null-ls" and opts.integrations.null_ls then
         local null_ls_sources = {}

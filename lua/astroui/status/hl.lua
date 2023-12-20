@@ -9,7 +9,7 @@
 ---@class astroui.status.hl
 local M = {}
 
-local config = require("astroui").config.status
+local config = assert(require("astroui").config.status)
 
 --- Get the highlight background color of the lualine theme for the current colorscheme
 ---@param mode string the neovim mode to get the color of
@@ -34,6 +34,7 @@ function M.mode() return { bg = M.mode_bg() } end
 function M.mode_bg() return config.modes[vim.fn.mode()][2] end
 
 --- Get the foreground color group for the current filetype
+---@param self { bufnr: integer }? # component state that may hold the buffer number
 ---@return table # the highlight group for the current filetype foreground
 -- @usage local heirline_component = { provider = require("astroui.status").provider.fileicon(), hl = require("astroui.status").hl.filetype_color },
 function M.filetype_color(self)

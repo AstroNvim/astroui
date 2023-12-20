@@ -131,7 +131,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_filetype }
 function M.has_filetype(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  return vim.bo[bufnr or 0].filetype and vim.bo[bufnr or 0].filetype ~= ""
+  local filetype = vim.bo[bufnr or 0].filetype
+  return filetype and filetype ~= ""
 end
 
 --- A condition function if a buffer is a file
@@ -161,9 +162,10 @@ function M.aerial_available() return package.loaded["aerial"] end
 function M.lsp_attached(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   return (
-    package.loaded["astrolsp"]
-    -- HACK: Check for lsp utilities loaded first, get_active_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
+        -- HACK: Check for lsp utilities loaded first, get_active_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
+package.loaded["astrolsp"]
     -- TODO: remove get_active_clients when dropping support for Neovim 0.9
+    ---@diagnostic disable-next-line: deprecated
     and next((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr or 0 }) ~= nil
   ) or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
 end
