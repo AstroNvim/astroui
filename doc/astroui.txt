@@ -1,4 +1,4 @@
-*astroui.txt*         For Neovim >= 0.9.0        Last change: 2023 December 19
+*astroui.txt*         For Neovim >= 0.9.0        Last change: 2023 December 20
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -1106,7 +1106,7 @@ require("astroui.status").init.separated_path { padding = { left = 1 } } }
 UPDATE_EVENTS ~
 
 >lua
-    function astroui.status.init.update_events(opts: any[])
+    function astroui.status.init.update_events(opts: any)
       -> function
 <
 
@@ -1114,7 +1114,7 @@ An `init` function to build multiple update events which is not supported yet
 by Heirline’s update field
 
 _param_ `opts` — an array like table of autocmd events as either just a
-string or a table with custom patterns and callbacks.
+string or a table with custom patterns and callbacks. TODO: UPDATE TYPE
 
 _return_ — The Heirline init function
 
@@ -1897,7 +1897,7 @@ padding = { left = 1, right = 1 }, icon = { kind = "String" } })
 SURROUND ~
 
 >lua
-    function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function)
+    function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: any)
       -> table
 <
 
@@ -1911,6 +1911,8 @@ background
 _param_ `component` — the component to surround
 
 _param_ `condition` — the condition for displaying the surrounded component
+
+_param_ `update` — the condition for displaying the surrounded component
 
 _return_ — the new surrounded component
 

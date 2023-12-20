@@ -875,13 +875,13 @@ function astroui.status.init.separated_path(opts?: table)
 
 
 ```lua
-function astroui.status.init.update_events(opts: any[])
+function astroui.status.init.update_events(opts: any)
   -> function
 ```
 
  An `init` function to build multiple update events which is not supported yet by Heirline's update field
 
-*param* `opts` — an array like table of autocmd events as either just a string or a table with custom patterns and callbacks.
+*param* `opts` — an array like table of autocmd events as either just a string or a table with custom patterns and callbacks. TODO: UPDATE TYPE
 
 *return* — The Heirline init function
 
@@ -1595,7 +1595,7 @@ function astroui.status.utils.stylize(str?: string, opts?: table)
 
 
 ```lua
-function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function)
+function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: any)
   -> table
 ```
 
@@ -1608,6 +1608,8 @@ function astroui.status.utils.surround(separator: string|string[], color: string
 *param* `component` — the component to surround
 
 *param* `condition` — the condition for displaying the surrounded component
+
+*param* `update` — the condition for displaying the surrounded component
 
 *return* — the new surrounded component
 
