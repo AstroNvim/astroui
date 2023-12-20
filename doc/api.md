@@ -1609,7 +1609,7 @@ function astroui.status.utils.surround(separator: string|string[], color: string
 
 *param* `condition` — the condition for displaying the surrounded component
 
-*param* `update` — the condition for displaying the surrounded component
+*param* `update` — control updating of separators, either a list of events or true to update freely
 
 *return* — the new surrounded component
 

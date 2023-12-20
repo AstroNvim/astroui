@@ -1912,7 +1912,8 @@ _param_ `component` — the component to surround
 
 _param_ `condition` — the condition for displaying the surrounded component
 
-_param_ `update` — the condition for displaying the surrounded component
+_param_ `update` — control updating of separators, either a list of events or
+true to update freely
 
 _return_ — the new surrounded component
 
