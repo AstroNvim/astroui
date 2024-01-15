@@ -122,7 +122,12 @@ end
 function M.has_diagnostics(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if package.loaded["astrolsp"] and require("astrolsp").config.features.diagnostics_mode == 0 then return false end
-  return #vim.diagnostic.get(bufnr or 0) > 0
+  -- TODO: remove when dropping support for neovim 0.9
+  if vim.diagnostic.count then
+    return vim.tbl_contains(vim.diagnostic.count(bufnr or 0), function(v) return v > 0 end, { predicate = true })
+  else
+    return #vim.diagnostic.get(bufnr or 0) > 0
+  end
 end
 
 --- A condition function if there is a defined filetype
