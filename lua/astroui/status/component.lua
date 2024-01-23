@@ -411,8 +411,12 @@ function M.signcolumn(opts)
       name = "sign_click",
       callback = function(...)
         local args = status_utils.statuscolumn_clickargs(...)
-        local handler = vim.tbl_get(config, "sign_handlers", vim.tbl_get(args, "sign", "name"))
-        if handler then handler(args) end
+        local sign_name = vim.tbl_get(args, "sign", "name")
+        local handler = sign_name and vim.tbl_get(config, "sign_handlers", sign_name)
+        if handler then
+          vim.print(handler)
+          handler(args)
+        end
       end,
     },
   }, opts)
