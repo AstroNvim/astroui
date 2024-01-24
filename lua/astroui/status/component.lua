@@ -403,8 +403,9 @@ function M.signcolumn(opts)
       callback = function(...)
         local args = status_utils.statuscolumn_clickargs(...)
         if args.sign then
-          local name = args.sign.name or args.sign.namespace
-          local handler = config.sign_handlers[name] or config.sign_handlers[args.sign.texthl]
+          local handler = args.sign.name ~= "" and config.sign_handlers[args.sign.name]
+          if not handler then handler = config.sign_handlers[args.sign.namespace] end
+          if not handler then handler = config.sign_handlers[args.sign.texthl] end
           if handler then handler(args) end
         end
       end,
