@@ -196,13 +196,39 @@ function M.statuscolumn_clickargs(self, minwid, clicks, button, mods)
     mods = mods,
     mousepos = vim.fn.getmousepos(),
   }
-  if not self.signs then self.signs = {} end
   args.char = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol)
   if args.char == " " then args.char = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol - 1) end
+
+  if not self.signs then self.signs = {} end
   args.sign = self.signs[args.char]
   if not args.sign then -- update signs if not found on first click
-    for _, sign_def in ipairs(assert(vim.fn.sign_getdefined())) do
-      if sign_def.text then self.signs[sign_def.text:gsub("%s", "")] = sign_def end
+    ---TODO: remove when dropping support for Neovim v0.9
+    if vim.fn.has "nvim-0.10" == 0 then
+      for _, sign_def in ipairs(assert(vim.fn.sign_getdefined())) do
+        if sign_def.text then self.signs[sign_def.text:gsub("%s", "")] = sign_def end
+      end
+    end
+
+    if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
+    local row = args.mousepos.line - 1
+    for _, extmark in
+      ipairs(vim.api.nvim_buf_get_extmarks(self.bufnr, -1, { row, 0 }, { row, -1 }, { details = true, type = "sign" }))
+    do
+      local sign = extmark[4]
+      if not (self.namespaces and self.namespaces[sign.ns_id]) then
+        self.namespaces = {}
+        for ns, ns_id in pairs(vim.api.nvim_get_namespaces()) do
+          self.namespaces[ns_id] = ns
+        end
+      end
+      if sign.sign_text then
+        self.signs[sign.sign_text:gsub("%s", "")] = {
+          name = sign.sign_name,
+          text = sign.sign_text,
+          texthl = sign.sign_hl_group or "NoTexthl",
+          namespace = sign.ns_id and self.namespaces[sign.ns_id],
+        }
+      end
     end
     args.sign = self.signs[args.char]
   end
