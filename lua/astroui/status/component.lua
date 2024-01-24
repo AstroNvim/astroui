@@ -193,9 +193,7 @@ function M.git_branch(opts)
     on_click = {
       name = "heirline_branch",
       callback = function()
-        if is_available "telescope.nvim" then
-          vim.defer_fn(function() require("telescope.builtin").git_branches { use_file_path = true } end, 100)
-        end
+        if is_available "telescope.nvim" then require("telescope.builtin").git_branches { use_file_path = true } end
       end,
     },
     update = { "User", pattern = "GitSignsUpdate" },
@@ -217,9 +215,7 @@ function M.git_diff(opts)
     on_click = {
       name = "heirline_git",
       callback = function()
-        if is_available "telescope.nvim" then
-          vim.defer_fn(function() require("telescope.builtin").git_status { use_file_path = true } end, 100)
-        end
+        if is_available "telescope.nvim" then require("telescope.builtin").git_status { use_file_path = true } end
       end,
     },
     surround = { separator = "left", color = "git_diff_bg", condition = condition.git_changed },
@@ -252,9 +248,7 @@ function M.diagnostics(opts)
     on_click = {
       name = "heirline_diagnostic",
       callback = function()
-        if is_available "telescope.nvim" then
-          vim.defer_fn(function() require("telescope.builtin").diagnostics() end, 100)
-        end
+        if is_available "telescope.nvim" then require("telescope.builtin").diagnostics() end
       end,
     },
     update = { "DiagnosticChanged", "BufEnter" },
@@ -320,9 +314,7 @@ function M.lsp(opts)
     surround = { separator = "right", color = "lsp_bg", condition = condition.lsp_attached },
     on_click = {
       name = "heirline_lsp",
-      callback = function()
-        vim.defer_fn(function() vim.cmd.LspInfo() end, 100)
-      end,
+      callback = function() vim.schedule(vim.cmd.LspInfo) end,
     },
   }, opts)
   return M.builder(status_utils.setup_providers(
@@ -390,8 +382,7 @@ function M.numbercolumn(opts)
       callback = function(...)
         local args = status_utils.statuscolumn_clickargs(...)
         if args.mods:find "c" then
-          local dap_avail, dap = pcall(require, "dap")
-          if dap_avail then vim.schedule(dap.toggle_breakpoint) end
+          if is_available "nvim-dap" then require("dap").toggle_breakpoint() end
         end
       end,
     },
