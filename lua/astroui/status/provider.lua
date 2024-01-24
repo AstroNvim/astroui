@@ -35,6 +35,27 @@ function M.signcolumn(opts)
   return status_utils.stylize("%s", opts)
 end
 
+-- local function to resolve the first sign in the signcolumn
+-- specifically for usage when `signcolumn=number`
+local function resolve_sign(bufnr, lnum)
+  --- TODO: remove when dropping support for Neovim v0.9
+  if vim.fn.has "nvim-0.10" == 0 then
+    for _, sign in ipairs(vim.fn.sign_getplaced(bufnr, { group = "*", lnum = lnum })[1].signs) do
+      local defined = vim.fn.sign_getdefined(sign.name)[1]
+      if defined then return defined end
+    end
+  end
+
+  local row = lnum - 1
+  local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, -1, { row, 0 }, { row, -1 }, { details = true, type = "sign" })
+  local ret
+  for _, extmark in pairs(extmarks) do
+    local sign_def = extmark[4]
+    if sign_def.sign_text and (not ret or (ret.priority < sign_def.priority)) then ret = sign_def end
+  end
+  if ret then return { text = ret.sign_text, texthl = ret.sign_hl_group } end
+end
+
 --- A provider function for the numbercolumn string
 ---@param opts? table options passed to the stylize function
 ---@return function # the statuscolumn string for adding the numbercolumn
@@ -45,14 +66,15 @@ function M.numbercolumn(opts)
   return function(self)
     local lnum, rnum, virtnum = vim.v.lnum, vim.v.relnum, vim.v.virtnum
     local num, relnum = vim.opt.number:get(), vim.opt.relativenumber:get()
-    local signs = vim.opt.signcolumn:get():find "nu"
-      and vim.fn.sign_getplaced(self.bufnr or vim.api.nvim_get_current_buf(), { group = "*", lnum = lnum })[1].signs
+    if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
+    local sign = vim.opt.signcolumn:get():find "nu" and resolve_sign(self.bufnr, lnum)
     local str
     if virtnum ~= 0 then
       str = "%="
-    elseif signs and #signs > 0 then
-      local sign = vim.fn.sign_getdefined(signs[1].name)[1]
-      str = "%=%#" .. sign.texthl .. "#" .. sign.text .. "%*"
+    elseif sign then
+      str = sign.text
+      if sign.texthl then str = "%#" .. sign.texthl .. "#" .. str .. "%*" end
+      str = "%=" .. str
     elseif not num and not relnum then
       str = "%="
     else
