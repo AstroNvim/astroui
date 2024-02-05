@@ -138,7 +138,7 @@
 ---     },
 ---}
 ---```
----@field highlights  table<string,(AstroUIHighlights|fun():AstroUIHighlights)>?
+---@field highlights  table<string,(AstroUIHighlights|fun(colors_name: string):AstroUIHighlights)>?
 ---A table of icons in the UI using NERD fonts
 ---Example:
 ---
