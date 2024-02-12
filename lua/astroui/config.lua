@@ -107,7 +107,7 @@
 ---@field separators AstroUISeparators?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---Function used for setting up colors in Heirline, the entry point to this are typically through the `status.colors` option.
----@field setup_colors (fun():table)?
+---@field setup_colors (fun():StringMap)?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---A collection of click handlers for internal heirline components such as `gitsigns`, `diagnostics`, and `dap`
 ---@field sign_handlers table<string,fun(args:table)>?
