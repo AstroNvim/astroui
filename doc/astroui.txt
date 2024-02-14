@@ -1,4 +1,4 @@
-*astroui.txt*         For Neovim >= 0.9.0        Last change: 2024 February 13
+*astroui.txt*         For Neovim >= 0.9.0        Last change: 2024 February 14
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -172,6 +172,22 @@ CONFIG ~
 >lua
     AstroUIOpts
 <
+
+
+GET_HLGROUP ~
+
+>lua
+    function astroui.get_hlgroup(name: string, fallback?: table)
+      -> properties: table
+<
+
+Get highlight properties for a given highlight name
+
+_param_ `name` — The highlight group name
+
+_param_ `fallback` — The fallback highlight properties
+
+_return_ `properties` — the highlight group properties
 
 
 GET_ICON ~

@@ -20,6 +20,22 @@ license GNU General Public License v3.0
 AstroUIOpts
 ```
 
+### get_hlgroup
+
+
+```lua
+function astroui.get_hlgroup(name: string, fallback?: table)
+  -> properties: table
+```
+
+ Get highlight properties for a given highlight name
+
+*param* `name` — The highlight group name
+
+*param* `fallback` — The fallback highlight properties
+
+*return* `properties` — the highlight group properties
+
 ### get_icon
 
 
