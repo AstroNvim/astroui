@@ -39,6 +39,20 @@ function M.setup(opts)
   end
 end
 
+--- Get highlight properties for a given highlight name
+---@param name string The highlight group name
+---@param fallback? table The fallback highlight properties
+---@return table properties # the highlight group properties
+function M.get_hlgroup(name, fallback)
+  if vim.fn.hlexists(name) == 1 then
+    local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+    if not hl.fg then hl.fg = "NONE" end
+    if not hl.bg then hl.bg = "NONE" end
+    return hl
+  end
+  return fallback or {}
+end
+
 --- Get an icon from the AstroNvim internal icons if it is available and return it
 ---@param kind string The kind of icon in astroui.icons to retrieve
 ---@param padding? integer Padding to add to the end of the icon
