@@ -670,7 +670,7 @@ function astroui.status.condition.treesitter_available(bufnr: integer|table)
   -> boolean
 ```
 
- A condition function if treesitter is in use
+ A condition function if a treesitter parser for a given buffer is available
 
 *param* `bufnr` — a buffer number to check the condition for, a table with bufnr property, or nil to get the current buffer
 

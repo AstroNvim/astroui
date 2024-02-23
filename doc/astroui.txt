@@ -1,4 +1,4 @@
-*astroui.txt*         For Neovim >= 0.9.0        Last change: 2024 February 14
+*astroui.txt*         For Neovim >= 0.9.0        Last change: 2024 February 23
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -883,7 +883,7 @@ TREESITTER_AVAILABLE ~
       -> boolean
 <
 
-A condition function if treesitter is in use
+A condition function if a treesitter parser for a given buffer is available
 
 _param_ `bufnr` — a buffer number to check the condition for, a table with
 bufnr property, or nil to get the current buffer
