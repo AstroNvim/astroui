@@ -581,7 +581,10 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.treesitter_status() }
 -- @see astroui.status.utils.stylize
 function M.treesitter_status(opts)
-  return function() return status_utils.stylize(require("nvim-treesitter.parser").has_parser() and "TS" or "", opts) end
+  return function(self)
+    if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
+    return status_utils.stylize(condition.treesitter_available(self.bufnr) and "TS" or "", opts)
+  end
 end
 
 --- A provider function for displaying a single string

@@ -175,15 +175,23 @@ package.loaded["astrolsp"]
   ) or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
 end
 
---- A condition function if treesitter is in use
+--- A condition function if a treesitter parser for a given buffer is available
 ---@param bufnr table|integer a buffer number to check the condition for, a table with bufnr property, or nil to get the current buffer
 ---@return boolean # whether or not treesitter is active
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.treesitter_available }
 function M.treesitter_available(bufnr)
-  if not package.loaded["nvim-treesitter"] then return false end
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  local parsers = require "nvim-treesitter.parsers"
-  return parsers.has_parser(parsers.get_buf_lang(bufnr or vim.api.nvim_get_current_buf()))
+  if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
+  local ft = vim.bo[bufnr].filetype
+  local lang = vim.treesitter.language.get_lang(ft)
+  local parser_avail, _ = pcall(vim.treesitter.get_string_parser, "", lang)
+  -- TODO: reomve when dropping support for nvim 0.9
+  if not parser_avail and vim.fn.has "nvim-0.10" == 0 then
+    ft = vim.split(ft, ".", { plain = true })[1]
+    lang = vim.treesitter.language.get_lang(ft) or ft
+    parser_avail, _ = pcall(vim.treesitter.get_string_parser, "", lang)
+  end
+  return parser_avail
 end
 
 --- A condition function if the foldcolumn is enabled
