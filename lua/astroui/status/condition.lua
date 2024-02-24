@@ -185,7 +185,7 @@ function M.treesitter_available(bufnr)
   local ft = vim.bo[bufnr].filetype
   local lang = vim.treesitter.language.get_lang(ft)
   local parser_avail, _ = pcall(vim.treesitter.get_string_parser, "", lang)
-  -- TODO: reomve when dropping support for nvim 0.9
+  -- TODO: remove when dropping support for nvim 0.9
   if not parser_avail and vim.fn.has "nvim-0.10" == 0 then
     ft = vim.split(ft, ".", { plain = true })[1]
     lang = vim.treesitter.language.get_lang(ft) or ft
