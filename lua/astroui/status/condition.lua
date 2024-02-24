@@ -40,7 +40,7 @@ local buf_matchers = {
 ---@param patterns table<BufMatcherKinds, BufMatcherPatterns> the table of patterns to match
 ---@param bufnr integer? of the buffer to match (Default: 0 [current])
 ---@param op "and"|"or"? whether or not to require all pattern types to match or any (Default: "or")
----@return boolean # whether or not LSP is attached
+---@return boolean # whether or not the buffer filetype,buftype,bufname match a pattern
 -- @usage local heirline_component = { provider = "Example Provider", condition = function() return require("astroui.status").condition.buffer_matches { buftype = { "terminal" } } end }
 function M.buffer_matches(patterns, bufnr, op)
   if not op then op = "or" end
