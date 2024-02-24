@@ -418,7 +418,7 @@ function astroui.status.condition.buffer_matches(patterns: table<"bufname"|"buft
 
 *param* `op` — whether or not to require all pattern types to match or any (Default: "or")
 
-*return* — whether or not LSP is attached
+*return* — whether or not the buffer filetype,buftype,bufname match a pattern
 
  @usage local heirline_component = { provider = "Example Provider", condition = function() return require("astroui.status").condition.buffer_matches { buftype = { "terminal" } } end }
 

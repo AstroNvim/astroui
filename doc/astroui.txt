@@ -1,4 +1,4 @@
-*astroui.txt*         For Neovim >= 0.9.0        Last change: 2024 February 23
+*astroui.txt*         For Neovim >= 0.9.0        Last change: 2024 February 24
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -608,7 +608,7 @@ _param_ `bufnr` — of the buffer to match (Default: 0 [current])
 _param_ `op` — whether or not to require all pattern types to match or any
 (Default: "or")
 
-_return_ — whether or not LSP is attached
+_return_ — whether or not the buffer filetype,buftype,bufname match a pattern
 
 @usage local heirline_component = { provider = "Example Provider", condition =
 function() return require("astroui.status").condition.buffer_matches { buftype
