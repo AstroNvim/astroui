@@ -516,6 +516,7 @@ function M.lsp_client_names(opts)
     integrations = {
       null_ls = is_available "none-ls.nvim",
       conform = is_available "conform.nvim",
+      ["nvim-lint"] = is_available "nvim-lint",
     },
     truncate = 0.25,
   }, opts)
@@ -542,6 +543,9 @@ function M.lsp_client_names(opts)
         buf_client_names,
         vim.tbl_map(function(c) return c.name end, require("conform").list_formatters(bufnr))
       )
+    end
+    if opts.integrations["nvim-lint"] and package.loaded["lint"] then -- nvim-lint integration
+      vim.list_extend(buf_client_names, require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype))
     end
     local str = table.concat(buf_client_names, ", ")
     if type(opts.truncate) == "number" then
