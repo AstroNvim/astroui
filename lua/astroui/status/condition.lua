@@ -121,7 +121,7 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_diagnostics }
 function M.has_diagnostics(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  if package.loaded["astrolsp"] and require("astrolsp").config.features.diagnostics_mode == 0 then return false end
+  if package.loaded["astrocore"] and require("astrocore").config.features.diagnostics_mode == 0 then return false end
   -- TODO: remove when dropping support for neovim 0.9
   if vim.diagnostic.count then
     return vim.tbl_contains(vim.diagnostic.count(bufnr or 0), function(v) return v > 0 end, { predicate = true })
