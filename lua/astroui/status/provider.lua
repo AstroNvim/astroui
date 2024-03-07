@@ -66,8 +66,8 @@ function M.numbercolumn(opts)
   return function(self)
     local lnum, rnum, virtnum = vim.v.lnum, vim.v.relnum, vim.v.virtnum
     local num, relnum = vim.opt.number:get(), vim.opt.relativenumber:get()
-    if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
-    local sign = vim.opt.signcolumn:get():find "nu" and resolve_sign(self.bufnr, lnum)
+    local bufnr = self and self.bufnr or 0
+    local sign = vim.opt.signcolumn:get():find "nu" and resolve_sign(bufnr, lnum)
     local str
     if virtnum ~= 0 then
       str = "%="
@@ -369,14 +369,14 @@ function M.unique_path(opts)
     return parts
   end
   return function(self)
-    opts.bufnr = self and self.bufnr or opts.bufnr
-    local name = opts.buf_name(opts.bufnr)
+    local bufnr = self and self.bufnr or opts.bufnr
+    local name = opts.buf_name(bufnr)
     local unique_path = ""
     -- check for same buffer names under different dirs
     local current
     for _, value in ipairs(vim.t.bufs or {}) do
-      if name == opts.buf_name(value) and value ~= opts.bufnr then
-        if not current then current = path_parts(opts.bufnr) end
+      if name == opts.buf_name(value) and value ~= bufnr then
+        if not current then current = path_parts(bufnr) end
         local other = path_parts(value)
 
         for i = #current - 1, 1, -1 do
@@ -405,9 +405,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.file_modified(opts)
   opts = extend_tbl({ str = "", icon = { kind = "FileModified" }, show_empty = true }, opts)
-  return function(self)
-    return status_utils.stylize(condition.file_modified((self or {}).bufnr) and opts.str or nil, opts)
-  end
+  return function(self) return status_utils.stylize(condition.file_modified(self or {}) and opts.str or nil, opts) end
 end
 
 --- A provider function for showing if the current file is read-only
@@ -417,9 +415,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.file_read_only(opts)
   opts = extend_tbl({ str = "", icon = { kind = "FileReadOnly" }, show_empty = true }, opts)
-  return function(self)
-    return status_utils.stylize(condition.file_read_only((self or {}).bufnr) and opts.str or nil, opts)
-  end
+  return function(self) return status_utils.stylize(condition.file_read_only(self or {}) and opts.str or nil, opts) end
 end
 
 --- A provider function for showing the current filetype icon
@@ -586,8 +582,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.treesitter_status(opts)
   return function(self)
-    if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
-    return status_utils.stylize(condition.treesitter_available(self.bufnr) and "TS" or "", opts)
+    return status_utils.stylize(condition.treesitter_available(self and self.bufnr or 0) and "TS" or "", opts)
   end
 end
 

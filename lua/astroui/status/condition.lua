@@ -44,7 +44,7 @@ local buf_matchers = {
 -- @usage local heirline_component = { provider = "Example Provider", condition = function() return require("astroui.status").condition.buffer_matches { buftype = { "terminal" } } end }
 function M.buffer_matches(patterns, bufnr, op)
   if not op then op = "or" end
-  if not bufnr then bufnr = 0 end
+  if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
   if vim.api.nvim_buf_is_valid(bufnr) then
     for kind, pattern_list in pairs(patterns) do
       if buf_matchers[kind](pattern_list, bufnr) then
@@ -83,7 +83,8 @@ function M.is_statusline_showcmd() return vim.fn.has "nvim-0.9" == 1 and vim.opt
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_git_repo }
 function M.is_git_repo(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  return vim.b[bufnr or 0].gitsigns_head or vim.b[bufnr or 0].gitsigns_status_dict
+  if not bufnr then bufnr = 0 end
+  return vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_status_dict
 end
 
 --- A condition function if there are any git changes
@@ -92,7 +93,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.git_changed }
 function M.git_changed(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  local git_status = vim.b[bufnr or 0].gitsigns_status_dict
+  if not bufnr then bufnr = 0 end
+  local git_status = vim.b[bufnr].gitsigns_status_dict
   return git_status and (git_status.added or 0) + (git_status.removed or 0) + (git_status.changed or 0) > 0
 end
 
@@ -102,7 +104,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.file_modified }
 function M.file_modified(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  return vim.bo[bufnr or 0].modified
+  if not bufnr then bufnr = 0 end
+  return vim.bo[bufnr].modified
 end
 
 --- A condition function if the current buffer is read only
@@ -111,7 +114,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.file_read_only }
 function M.file_read_only(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  local buffer = vim.bo[bufnr or 0]
+  if not bufnr then bufnr = 0 end
+  local buffer = vim.bo[bufnr]
   return not buffer.modifiable or buffer.readonly
 end
 
@@ -121,12 +125,13 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_diagnostics }
 function M.has_diagnostics(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
+  if not bufnr then bufnr = 0 end
   if package.loaded["astrocore"] and require("astrocore").config.features.diagnostics_mode == 0 then return false end
   -- TODO: remove when dropping support for neovim 0.9
   if vim.diagnostic.count then
-    return vim.tbl_contains(vim.diagnostic.count(bufnr or 0), function(v) return v > 0 end, { predicate = true })
+    return vim.tbl_contains(vim.diagnostic.count(bufnr), function(v) return v > 0 end, { predicate = true })
   else
-    return #vim.diagnostic.get(bufnr or 0) > 0
+    return #vim.diagnostic.get(bufnr) > 0
   end
 end
 
@@ -136,7 +141,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_filetype }
 function M.has_filetype(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  local filetype = vim.bo[bufnr or 0].filetype
+  if not bufnr then bufnr = 0 end
+  local filetype = vim.bo[bufnr].filetype
   return filetype and filetype ~= ""
 end
 
@@ -146,7 +152,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_file }
 function M.is_file(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  return vim.bo[bufnr or 0].buftype == ""
+  if not bufnr then bufnr = 0 end
+  return vim.bo[bufnr].buftype == ""
 end
 
 --- A condition function if a virtual environment is activated
@@ -166,12 +173,13 @@ function M.aerial_available() return package.loaded["aerial"] end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.lsp_attached }
 function M.lsp_attached(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
+  if not bufnr then bufnr = 0 end
   return (
         -- HACK: Check for lsp utilities loaded first, get_active_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
 package.loaded["astrolsp"]
     -- TODO: remove get_active_clients when dropping support for Neovim 0.9
     ---@diagnostic disable-next-line: deprecated
-    and next((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr or 0 }) ~= nil
+    and next((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) ~= nil
   )
     or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
     or (package.loaded["lint"] and next(require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype or "")) ~= nil)
@@ -183,7 +191,7 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.treesitter_available }
 function M.treesitter_available(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
+  if not bufnr then bufnr = 0 end
   local ft = vim.bo[bufnr].filetype
   local lang = vim.treesitter.language.get_lang(ft)
   local parser_avail, _ = pcall(vim.treesitter.get_string_parser, "", lang)
