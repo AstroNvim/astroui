@@ -154,7 +154,7 @@ function M.mode(opts)
     update = {
       "ModeChanged",
       pattern = "*:*",
-      callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+      callback = function() vim.schedule(vim.cmd.redrawstatus) end,
     },
   }, opts)
   if not opts["mode_text"] then opts.str = { str = " " } end
@@ -295,7 +295,7 @@ function M.lsp(opts)
       update = {
         "User",
         pattern = "AstroLspProgress",
-        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+        callback = function() vim.schedule(vim.cmd.redrawstatus) end,
       },
     },
     lsp_client_names = {
@@ -306,7 +306,7 @@ function M.lsp(opts)
         "BufEnter",
         "FileType",
         "VimResized",
-        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+        callback = function() vim.schedule(vim.cmd.redrawstatus) end,
       },
       icon = { kind = "ActiveLSP", padding = { right = 2 } },
     },
