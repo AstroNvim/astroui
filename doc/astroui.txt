@@ -1,4 +1,4 @@
-*astroui.txt*          For Neovim >= 0.9.0          Last change: 2024 March 07
+*astroui.txt*          For Neovim >= 0.9.0          Last change: 2024 April 01
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -19,6 +19,7 @@ Table of Contents                                  *astroui-table-of-contents*
   - astroui.status.init                  |astroui-lua-api-astroui.status.init|
   - astroui.status.provider          |astroui-lua-api-astroui.status.provider|
   - astroui.status.utils                |astroui-lua-api-astroui.status.utils|
+3. Links                                                       |astroui-links|
 
 ==============================================================================
 1. AstroUI                                                   *astroui-astroui*
