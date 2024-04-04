@@ -41,7 +41,7 @@ function M.file_info(opts)
     filename = false,
     filetype = {},
     file_modified = false,
-    file_read_only = { padding = { left = 1, right = 1 }, condition = condition.is_file },
+    file_read_only = { padding = { left = 1 }, condition = condition.is_file },
     surround = { separator = "left", color = "file_info_bg", condition = condition.has_filetype },
     hl = hl.get_attributes "file_info",
   }, opts)
@@ -68,7 +68,7 @@ function M.tabline_file_info(opts)
     },
     filename = {},
     filetype = false,
-    file_modified = { padding = { left = 1, right = 1 }, condition = condition.is_file },
+    file_modified = { padding = { left = 1 }, condition = condition.is_file },
     unique_path = {
       hl = function(self) return hl.get_attributes(self.tab_type .. "_path") end,
     },
