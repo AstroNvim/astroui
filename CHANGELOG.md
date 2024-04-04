@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/AstroNvim/astroui/compare/v1.0.0...v1.0.1) (2024-04-04)
+
+
+### Bug Fixes
+
+* **status:** inconsistent padding for `file_read_only` and `file_modified` ([d2c6f24](https://github.com/AstroNvim/astroui/commit/d2c6f2423de55af30cc7ad8bc5df4b0ea04adcf4))
+
 ## 1.0.0 (2024-03-07)
 
 
