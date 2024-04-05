@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/AstroNvim/astroui/compare/v1.0.1...v1.0.2) (2024-04-05)
+
+
+### Bug Fixes
+
+* **component:** redraw statusline immediately after `gitsigns` change ([1998e64](https://github.com/AstroNvim/astroui/commit/1998e64c1fa2b89bb4cb3be44e2262016d2d0fc0))
+
 ## [1.0.1](https://github.com/AstroNvim/astroui/compare/v1.0.0...v1.0.1) (2024-04-04)
 
 
