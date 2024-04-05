@@ -195,7 +195,11 @@ function M.git_branch(opts)
         if is_available "telescope.nvim" then require("telescope.builtin").git_branches { use_file_path = true } end
       end,
     },
-    update = { "User", pattern = "GitSignsUpdate" },
+    update = {
+      "User",
+      pattern = { "GitSignsUpdate", "GitSignsChanged" },
+      callback = function() vim.schedule(vim.cmd.redrawstatus) end,
+    },
     init = init.update_events { "BufEnter" },
   }, opts)
   return M.builder(status_utils.setup_providers(opts, { "git_branch" }))
@@ -218,7 +222,11 @@ function M.git_diff(opts)
       end,
     },
     surround = { separator = "left", color = "git_diff_bg", condition = condition.git_changed },
-    update = { "User", pattern = "GitSignsUpdate" },
+    update = {
+      "User",
+      pattern = { "GitSignsUpdate", "GitSignsChanged" },
+      callback = function() vim.schedule(vim.cmd.redrawstatus) end,
+    },
     init = init.update_events { "BufEnter" },
   }, opts)
   return M.builder(status_utils.setup_providers(opts, { "added", "changed", "removed" }, function(p_opts, p)
