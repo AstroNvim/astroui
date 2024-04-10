@@ -114,6 +114,6 @@ function M.buffer_picker(callback)
 end
 
 --- Refresh heirline colors
-function M.refresh_colors() require("heirline.utils").on_colorscheme(require("astroui").config.status.setup_colors()) end
+function M.refresh_colors() require("heirline.utils").on_colorscheme(require("astroui").config.status.setup_colors) end
 
 return M
