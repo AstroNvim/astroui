@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/AstroNvim/astroui/compare/v1.0.2...v1.1.0) (2024-04-16)
+
+
+### Features
+
+* **status:** allow configuration of `separated_path` delimiter ([c58628b](https://github.com/AstroNvim/astroui/commit/c58628b9eb5bea64f0f1a2e93a98f3b18978204d))
+
+
+### Bug Fixes
+
+* **status:** split on `\` rather than `/` for windows ([9c3e37b](https://github.com/AstroNvim/astroui/commit/9c3e37b46c4c5b1dea42bc6f555dd272ca3e37cc))
+
 ## [1.0.2](https://github.com/AstroNvim/astroui/compare/v1.0.1...v1.0.2) (2024-04-05)
 
 
