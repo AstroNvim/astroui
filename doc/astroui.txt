@@ -1113,8 +1113,8 @@ An `init` function to build a set of children components for a separated path
 to file
 
 _param_ `opts` — options for configuring the breadcrumbs (default: `{
-max_depth = 3, path_func = provider.unique_path(), separator = "  ", suffix
-= true, padding = { left = 0, right = 0 } }`)
+max_depth = 3, path_func = provider.unique_path(), delimiter = "/", separator =
+"  ", suffix = true, padding = { left = 0, right = 0 } }`)
 
 _return_ — The Heirline init function
 

@@ -883,7 +883,7 @@ function astroui.status.init.separated_path(opts?: table)
 
  An `init` function to build a set of children components for a separated path to file
 
-*param* `opts` — options for configuring the breadcrumbs (default: `{ max_depth = 3, path_func = provider.unique_path(), separator = "  ", suffix = true, padding = { left = 0, right = 0 } }`)
+*param* `opts` — options for configuring the breadcrumbs (default: `{ max_depth = 3, path_func = provider.unique_path(), delimiter = "/", separator = "  ", suffix = true, padding = { left = 0, right = 0 } }`)
 
 *return* — The Heirline init function
 
