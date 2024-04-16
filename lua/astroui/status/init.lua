@@ -95,7 +95,7 @@ function M.separated_path(opts)
   return function(self)
     local path = opts.path_func(self)
     if path == "." then path = "" end -- if there is no path, just replace with empty string
-    local data = vim.fn.split(path, "/")
+    local data = vim.fn.split(path, vim.fn.has "win32" == 1 and "\\" or "/")
     local children = {}
     -- add prefix if needed, use the separator if true, or use the provided character
     if opts.prefix and not vim.tbl_isempty(data) then
