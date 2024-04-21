@@ -428,9 +428,6 @@ end
 function M.builder(opts)
   opts = extend_tbl({ padding = { left = 0, right = 0 } }, opts)
   local children = {}
-  if opts.padding.left > 0 then -- add left padding
-    table.insert(children, { provider = status_utils.pad_string(" ", { left = opts.padding.left - 1 }) })
-  end
   for key, entry in pairs(opts) do
     if
       type(key) == "number"
@@ -441,6 +438,9 @@ function M.builder(opts)
       entry.provider = provider[entry.provider](entry.opts)
     end
     children[key] = entry
+  end
+  if opts.padding.left > 0 then -- add left padding
+    table.insert(children, 1, { provider = status_utils.pad_string(" ", { left = opts.padding.left - 1 }) })
   end
   if opts.padding.right > 0 then -- add right padding
     table.insert(children, { provider = status_utils.pad_string(" ", { right = opts.padding.right - 1 }) })
