@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/AstroNvim/astroui/compare/v1.1.0...v1.1.1) (2024-04-21)
+
+
+### Bug Fixes
+
+* **status:** prevent left padding from being overridden by children ([38dc557](https://github.com/AstroNvim/astroui/commit/38dc5571a081bbc525ed6bd97f513840e49a8896))
+
 ## [1.1.0](https://github.com/AstroNvim/astroui/compare/v1.0.2...v1.1.0) (2024-04-16)
 
 
