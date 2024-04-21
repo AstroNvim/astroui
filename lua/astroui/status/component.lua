@@ -80,7 +80,7 @@ function M.tabline_file_info(opts)
         name = "heirline_tabline_close_buffer_callback",
       },
     },
-    padding = { left = 1, right = 1 },
+    padding = { right = 1 },
     hl = function(self)
       local tab_type = self.tab_type
       if self._show_picker and self.tab_type ~= "buffer_active" then tab_type = "buffer_visible" end
@@ -428,9 +428,6 @@ end
 function M.builder(opts)
   opts = extend_tbl({ padding = { left = 0, right = 0 } }, opts)
   local children = {}
-  if opts.padding.left > 0 then -- add left padding
-    table.insert(children, { provider = status_utils.pad_string(" ", { left = opts.padding.left - 1 }) })
-  end
   for key, entry in pairs(opts) do
     if
       type(key) == "number"
@@ -441,6 +438,9 @@ function M.builder(opts)
       entry.provider = provider[entry.provider](entry.opts)
     end
     children[key] = entry
+  end
+  if opts.padding.left > 0 then -- add left padding
+    table.insert(children, 1, { provider = status_utils.pad_string(" ", { left = opts.padding.left - 1 }) })
   end
   if opts.padding.right > 0 then -- add right padding
     table.insert(children, { provider = status_utils.pad_string(" ", { right = opts.padding.right - 1 }) })
