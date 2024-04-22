@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.2](https://github.com/AstroNvim/astroui/compare/v1.1.1...v1.1.2) (2024-04-22)
+
+
+### Bug Fixes
+
+* **status:** add check for new `islist` function ([924a416](https://github.com/AstroNvim/astroui/commit/924a4160b4ef2575609309cfe7645d038c8a0a5e))
+
+
+### Performance Improvements
+
+* **component:** optimize left padding in component builder ([9e7b8a3](https://github.com/AstroNvim/astroui/commit/9e7b8a3d41d8bb5f5abe43c5fcc9e0cad3b2c858))
+
 ## [1.1.1](https://github.com/AstroNvim/astroui/compare/v1.1.0...v1.1.1) (2024-04-21)
 
 
