@@ -73,6 +73,16 @@
 ---}
 ---```
 ---@field icon_highlights AstroUIIconHighlights?
+---Configure the titles displayed on the bufferline for sidebars of different filetypes.
+---Example:
+---
+---```lua
+---sidebar_titles = {
+---  ["aerial"] = "Symbols",
+---  ["neo-tree"] = "Explorer",
+---}
+---```
+---@field sidebar_titles table<string,string[]>?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---Conversion table of vim mode text to readable text and color name to be used
 ---Example:
@@ -193,6 +203,7 @@ local M = {
     colors = {},
     fallback_colors = {},
     icon_highlights = {},
+    sidebar_titles = {},
     modes = {},
     separators = {},
     setup_colors = nil,
