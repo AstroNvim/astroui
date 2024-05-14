@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/AstroNvim/astroui/compare/v2.0.0...v2.0.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* **utils:** fix `runtime_condition` check ([f078ce8](https://github.com/AstroNvim/astroui/commit/f078ce849d705cdb99c241498264eaf3a337c51c))
+
 ## [2.0.0](https://github.com/AstroNvim/astroui/compare/v1.1.2...v2.0.0) (2024-05-14)
 
 
