@@ -524,7 +524,7 @@ function M.lsp_client_names(opts)
     for _, client in pairs((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) do
       if client.name == "null-ls" and opts.integrations.null_ls then
         local null_ls_sources = {}
-        local ft = vim.bo.filetype
+        local ft = vim.bo[bufnr].filetype
         local params =
           { client_id = client.id, bufname = vim.api.nvim_buf_get_name(bufnr), bufnr = bufnr, filetype = ft, ft = ft }
         for _, type in ipairs { "FORMATTING", "DIAGNOSTICS" } do

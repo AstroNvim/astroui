@@ -167,7 +167,7 @@ function M.null_ls_providers(params)
         if runtime_condition then -- try to calculate runtime_condition with supported parameters
           params.source_id = vim.tbl_get(source, "generator", "source_id")
           local condition_calculated, condition = pcall(runtime_condition, params)
-          if condition_calculated then source_activated = condition == true end
+          if condition_calculated then source_activated = condition end
         end
         if source_activated then
           registered[method] = registered[method] or {}
