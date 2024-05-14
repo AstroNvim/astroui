@@ -529,7 +529,7 @@ function M.lsp_client_names(opts)
           { client_id = client.id, bufname = vim.api.nvim_buf_get_name(bufnr), bufnr = bufnr, filetype = ft, ft = ft }
         for _, type in ipairs { "FORMATTING", "DIAGNOSTICS" } do
           params.method = type
-          for _, source in ipairs(status_utils.null_ls_sources(ft, type, params)) do
+          for _, source in ipairs(status_utils.null_ls_sources(params)) do
             null_ls_sources[source] = true
           end
         end
