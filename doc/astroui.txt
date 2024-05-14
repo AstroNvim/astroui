@@ -1,4 +1,4 @@
-*astroui.txt*          For Neovim >= 0.9.0          Last change: 2024 April 22
+*astroui.txt*           For Neovim >= 0.9.0           Last change: 2024 May 14
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -1791,7 +1791,7 @@ _return_ `the` — encoded position
 NULL_LS_PROVIDERS ~
 
 >lua
-    function astroui.status.utils.null_ls_providers(filetype: string)
+    function astroui.status.utils.null_ls_providers(filetype: string, params?: table)
       -> table
 <
 
@@ -1799,13 +1799,16 @@ Get a list of registered null-ls providers for a given filetype
 
 _param_ `filetype` — the filetype to search null-ls for
 
+_param_ `params` — optional parameters to use for checking
+`runtime_condition`
+
 _return_ — a table of null-ls sources
 
 
 NULL_LS_SOURCES ~
 
 >lua
-    function astroui.status.utils.null_ls_sources(filetype: string, method: string)
+    function astroui.status.utils.null_ls_sources(filetype: string, method: string, params?: table)
       -> string[]
 <
 
@@ -1815,6 +1818,9 @@ _param_ `filetype` — the filetype to search null-ls for
 
 _param_ `method` — the null-ls method (check null-ls documentation for
 available methods)
+
+_param_ `params` — optional parameters to use for checking
+`runtime_condition`
 
 _return_ — the available sources for the given filetype and method
 

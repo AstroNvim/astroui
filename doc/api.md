@@ -1507,7 +1507,7 @@ function astroui.status.utils.encode_pos(line: integer, col: integer, winnr: int
 
 
 ```lua
-function astroui.status.utils.null_ls_providers(filetype: string)
+function astroui.status.utils.null_ls_providers(filetype: string, params?: table)
   -> table
 ```
 
@@ -1515,13 +1515,15 @@ function astroui.status.utils.null_ls_providers(filetype: string)
 
 *param* `filetype` — the filetype to search null-ls for
 
+*param* `params` — optional parameters to use for checking `runtime_condition`
+
 *return* — a table of null-ls sources
 
 ### null_ls_sources
 
 
 ```lua
-function astroui.status.utils.null_ls_sources(filetype: string, method: string)
+function astroui.status.utils.null_ls_sources(filetype: string, method: string, params?: table)
   -> string[]
 ```
 
@@ -1530,6 +1532,8 @@ function astroui.status.utils.null_ls_sources(filetype: string, method: string)
 *param* `filetype` — the filetype to search null-ls for
 
 *param* `method` — the null-ls method (check null-ls documentation for available methods)
+
+*param* `params` — optional parameters to use for checking `runtime_condition`
 
 *return* — the available sources for the given filetype and method
 
