@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://github.com/AstroNvim/astroui/compare/v1.1.2...v2.0.0) (2024-05-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **utils:** streamline parameters for `null-ls` helper functions
+
+### Features
+
+* **provider:** add basic `runtime_condition` checking support to `null-ls` provider ([a9e5ccb](https://github.com/AstroNvim/astroui/commit/a9e5ccb293697f6dc415f854e125c6d76a89c413))
+
+
+### Code Refactoring
+
+* **utils:** streamline parameters for `null-ls` helper functions ([4e81c0a](https://github.com/AstroNvim/astroui/commit/4e81c0a2744fcad76687f9a3b13f6baefa08ad63))
+
 ## [1.1.2](https://github.com/AstroNvim/astroui/compare/v1.1.1...v1.1.2) (2024-04-22)
 
 
