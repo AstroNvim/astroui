@@ -524,8 +524,12 @@ function M.lsp_client_names(opts)
     for _, client in pairs((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) do
       if client.name == "null-ls" and opts.integrations.null_ls then
         local null_ls_sources = {}
+        local ft = vim.bo.filetype
+        local params =
+          { client_id = client.id, bufname = vim.api.nvim_buf_get_name(bufnr), bufnr = bufnr, filetype = ft, ft = ft }
         for _, type in ipairs { "FORMATTING", "DIAGNOSTICS" } do
-          for _, source in ipairs(status_utils.null_ls_sources(vim.bo.filetype, type)) do
+          params.method = type
+          for _, source in ipairs(status_utils.null_ls_sources(ft, type, params)) do
             null_ls_sources[source] = true
           end
         end

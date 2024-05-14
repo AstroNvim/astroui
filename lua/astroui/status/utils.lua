@@ -152,8 +152,9 @@ function M.decode_pos(c) return bit.rshift(c, 16), bit.band(bit.rshift(c, 6), 10
 
 --- Get a list of registered null-ls providers for a given filetype
 ---@param filetype string the filetype to search null-ls for
+---@param params table? optional parameters to use for checking `runtime_condition`
 ---@return table # a table of null-ls sources
-function M.null_ls_providers(filetype)
+function M.null_ls_providers(filetype, params)
   local registered = {}
   -- try to load null-ls
   local sources_avail, sources = pcall(require, "null-ls.sources")
@@ -161,9 +162,18 @@ function M.null_ls_providers(filetype)
     -- get the available sources of a given filetype
     for _, source in ipairs(sources.get_available(filetype)) do
       -- get each source name
+      local runtime_condition = params and vim.tbl_get(source, "generator", "opts", "runtime_condition")
       for method in pairs(source.methods) do
-        registered[method] = registered[method] or {}
-        table.insert(registered[method], source.name)
+        local source_activated = true
+        if runtime_condition then -- try to calculate runtime_condition with supported parameters
+          params.source_id = vim.tbl_get(source, "generator", "source_id")
+          local condition_calculated, condition = pcall(runtime_condition, params)
+          if condition_calculated then source_activated = condition == true end
+        end
+        if source_activated then
+          registered[method] = registered[method] or {}
+          table.insert(registered[method], source.name)
+        end
       end
     end
   end
@@ -174,10 +184,11 @@ end
 --- Get the null-ls sources for a given null-ls method
 ---@param filetype string the filetype to search null-ls for
 ---@param method string the null-ls method (check null-ls documentation for available methods)
+---@param params table? optional parameters to use for checking `runtime_condition`
 ---@return string[] # the available sources for the given filetype and method
-function M.null_ls_sources(filetype, method)
+function M.null_ls_sources(filetype, method, params)
   local methods_avail, methods = pcall(require, "null-ls.methods")
-  return methods_avail and M.null_ls_providers(filetype)[methods.internal[method]] or {}
+  return methods_avail and M.null_ls_providers(filetype, params)[methods.internal[method]] or {}
 end
 
 --- A helper function for decoding statuscolumn click events with mouse click pressed, modifier keys, as well as which signcolumn sign was clicked if any
