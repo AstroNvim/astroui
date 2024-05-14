@@ -1791,16 +1791,13 @@ _return_ `the` — encoded position
 NULL_LS_PROVIDERS ~
 
 >lua
-    function astroui.status.utils.null_ls_providers(filetype: string, params?: table)
+    function astroui.status.utils.null_ls_providers(params: table)
       -> table
 <
 
 Get a list of registered null-ls providers for a given filetype
 
-_param_ `filetype` — the filetype to search null-ls for
-
-_param_ `params` — optional parameters to use for checking
-`runtime_condition`
+_param_ `params` — parameters to use for null-ls providers
 
 _return_ — a table of null-ls sources
 
@@ -1808,19 +1805,13 @@ _return_ — a table of null-ls sources
 NULL_LS_SOURCES ~
 
 >lua
-    function astroui.status.utils.null_ls_sources(filetype: string, method: string, params?: table)
+    function astroui.status.utils.null_ls_sources(params: table)
       -> string[]
 <
 
 Get the null-ls sources for a given null-ls method
 
-_param_ `filetype` — the filetype to search null-ls for
-
-_param_ `method` — the null-ls method (check null-ls documentation for
-available methods)
-
-_param_ `params` — optional parameters to use for checking
-`runtime_condition`
+_param_ `params` — parameters to use for checking null-ls sources
 
 _return_ — the available sources for the given filetype and method
 
