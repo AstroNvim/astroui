@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/AstroNvim/astroui/compare/v2.0.1...v2.1.0) (2024-05-16)
+
+
+### Features
+
+* **component:** add click support for `venv-selector.nvim` if available ([9fd2345](https://github.com/AstroNvim/astroui/commit/9fd23451c916a6dc7863660d7a89dbbb204d78b5))
+
 ## [2.0.1](https://github.com/AstroNvim/astroui/compare/v2.0.0...v2.0.1) (2024-05-14)
 
 
