@@ -48,6 +48,9 @@ function M.get_hlgroup(name, fallback)
     local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
     if not hl.fg then hl.fg = "NONE" end
     if not hl.bg then hl.bg = "NONE" end
+    if hl.reverse then
+      hl.fg, hl.bg, hl.reverse = hl.bg, hl.fg, nil
+    end
     return hl
   end
   return fallback or {}
