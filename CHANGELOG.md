@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/AstroNvim/astroui/compare/v2.1.0...v2.1.1) (2024-05-21)
+
+
+### Bug Fixes
+
+* resolve reversed highlight groups upon resolution ([c142447](https://github.com/AstroNvim/astroui/commit/c1424472b50921c196885a9308642a5cfd0cd256))
+
 ## [2.1.0](https://github.com/AstroNvim/astroui/compare/v2.0.1...v2.1.0) (2024-05-16)
 
 
