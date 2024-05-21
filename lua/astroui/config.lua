@@ -56,7 +56,7 @@
 ---  git_branch_fg = "#ABCDEF",
 ---}
 ---```
----@field colors (StringMap|(fun(colors:StringMap):StringMap))?
+---@field colors (StringMap|(fun(colors:StringMap):StringMap?))?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---A table of fallback colors if a colorscheme used by the user does not have a highlight group, the entry point to this are typically through the `status.colors` option.
 ---@field fallback_colors StringMap?
