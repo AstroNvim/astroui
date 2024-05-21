@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/AstroNvim/astroui/compare/v2.1.1...v2.1.2) (2024-05-21)
+
+
+### Bug Fixes
+
+* **config:** allow `colors` function to return nothing if it performs in place modifications ([48b3d36](https://github.com/AstroNvim/astroui/commit/48b3d368755f1a2775c859b0081123a11a6a13eb))
+
 ## [2.1.1](https://github.com/AstroNvim/astroui/compare/v2.1.0...v2.1.1) (2024-05-21)
 
 
