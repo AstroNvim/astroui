@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/AstroNvim/astroui/compare/v2.1.2...v2.1.3) (2024-05-23)
+
+
+### Bug Fixes
+
+* **provider:** only show `conform` clients if not fallingback to the LSP ([1ce41ee](https://github.com/AstroNvim/astroui/commit/1ce41eec52ecc672082edfea85d61af782badd3a))
+
 ## [2.1.2](https://github.com/AstroNvim/astroui/compare/v2.1.1...v2.1.2) (2024-05-21)
 
 
