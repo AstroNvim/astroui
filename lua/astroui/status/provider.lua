@@ -539,10 +539,10 @@ function M.lsp_client_names(opts)
       end
     end
     if opts.integrations.conform and package.loaded["conform"] then -- conform integration
-      vim.list_extend(
-        buf_client_names,
-        vim.tbl_map(function(c) return c.name end, require("conform").list_formatters(bufnr))
-      )
+      local conform = require "conform"
+      if not conform.will_fallback_lsp { bufnr = bufnr } then
+        vim.list_extend(buf_client_names, conform.list_formatters_for_buffer(bufnr))
+      end
     end
     if opts.integrations["nvim-lint"] and package.loaded["lint"] then -- nvim-lint integration
       vim.list_extend(buf_client_names, require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype))
