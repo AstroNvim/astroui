@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.4](https://github.com/AstroNvim/astroui/compare/v2.1.3...v2.1.4) (2024-05-27)
+
+
+### Bug Fixes
+
+* **provider:** use `list_formatters` instead of `list_formatters_for_buffer` ([41bbc1c](https://github.com/AstroNvim/astroui/commit/41bbc1ca47d5fe2737cd296799e636a5e4124601))
+
 ## [2.1.3](https://github.com/AstroNvim/astroui/compare/v2.1.2...v2.1.3) (2024-05-23)
 
 
