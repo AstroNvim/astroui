@@ -547,7 +547,14 @@ function M.lsp_client_names(opts)
     if opts.integrations["nvim-lint"] and package.loaded["lint"] then -- nvim-lint integration
       vim.list_extend(buf_client_names, require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype))
     end
-    local str = table.concat(buf_client_names, ", ")
+    local buf_client_names_set, client_name_lookup = {}, {}
+    for _, client in ipairs(buf_client_names) do
+      if not client_name_lookup[client] then
+        client_name_lookup[client] = true
+        table.insert(buf_client_names_set, client)
+      end
+    end
+    local str = table.concat(buf_client_names_set, ", ")
     if type(opts.truncate) == "number" then
       local max_width = math.floor(status_utils.width() * opts.truncate)
       if #str > max_width then str = str:sub(0, max_width) .. "…" end
