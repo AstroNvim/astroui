@@ -95,6 +95,7 @@ function M.separated_path(opts)
   if opts.suffix == true then opts.suffix = opts.separator end
   return function(self)
     local path = opts.path_func(self)
+    path = vim.fn.fnamemodify(path, ":~")
     if path == "." then path = "" end -- if there is no path, just replace with empty string
     local data = vim.fn.split(path, opts.delimiter)
     local children = {}
