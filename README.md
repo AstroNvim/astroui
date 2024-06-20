@@ -103,6 +103,15 @@ require("astroui").setup({
       breadcrumbs = "  ",
       path = "  ",
     },
+    -- Configure enabling/disabling of winbar
+    winbar = {
+      enabled = { -- whitelist buffer patterns
+        filetype = { "gitsigns.blame" },
+      },
+      disabled = { -- blacklist buffer patterns
+        buftype = { "nofile", "terminal" },
+      },
+    },
   },
 }
 ```

@@ -38,6 +38,10 @@
 ---@field breadcrumbs string? Separator used in between symbols in the breadcrumbs
 ---@field path string? Separator used in between symbols in a file path
 
+---@class AstroUIWinbar
+---@field enabled table<BufMatcherKinds, BufMatcherPattern[]>? Buffer matching patterns for whitelisting buffers to enable winbar
+---@field disabled table<BufMatcherKinds, BufMatcherPattern[]>? Buffer matching patterns for blacklisting buffers from enabling winbar
+
 ---@class AstroUIStatusOpts
 ---Configure attributes of components defined in the `status` API. Check the AstroNvim documentation for a complete list of color names, this applies to colors that have `_fg` and/or `_bg` names with the suffix removed (ex. `git_branch_fg` as attributes from `git_branch`).
 ---Example:
@@ -105,6 +109,8 @@
 ---}
 ---```
 ---@field separators AstroUISeparators?
+---Configure when winbar is enabled/disabled
+---@field winbar AstroUIWinbar?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---Function used for setting up colors in Heirline, the entry point to this are typically through the `status.colors` option.
 ---@field setup_colors (fun():StringMap)?
@@ -197,6 +203,7 @@ local M = {
     separators = {},
     setup_colors = nil,
     sign_handlers = {},
+    winbar = {},
   },
 }
 
