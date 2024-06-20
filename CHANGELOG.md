@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/AstroNvim/astroui/compare/v2.1.4...v2.2.0) (2024-06-20)
+
+
+### Features
+
+* **config:** add table for configuring winbar whitelist/blacklist ([abf4ac4](https://github.com/AstroNvim/astroui/commit/abf4ac4026e22bdc24b69e638983e8bf4b33d672))
+
+
+### Bug Fixes
+
+* **status:** filter duplicate client names ([1b4cd27](https://github.com/AstroNvim/astroui/commit/1b4cd277245aa1f4ee52d01d8b781b752bf62926))
+
 ## [2.1.4](https://github.com/AstroNvim/astroui/compare/v2.1.3...v2.1.4) (2024-05-27)
 
 
