@@ -1,4 +1,4 @@
-*astroui.txt*           For Neovim >= 0.9.0          Last change: 2024 June 04
+*astroui.txt*           For Neovim >= 0.9.0          Last change: 2024 June 20
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -133,6 +133,15 @@ are descriptions of the options and some example usages:
           tab = { "", "" },
           breadcrumbs = "  ",
           path = "  ",
+        },
+        -- Configure enabling/disabling of winbar
+        winbar = {
+          enabled = { -- whitelist buffer patterns
+            filetype = { "gitsigns.blame" },
+          },
+          disabled = { -- blacklist buffer patterns
+            buftype = { "nofile", "terminal" },
+          },
         },
       },
     }
