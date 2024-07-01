@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/AstroNvim/astroui/compare/v2.2.0...v2.2.1) (2024-07-01)
+
+
+### Bug Fixes
+
+* **provider:** filetypes are case sensitive so don't make lowercase ([c37f726](https://github.com/AstroNvim/astroui/commit/c37f726d64e9a1864fec97f2e1ca162c12846b64))
+
 ## [2.2.0](https://github.com/AstroNvim/astroui/compare/v2.1.4...v2.2.0) (2024-06-20)
 
 
