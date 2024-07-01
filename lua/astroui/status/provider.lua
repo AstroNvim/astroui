@@ -303,10 +303,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.filetype() }
 -- @see astroui.status.utils.stylize
 function M.filetype(opts)
-  return function(self)
-    local buffer = vim.bo[self and self.bufnr or 0]
-    return status_utils.stylize(buffer.filetype:lower(), opts)
-  end
+  return function(self) return status_utils.stylize(vim.bo[self and self.bufnr or 0].filetype, opts) end
 end
 
 --- A provider function for showing the current filename
