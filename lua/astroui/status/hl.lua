@@ -38,13 +38,22 @@ function M.mode_bg() return config.modes[vim.fn.mode()][2] end
 ---@return table # the highlight group for the current filetype foreground
 -- @usage local heirline_component = { provider = require("astroui.status").provider.fileicon(), hl = require("astroui.status").hl.filetype_color },
 function M.filetype_color(self)
-  local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
-  if not devicons_avail then return {} end
-  local _, color = devicons.get_icon_color(
-    vim.fn.fnamemodify(vim.api.nvim_buf_get_name(self and self.bufnr or 0), ":t"),
-    nil,
-    { default = true }
-  )
+  local color
+  local bufnr = self and self.bufnr or 0
+  local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+
+  local mini_icons_avail, mini_icons = pcall(require, "mini.icons")
+  if mini_icons_avail then -- mini.icons
+    local _, hl = mini_icons.get("file", bufname)
+    color = require("astroui").get_hlgroup(hl).fg
+    if type(color) == "number" then color = string.format("#%06x", color) end
+  else -- nvim-web-devicons
+    local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
+    if devicons_avail then
+      _, color = devicons.get_icon_color(bufname, nil, { default = true })
+    end
+  end
+
   return { fg = color }
 end
 

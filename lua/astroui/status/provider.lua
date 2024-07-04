@@ -422,13 +422,25 @@ end
 -- @see astroui.status.utils.stylize
 function M.file_icon(opts)
   return function(self)
-    local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
-    if not devicons_avail then return "" end
+    local ft_icon
     local bufnr = self and self.bufnr or 0
-    local ft_icon, _ = devicons.get_icon(vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t"))
-    if not ft_icon then
-      ft_icon, _ = devicons.get_icon_by_filetype(vim.bo[bufnr].filetype, { default = true })
+    local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+
+    local mini_icons_avail, mini_icons = pcall(require, "mini.icons")
+    if mini_icons_avail then -- mini.icons
+      ft_icon, _ = mini_icons.get("file", bufname)
     end
+
+    if not ft_icon then -- nvim-web-devicons
+      local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
+      if devicons_avail then
+        ft_icon, _ = devicons.get_icon(bufname)
+        if not ft_icon then
+          ft_icon, _ = devicons.get_icon_by_filetype(vim.bo[bufnr].filetype, { default = true })
+        end
+      end
+    end
+
     return status_utils.stylize(ft_icon, opts)
   end
 end
