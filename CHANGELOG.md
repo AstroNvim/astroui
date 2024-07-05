@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/AstroNvim/astroui/compare/v2.2.1...v2.3.0) (2024-07-05)
+
+
+### Features
+
+* **status:** add support for `mini.icons` ([0e3e040](https://github.com/AstroNvim/astroui/commit/0e3e040cfd5ec297af91eb088b31ab78d611a22b))
+
+
+### Bug Fixes
+
+* **status:** correctly display icons for non-file buffers ([d3c79f1](https://github.com/AstroNvim/astroui/commit/d3c79f10ee415c7a149d253864749ade4b58bfcc))
+
 ## [2.2.1](https://github.com/AstroNvim/astroui/compare/v2.2.0...v2.2.1) (2024-07-01)
 
 
