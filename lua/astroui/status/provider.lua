@@ -425,19 +425,20 @@ function M.file_icon(opts)
     local ft_icon
     local bufnr = self and self.bufnr or 0
     local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+    local filetype = vim.bo[bufnr].filetype
+    local is_file = vim.bo[bufnr].buftype == ""
 
     local mini_icons_avail, mini_icons = pcall(require, "mini.icons")
     if mini_icons_avail then -- mini.icons
       ft_icon, _ = mini_icons.get("file", bufname)
-    end
-
-    if not ft_icon then -- nvim-web-devicons
+      if ft_icon == mini_icons.get("default", "file") then
+        ft_icon, _ = mini_icons.get("filetype", filetype)
+        if ft_icon == mini_icons.get("default", "filetype") and not is_file then ft_icon = nil end
+      end
+    else -- nvim-web-devicons
       local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
       if devicons_avail then
-        ft_icon, _ = devicons.get_icon(bufname)
-        if not ft_icon then
-          ft_icon, _ = devicons.get_icon_by_filetype(vim.bo[bufnr].filetype, { default = true })
-        end
+        ft_icon, _ = devicons.get_icon(bufname, filetype, { default = vim.bo[bufnr].buftype == "" })
       end
     end
 

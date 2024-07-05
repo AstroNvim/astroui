@@ -37,7 +37,7 @@ end
 -- @usage local heirline_component = require("astroui.status").component.file_info()
 function M.file_info(opts)
   opts = extend_tbl({
-    file_icon = { hl = hl.file_icon "statusline", padding = { left = 1, right = 1 }, condition = condition.is_file },
+    file_icon = { hl = hl.file_icon "statusline", padding = { left = 1, right = 1 } },
     filename = false,
     filetype = {},
     file_modified = { padding = { left = 1 }, condition = condition.is_file },
