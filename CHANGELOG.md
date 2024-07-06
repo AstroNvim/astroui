@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/AstroNvim/astroui/compare/v2.3.0...v2.3.1) (2024-07-06)
+
+
+### Bug Fixes
+
+* **status:** correctly check if `mini.icons` is loaded ([5a34ed8](https://github.com/AstroNvim/astroui/commit/5a34ed8ccb9b61d3a4241bddfe3d2111586e8186))
+
 ## [2.3.0](https://github.com/AstroNvim/astroui/compare/v2.2.1...v2.3.0) (2024-07-05)
 
 
