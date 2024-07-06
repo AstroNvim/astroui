@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/AstroNvim/astroui/compare/v2.3.1...v2.3.2) (2024-07-06)
+
+
+### Bug Fixes
+
+* **status:** fix `mini.icons` detection in `hl` module as well ([41c7214](https://github.com/AstroNvim/astroui/commit/41c72141fe673476f1afc4cb63be954b91b277d9))
+
 ## [2.3.1](https://github.com/AstroNvim/astroui/compare/v2.3.0...v2.3.1) (2024-07-06)
 
 
