@@ -42,8 +42,8 @@ function M.filetype_color(self)
   local bufnr = self and self.bufnr or 0
   local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
 
-  local mini_icons_avail, mini_icons = pcall(require, "mini.icons")
-  if mini_icons_avail then -- mini.icons
+  local _, mini_icons = pcall(require, "mini.icons")
+  if _G.MiniIcons then -- mini.icons
     local _, hl = mini_icons.get("file", bufname)
     color = require("astroui").get_hlgroup(hl).fg
     if type(color) == "number" then color = string.format("#%06x", color) end

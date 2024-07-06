@@ -428,8 +428,8 @@ function M.file_icon(opts)
     local filetype = vim.bo[bufnr].filetype
     local is_file = vim.bo[bufnr].buftype == ""
 
-    local mini_icons_avail, mini_icons = pcall(require, "mini.icons")
-    if mini_icons_avail and _G.MiniIcons then -- mini.icons
+    local _, mini_icons = pcall(require, "mini.icons")
+    if _G.MiniIcons then -- mini.icons
       if is_file then
         ft_icon, _ = mini_icons.get("file", bufname)
       else
