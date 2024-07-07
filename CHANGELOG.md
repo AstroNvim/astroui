@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.3](https://github.com/AstroNvim/astroui/compare/v2.3.2...v2.3.3) (2024-07-07)
+
+
+### Bug Fixes
+
+* **provider:** implement proper fallback with `mini.icons` ([0481bd9](https://github.com/AstroNvim/astroui/commit/0481bd98d849bcfd0e39ed94eb2b7d5550a74ab4))
+
 ## [2.3.2](https://github.com/AstroNvim/astroui/compare/v2.3.1...v2.3.2) (2024-07-06)
 
 
