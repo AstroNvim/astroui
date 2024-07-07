@@ -430,10 +430,10 @@ function M.file_icon(opts)
 
     local _, mini_icons = pcall(require, "mini.icons")
     if _G.MiniIcons then -- mini.icons
-      if is_file then
-        ft_icon, _ = mini_icons.get("file", bufname)
-      else
-        ft_icon, _ = mini_icons.get("filetype", filetype)
+      local is_default
+      ft_icon, _, is_default = mini_icons.get("file", bufname)
+      if is_default then
+        ft_icon, _, is_default = mini_icons.get("filetype", filetype)
       end
     else -- nvim-web-devicons
       local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
