@@ -1797,6 +1797,23 @@ _param_ `winnr` — a window number
 _return_ `the` — encoded position
 
 
+ICON_PROVIDER ~
+
+>lua
+    function astroui.status.utils.icon_provider(bufnr: integer)
+      -> icon: string?
+      2. color: string?
+<
+
+Resolve the icon and color information for a given buffer
+
+_param_ `bufnr` — the buffer number to resolve the icon and color of
+
+_return_ `icon` — the icon string
+
+_return_ `color` — the hex color of the icon
+
+
 NULL_LS_PROVIDERS ~
 
 >lua

@@ -1503,6 +1503,23 @@ function astroui.status.utils.encode_pos(line: integer, col: integer, winnr: int
 
 *return* `the` — encoded position
 
+### icon_provider
+
+
+```lua
+function astroui.status.utils.icon_provider(bufnr: integer)
+  -> icon: string?
+  2. color: string?
+```
+
+ Resolve the icon and color information for a given buffer
+
+*param* `bufnr` — the buffer number to resolve the icon and color of
+
+*return* `icon` — the icon string
+
+*return* `color` — the hex color of the icon
+
 ### null_ls_providers
 
 
