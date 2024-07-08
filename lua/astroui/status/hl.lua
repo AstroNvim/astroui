@@ -41,16 +41,23 @@ function M.filetype_color(self)
   local color
   local bufnr = self and self.bufnr or 0
   local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+  local filetype = vim.bo[bufnr].filetype
 
   local _, mini_icons = pcall(require, "mini.icons")
   if _G.MiniIcons then -- mini.icons
-    local _, hl = mini_icons.get("file", bufname)
+    local _, hl, is_default = mini_icons.get("file", bufname)
+    if is_default then
+      _, hl, is_default = mini_icons.get("filetype", filetype)
+    end
     color = require("astroui").get_hlgroup(hl).fg
     if type(color) == "number" then color = string.format("#%06x", color) end
   else -- nvim-web-devicons
     local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
     if devicons_avail then
-      _, color = devicons.get_icon_color(bufname, nil, { default = true })
+      _, color = devicons.get_icon_color(bufname)
+      if not color then
+        _, color = devicons.get_icon_color_by_filetype(filetype)
+      end
     end
   end
 

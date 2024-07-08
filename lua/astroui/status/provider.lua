@@ -426,7 +426,6 @@ function M.file_icon(opts)
     local bufnr = self and self.bufnr or 0
     local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
     local filetype = vim.bo[bufnr].filetype
-    local is_file = vim.bo[bufnr].buftype == ""
 
     local _, mini_icons = pcall(require, "mini.icons")
     if _G.MiniIcons then -- mini.icons
@@ -438,7 +437,10 @@ function M.file_icon(opts)
     else -- nvim-web-devicons
       local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
       if devicons_avail then
-        ft_icon, _ = devicons.get_icon(bufname, filetype, { default = is_file })
+        ft_icon = devicons.get_icon(bufname)
+        if not ft_icon then
+          ft_icon = devicons.get_icon_by_filetype(filetype, { default = vim.bo[bufnr].buftype == "" })
+        end
       end
     end
 
