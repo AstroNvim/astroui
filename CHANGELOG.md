@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.4](https://github.com/AstroNvim/astroui/compare/v2.3.3...v2.3.4) (2024-07-08)
+
+
+### Bug Fixes
+
+* **status:** correctly resolve filetype icon with `nvim-web-devicons` ([96b64a4](https://github.com/AstroNvim/astroui/commit/96b64a455c5f902e0a6363592ad606e70f8a6f0d))
+
 ## [2.3.3](https://github.com/AstroNvim/astroui/compare/v2.3.2...v2.3.3) (2024-07-07)
 
 
