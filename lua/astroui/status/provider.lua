@@ -421,31 +421,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_icon() }
 -- @see astroui.status.utils.stylize
 function M.file_icon(opts)
-  return function(self)
-    local ft_icon
-    local bufnr = self and self.bufnr or 0
-    local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
-    local filetype = vim.bo[bufnr].filetype
-
-    local _, mini_icons = pcall(require, "mini.icons")
-    if _G.MiniIcons then -- mini.icons
-      local is_default
-      ft_icon, _, is_default = mini_icons.get("file", bufname)
-      if is_default then
-        ft_icon, _, is_default = mini_icons.get("filetype", filetype)
-      end
-    else -- nvim-web-devicons
-      local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
-      if devicons_avail then
-        ft_icon = devicons.get_icon(bufname)
-        if not ft_icon then
-          ft_icon = devicons.get_icon_by_filetype(filetype, { default = vim.bo[bufnr].buftype == "" })
-        end
-      end
-    end
-
-    return status_utils.stylize(ft_icon, opts)
-  end
+  return function(self) return status_utils.stylize(status_utils.icon_provider(self and self.bufnr or 0), opts) end
 end
 
 --- A provider function for showing the current git branch

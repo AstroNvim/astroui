@@ -12,7 +12,6 @@ local M = {}
 local astro = require "astrocore"
 local ui = require "astroui"
 local config = assert(ui.config.status)
-local get_icon = ui.get_icon
 local extend_tbl = astro.extend_tbl
 
 --- Convert a component parameter table to a table that can be used with the component builder
@@ -76,7 +75,7 @@ function M.stylize(str, opts)
     escape = true,
     icon = { kind = "NONE", padding = { left = 0, right = 0 } },
   }, opts)
-  local icon = M.pad_string(get_icon(opts.icon.kind), opts.icon.padding)
+  local icon = M.pad_string(ui.get_icon(opts.icon.kind), opts.icon.padding)
   return str
       and (str ~= "" or opts.show_empty)
       and opts.separator.left .. M.pad_string(icon .. (opts.escape and escape(str) or str), opts.padding) .. opts.separator.right
@@ -136,6 +135,52 @@ function M.surround(separator, color, component, condition, update)
     )
   end
   return surrounded
+end
+
+---@type false|fun(bufname: string, filetype: string, buftype: string): string?,string?
+local cached_icon_provider
+--- Resolve the icon and color information for a given buffer
+---@param bufnr integer the buffer number to resolve the icon and color of
+---@return string? icon the icon string
+---@return string? color the hex color of the icon
+function M.icon_provider(bufnr)
+  if not bufnr then bufnr = 0 end
+  local bufname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
+  local filetype = vim.bo[bufnr].filetype
+  local buftype = vim.bo[bufnr].buftype
+  if cached_icon_provider then return cached_icon_provider(bufname, filetype, buftype) end
+  if cached_icon_provider == false then return end
+
+  local _, mini_icons = pcall(require, "mini.icons")
+  -- mini.icons
+  if _G.MiniIcons then
+    cached_icon_provider = function(_bufname, _filetype)
+      local icon, hl, is_default = mini_icons.get("file", _bufname)
+      if is_default then
+        icon, hl, is_default = mini_icons.get("filetype", _filetype)
+      end
+      local color = require("astroui").get_hlgroup(hl).fg
+      if type(color) == "number" then color = string.format("#%06x", color) end
+      return icon, color
+    end
+    return cached_icon_provider(bufname, filetype, bufname)
+  end
+
+  -- nvim-web-devicons
+  local devicons_avail, devicons = pcall(require, "nvim-web-devicons")
+  if devicons_avail then
+    cached_icon_provider = function(_bufname, _filetype, _buftype)
+      local icon, color = devicons.get_icon_color(_bufname)
+      if not color then
+        icon, color = devicons.get_icon_color_by_filetype(_filetype, { default = _buftype == "" })
+      end
+      return icon, color
+    end
+    return cached_icon_provider(bufname, filetype, buftype)
+  end
+
+  -- fallback to no icon provider
+  cached_icon_provider = false
 end
 
 --- Encode a position to a single value that can be decoded later
