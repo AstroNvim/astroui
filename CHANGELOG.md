@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/AstroNvim/astroui/compare/v2.4.1...v2.4.2) (2024-07-17)
+
+
+### Bug Fixes
+
+* fix backwards compatibility with neovim v0.9+ ([1e46a32](https://github.com/AstroNvim/astroui/commit/1e46a3294fb1f539976c5e4ef39df1a343239177))
+
 ## [2.4.1](https://github.com/AstroNvim/astroui/compare/v2.4.0...v2.4.1) (2024-07-17)
 
 
