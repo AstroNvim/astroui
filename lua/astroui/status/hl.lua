@@ -59,7 +59,7 @@ end
 ---@return function # for setting hl property in a component
 -- @usage local heirline_component = { provider = "Example Provider", hl = require("astroui.status").hl.file_icon("winbar") },
 function M.file_icon(name)
-  local hl_enabled = config.icon_highlights.file_icon[name]
+  local hl_enabled = vim.tbl_get(config, "icon_highlights", "file_icon", name)
   return function(self)
     if hl_enabled == true or (type(hl_enabled) == "function" and hl_enabled(self)) then
       return M.filetype_color(self)
