@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.1](https://github.com/AstroNvim/astroui/compare/v2.4.0...v2.4.1) (2024-07-17)
+
+
+### Bug Fixes
+
+* only return highlights that do highlighting ([ce53a09](https://github.com/AstroNvim/astroui/commit/ce53a09bf2b1e71e38269faf77ba34c1de3e06b4))
+* **status:** protect table indexing ([37ad2a4](https://github.com/AstroNvim/astroui/commit/37ad2a4693315a9078ddb43fc384cd13c3542c73))
+
 ## [2.4.0](https://github.com/AstroNvim/astroui/compare/v2.3.4...v2.4.0) (2024-07-08)
 
 
