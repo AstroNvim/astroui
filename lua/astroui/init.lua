@@ -44,8 +44,8 @@ end
 ---@param fallback? table The fallback highlight properties
 ---@return table properties # the highlight group properties
 function M.get_hlgroup(name, fallback)
-  if vim.fn.hlexists(name) == 1 then
-    local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+  local hl = vim.api.nvim_get_hl(0, { name = name, link = false, create = false })
+  if not vim.tbl_isempty(hl) then
     if not hl.fg then hl.fg = "NONE" end
     if not hl.bg then hl.bg = "NONE" end
     if hl.reverse then
