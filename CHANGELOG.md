@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.3](https://github.com/AstroNvim/astroui/compare/v2.4.2...v2.4.3) (2024-07-19)
+
+
+### Bug Fixes
+
+* **status:** update `conform` integration to use non-deprecated functions ([dc224f1](https://github.com/AstroNvim/astroui/commit/dc224f1b2596ba5e1888cb87b2870a6cbbba2ab5))
+
 ## [2.4.2](https://github.com/AstroNvim/astroui/compare/v2.4.1...v2.4.2) (2024-07-17)
 
 
