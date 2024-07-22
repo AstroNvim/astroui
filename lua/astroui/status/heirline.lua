@@ -33,7 +33,7 @@ end
 --- Make a list of buffers, rendering each buffer with the provided component
 ---@param component table
 ---@return table
-M.make_buflist = function(component)
+function M.make_buflist(component)
   local overflow_hl = hl.get_attributes("buffer_overflow", true)
   return require("heirline.utils").make_buflist(
     status_utils.surround(
