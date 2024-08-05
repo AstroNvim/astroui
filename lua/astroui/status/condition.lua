@@ -191,17 +191,8 @@ end
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.treesitter_available }
 function M.treesitter_available(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
-  if not bufnr then bufnr = 0 end
-  local ft = vim.bo[bufnr].filetype
-  local lang = vim.treesitter.language.get_lang(ft)
-  local parser_avail, _ = pcall(vim.treesitter.get_string_parser, "", lang)
-  -- TODO: remove when dropping support for nvim 0.9
-  if not parser_avail and vim.fn.has "nvim-0.10" == 0 then
-    ft = vim.split(ft, ".", { plain = true })[1]
-    lang = vim.treesitter.language.get_lang(ft) or ft
-    parser_avail, _ = pcall(vim.treesitter.get_string_parser, "", lang)
-  end
-  return parser_avail
+  if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
+  return vim.treesitter.highlighter.active[bufnr] ~= nil
 end
 
 --- A condition function if the foldcolumn is enabled
