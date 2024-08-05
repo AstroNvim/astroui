@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.4](https://github.com/AstroNvim/astroui/compare/v2.4.3...v2.4.4) (2024-08-05)
+
+
+### Performance Improvements
+
+* **condition:** optimize checking of active treesitter ([79e10b1](https://github.com/AstroNvim/astroui/commit/79e10b1133d400f978d745766432805ad2fd2683))
+
 ## [2.4.3](https://github.com/AstroNvim/astroui/compare/v2.4.2...v2.4.3) (2024-07-19)
 
 
