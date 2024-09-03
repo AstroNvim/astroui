@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.5](https://github.com/AstroNvim/astroui/compare/v2.4.4...v2.4.5) (2024-09-03)
+
+
+### Bug Fixes
+
+* return fully cleared highlight groups ([9bd674c](https://github.com/AstroNvim/astroui/commit/9bd674c2f100433d2fa19952aa2a719bca464b71))
+
 ## [2.4.4](https://github.com/AstroNvim/astroui/compare/v2.4.3...v2.4.4) (2024-08-05)
 
 
