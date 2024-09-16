@@ -12,7 +12,6 @@ local M = {}
 local astro = require "astrocore"
 local extend_tbl = astro.extend_tbl
 local is_available = astro.is_available
-local luv = vim.uv or vim.loop -- TODO: REMOVE WHEN DROPPING SUPPORT FOR Neovim v0.9
 
 local ui = require "astroui"
 local config = assert(ui.config.status)
@@ -38,14 +37,6 @@ end
 -- local function to resolve the first sign in the signcolumn
 -- specifically for usage when `signcolumn=number`
 local function resolve_sign(bufnr, lnum)
-  --- TODO: remove when dropping support for Neovim v0.9
-  if vim.fn.has "nvim-0.10" == 0 then
-    for _, sign in ipairs(vim.fn.sign_getplaced(bufnr, { group = "*", lnum = lnum })[1].signs) do
-      local defined = vim.fn.sign_getdefined(sign.name)[1]
-      if defined then return defined end
-    end
-  end
-
   local row = lnum - 1
   local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, -1, { row, 0 }, { row, -1 }, { details = true, type = "sign" })
   local ret
@@ -462,13 +453,7 @@ function M.diagnostics(opts)
   if not opts or not opts.severity then return end
   return function(self)
     local bufnr = self and self.bufnr or 0
-    local count
-    -- TODO: remove when dropping support for neovim 0.9
-    if vim.diagnostic.count then
-      count = vim.diagnostic.count(bufnr)[vim.diagnostic.severity[opts.severity]] or 0
-    else
-      count = #vim.diagnostic.get(bufnr, opts.severity and { severity = vim.diagnostic.severity[opts.severity] })
-    end
+    local count = vim.diagnostic.count(bufnr)[vim.diagnostic.severity[opts.severity]] or 0
     return status_utils.stylize(count ~= 0 and tostring(count) or "", opts)
   end
 end
@@ -486,7 +471,7 @@ function M.lsp_progress(opts)
     if astrolsp_avail and astrolsp.lsp_progress then
       _, status = next(astrolsp.lsp_progress)
     end
-    return status_utils.stylize(status and (spinner[math.floor(luv.hrtime() / 12e7) % #spinner + 1] .. table.concat({
+    return status_utils.stylize(status and (spinner[math.floor(vim.uv.hrtime() / 12e7) % #spinner + 1] .. table.concat({
       status.title or "",
       status.message or "",
       status.percentage and "(" .. status.percentage .. "%)" or "",
@@ -512,9 +497,7 @@ function M.lsp_client_names(opts)
   return function(self)
     local bufnr = self and self.bufnr or 0
     local buf_client_names = {}
-    -- TODO: remove get_active_clients when dropping support for Neovim 0.9
-    ---@diagnostic disable-next-line: deprecated
-    for _, client in pairs((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) do
+    for _, client in pairs(vim.lsp.get_clients { bufnr = bufnr }) do
       if client.name == "null-ls" and opts.integrations.null_ls then
         local null_ls_sources = {}
         local ft = vim.bo[bufnr].filetype
