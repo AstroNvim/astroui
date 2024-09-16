@@ -137,8 +137,7 @@ end
 ---@return function # The Heirline init function
 -- @usage local heirline_component = { init = require("astroui.status").init.update_events { "BufEnter", { "User", pattern = "LspProgressUpdate" } } }
 function M.update_events(opts)
-  -- TODO: remove check after dropping support for Neovim v0.9
-  if not (vim.islist or vim.tbl_islist)(opts) then opts = { opts } end
+  if not vim.islist(opts) then opts = { opts } end
   ---@cast opts AstroUIUpdateEvent[]
   return function(self)
     if not rawget(self, "once") then

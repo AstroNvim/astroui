@@ -75,7 +75,7 @@ function M.is_hlsearch() return vim.v.hlsearch ~= 0 end
 --- A condition function if showcmdloc is set to statusline
 ---@return boolean # whether or not statusline showcmd is enabled
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_statusline_showcmd }
-function M.is_statusline_showcmd() return vim.fn.has "nvim-0.9" == 1 and vim.opt.showcmdloc:get() == "statusline" end
+function M.is_statusline_showcmd() return vim.opt.showcmdloc:get() == "statusline" end
 
 --- A condition function if the current file is in a git repo
 ---@param bufnr table|integer a buffer number to check the condition for, a table with bufnr property, or nil to get the current buffer
@@ -134,12 +134,7 @@ function M.has_diagnostics(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if not bufnr then bufnr = 0 end
   if package.loaded["astrocore"] and require("astrocore").config.features.diagnostics_mode == 0 then return false end
-  -- TODO: remove when dropping support for neovim 0.9
-  if vim.diagnostic.count then
-    return vim.tbl_contains(vim.diagnostic.count(bufnr), function(v) return v > 0 end, { predicate = true })
-  else
-    return #vim.diagnostic.get(bufnr) > 0
-  end
+  return vim.tbl_contains(vim.diagnostic.count(bufnr), function(v) return v > 0 end, { predicate = true })
 end
 
 --- A condition function if there is a defined filetype
@@ -182,11 +177,8 @@ function M.lsp_attached(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if not bufnr then bufnr = 0 end
   return (
-        -- HACK: Check for lsp utilities loaded first, get_active_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
-package.loaded["astrolsp"]
-    -- TODO: remove get_active_clients when dropping support for Neovim 0.9
-    ---@diagnostic disable-next-line: deprecated
-    and next((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) ~= nil
+        -- HACK: Check for lsp utilities loaded first, get_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
+package.loaded["astrolsp"] and next(vim.lsp.get_clients { bufnr = bufnr }) ~= nil
   )
     or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
     or (package.loaded["lint"] and next(require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype or "")) ~= nil)
