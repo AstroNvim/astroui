@@ -255,13 +255,6 @@ function M.statuscolumn_clickargs(self, minwid, clicks, button, mods)
   if not self.signs then self.signs = {} end
   args.sign = self.signs[args.char]
   if not args.sign then -- update signs if not found on first click
-    ---TODO: remove when dropping support for Neovim v0.9
-    if vim.fn.has "nvim-0.10" == 0 then
-      for _, sign_def in ipairs(assert(vim.fn.sign_getdefined())) do
-        if sign_def.text then self.signs[sign_def.text:gsub("%s", "")] = sign_def end
-      end
-    end
-
     if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
     local row = args.mousepos.line - 1
     for _, extmark in
