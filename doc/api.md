@@ -4,15 +4,6 @@ astroui API documentation
 
 ## astroui
 
-AstroNvim UI Utilities
-
-UI utility functions to use within AstroNvim and user configurations.
-
-This module can be loaded with `local astro = require "astroui"`
-
-copyright 2023
-license GNU General Public License v3.0
-
 ### config
 
 
@@ -77,15 +68,6 @@ function astroui.setup(opts: AstroUIOpts)
 
 
 ## astroui.status.component
-
-AstroNvim Status Components
-
-Statusline related component functions to use with Heirline
-
-This module can be loaded with `local component = require "astroui.status.component"`
-
-copyright 2023
-license GNU General Public License v3.0
 
 ### breadcrumbs
 
@@ -377,15 +359,6 @@ function astroui.status.component.virtual_env(opts?: table)
 
 
 ## astroui.status.condition
-
-AstroNvim Status Conditions
-
-Statusline related condition functions to use with Heirline
-
-This module can be loaded with `local condition = require "astroui.status.condition"`
-
-copyright 2023
-license GNU General Public License v3.0
 
 ### aerial_available
 
@@ -681,15 +654,6 @@ function astroui.status.condition.treesitter_available(bufnr: integer|table)
 
 ## astroui.status.heirline
 
-AstroNvim Status Heirline Extensions
-
-Statusline related heirline specific extensions
-
-This module can be loaded with `local astro_heirline = require "astroui.status.heirline"`
-
-copyright 2023
-license GNU General Public License v3.0
-
 ### buffer_picker
 
 
@@ -747,15 +711,6 @@ function astroui.status.heirline.tab_type(self: table, prefix?: string)
 
 
 ## astroui.status.hl
-
-AstroNvim Status Highlighting
-
-Statusline related highlighting utilities
-
-This module can be loaded with `local hl = require "astroui.status.hl"`
-
-copyright 2023
-license GNU General Public License v3.0
 
 ### file_icon
 
@@ -848,15 +803,6 @@ function astroui.status.hl.mode_bg()
 
 ## astroui.status.init
 
-AstroNvim Status Initializers
-
-Statusline related init functions for building dynamic statusline components
-
-This module can be loaded with `local init = require "astroui.status.init"`
-
-copyright 2023
-license GNU General Public License v3.0
-
 ### breadcrumbs
 
 
@@ -907,15 +853,6 @@ function astroui.status.init.update_events(opts: AstroUIUpdateEvent|AstroUIUpdat
 
 
 ## astroui.status.provider
-
-AstroNvim Status Providers
-
-Statusline related provider functions for building statusline components
-
-This module can be loaded with `local provider = require "astroui.status.provider"`
-
-copyright 2023
-license GNU General Public License v3.0
 
 ### close_button
 
@@ -1440,15 +1377,6 @@ function astroui.status.provider.virtual_env(opts: table)
 
 
 ## astroui.status.utils
-
-AstroNvim Status Utilities
-
-Statusline related uitility functions
-
-This module can be loaded with `local status_utils = require "astroui.status.utils"`
-
-copyright 2023
-license GNU General Public License v3.0
 
 ### build_provider
 
