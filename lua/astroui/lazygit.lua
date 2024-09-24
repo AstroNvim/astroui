@@ -68,9 +68,9 @@ function M.setup()
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "AstroColorScheme",
-    callback = M.update_config,
-    desc = "Update lazygit theme configuration when changing colorscheme",
     group = vim.api.nvim_create_augroup("astroui_lazygit", { clear = true }),
+    desc = "Update lazygit theme configuration when changing colorscheme",
+    callback = M.update_config,
   })
 end
 
