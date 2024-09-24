@@ -32,11 +32,6 @@ function M.setup(opts)
       vim.api.nvim_exec_autocmds("User", { pattern = "AstroColorScheme", modeline = false })
     end,
   })
-
-  local colorscheme = M.config.colorscheme
-  if colorscheme and not pcall(vim.cmd.colorscheme, colorscheme) then
-    vim.notify(("Error setting up colorscheme: `%s`"):format(colorscheme), vim.log.levels.ERROR, { title = "AstroUI" })
-  end
 end
 
 --- Get highlight properties for a given highlight name
