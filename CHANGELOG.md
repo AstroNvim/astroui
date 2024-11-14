@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/AstroNvim/astroui/compare/v2.4.5...v2.5.0) (2024-11-14)
+
+
+### Features
+
+* add Lazygit theming integration ([8e31ccd](https://github.com/AstroNvim/astroui/commit/8e31ccdfeb88d42e4bb7101b2f43cb620284146b))
+
 ## [2.4.5](https://github.com/AstroNvim/astroui/compare/v2.4.4...v2.4.5) (2024-09-03)
 
 
