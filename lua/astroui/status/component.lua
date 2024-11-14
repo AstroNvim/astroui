@@ -163,7 +163,7 @@ end
 --- A function to build a set of children components for an LSP breadcrumbs section
 ---@param opts? table options for configuring breadcrumbs and the overall padding
 ---@return table # The Heirline component table
--- @usage local heirline_component = require("astroui.status").component.breadcumbs()
+-- @usage local heirline_component = require("astroui.status").component.breadcrumbs()
 function M.breadcrumbs(opts)
   opts = extend_tbl({ padding = { left = 1 }, condition = condition.aerial_available, update = "CursorMoved" }, opts)
   opts.init = init.breadcrumbs(opts)
