@@ -29,6 +29,11 @@
 ---```
 ---@field file_icon AstroUIFileIconHighlights?
 
+---@class AstroUILazygitOpts
+---@field theme_path string? the path to the storage location for the lazygit theme configuration
+---@field theme table<string|number,{fg:string?,bg:string?,bold:boolean?,reverse:boolean?,underline:boolean?,strikethrough:boolean?}>? table of highlight groups to use for the lazygit theme
+---@field config table? arbitrary lazygit configuration structure
+
 ---@class AstroUISeparators
 ---@field none string[]? placeholder separator for elements with "no" separator, typically two empty strings
 ---@field left string[]? Separators used for elements designated as being on the left of the statusline
@@ -187,6 +192,28 @@
 ---}
 ---```
 ---@field status AstroUIStatusOpts?
+---Configuration options for the Lazygit theme integration
+---Example:
+---
+---```lua
+---lazygit = {
+---  theme_path = vim.fs.normalize(vim.fn.stdpath "cache" .. "/lazygit-theme.yml"),
+---  config = { os = { editPreset = "nvim-remote" } },
+---  theme = {
+---    [241] = { fg = "Special" },
+---    activeBorderColor = { fg = "MatchParen", bold = true },
+---    cherryPickedCommitBgColor = { fg = "Identifier" },
+---    cherryPickedCommitFgColor = { fg = "Function" },
+---    defaultFgColor = { fg = "Normal" },
+---    inactiveBorderColor = { fg = "FloatBorder" },
+---    optionsTextColor = { fg = "Function" },
+---    searchingActiveBorderColor = { fg = "MatchParen", bold = true },
+---    selectedLineBgColor = { bg = "Visual" },
+---    unstagedChangesColor = { fg = "DiagnosticError" },
+---  },
+---}
+---```
+---@field lazygit AstroUILazygitOpts?
 
 ---@type AstroUIOpts
 local M = {
@@ -205,6 +232,7 @@ local M = {
     sign_handlers = {},
     winbar = {},
   },
+  lazygit = false,
 }
 
 return M

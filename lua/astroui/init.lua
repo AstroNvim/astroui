@@ -37,6 +37,8 @@ function M.setup(opts)
   if colorscheme and not pcall(vim.cmd.colorscheme, colorscheme) then
     vim.notify(("Error setting up colorscheme: `%s`"):format(colorscheme), vim.log.levels.ERROR, { title = "AstroUI" })
   end
+
+  require("astroui.lazygit").setup()
 end
 
 --- Get highlight properties for a given highlight name
