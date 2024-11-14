@@ -266,7 +266,7 @@ _param_ `opts` — options for configuring breadcrumbs and the overall padding
 _return_ — The Heirline component table
 
 @usage local heirline_component =
-require("astroui.status").component.breadcumbs()
+require("astroui.status").component.breadcrumbs()
 
 
 BUILDER ~

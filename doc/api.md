@@ -83,7 +83,7 @@ function astroui.status.component.breadcrumbs(opts?: table)
 
 *return* — The Heirline component table
 
- @usage local heirline_component = require("astroui.status").component.breadcumbs()
+ @usage local heirline_component = require("astroui.status").component.breadcrumbs()
 
 ### builder
 
