@@ -192,7 +192,7 @@
 ---}
 ---```
 ---@field status AstroUIStatusOpts?
----Configuration options for the Lazygit theme integration
+---Configuration options for the Lazygit theme integration, set to false to disable
 ---Example:
 ---
 ---```lua
@@ -213,7 +213,7 @@
 ---  },
 ---}
 ---```
----@field lazygit AstroUILazygitOpts?
+---@field lazygit AstroUILazygitOpts|false?
 
 ---@type AstroUIOpts
 local M = {
