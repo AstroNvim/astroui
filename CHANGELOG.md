@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/AstroNvim/astroui/compare/v2.5.0...v2.5.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* **config:** fix type annotation for `lazygit` disabling ([0893053](https://github.com/AstroNvim/astroui/commit/08930530985ba38c4586d072b07d2181f227571c))
+
 ## [2.5.0](https://github.com/AstroNvim/astroui/compare/v2.4.5...v2.5.0) (2024-11-14)
 
 
