@@ -6,11 +6,29 @@
 --
 -- copyright 2024
 -- license GNU General Public License v3.0
-
 local M = {}
+
+local config = require("astroui").config.folding
 
 local is_setup = false
 local lsp_bufs = {}
+
+local fold_methods = {
+  lsp = function(lnum, bufnr)
+    if lsp_bufs[bufnr or vim.api.nvim_get_current_buf()] then return vim.lsp.foldexpr(lnum) end
+  end,
+  treesitter = function(lnum, bufnr)
+    if vim.bo.filetype and vim.treesitter.get_parser(bufnr, nil, { error = false }) then
+      return vim.treesitter.foldexpr(lnum)
+    end
+  end,
+  indent = function(lnum, bufnr)
+    if not lnum then lnum = vim.v.lnum end
+    if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
+    return vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, false)[1]:match "^%s*$" and "="
+      or math.floor(vim.fn.indent(lnum) / vim.bo[bufnr].shiftwidth)
+  end,
+}
 
 --- A fold expression for doing LSP and Treesitter based folding
 ---@param lnum? integer the current line number
@@ -18,23 +36,25 @@ local lsp_bufs = {}
 function M.foldexpr(lnum)
   if not is_setup then M.setup() end
   local bufnr = vim.api.nvim_get_current_buf()
-  -- only fold real file buffers
-  if not require("astrocore.buffer").is_valid(bufnr) then return "0" end
-  -- if an LSP with folding is attached us it for folding
-  if lsp_bufs[bufnr] then return vim.lsp.foldexpr(lnum) end
-  local filetype = vim.bo[bufnr].filetype
-  -- don't fold dashboards
-  if filetype:find "dashboard" then return "0" end
-  -- if filetype and a treesitter parser exists, use treesitter for folding
-  if filetype and vim.treesitter.get_parser(bufnr, nil, { error = false }) then return vim.treesitter.foldexpr(lnum) end
-  -- fallback to indentation based folding
-  if not lnum then lnum = vim.v.lnum end
-  return vim.fn.getline(lnum):match "^%s*$" and "=" or math.floor(vim.fn.indent(lnum) / vim.bo[bufnr].shiftwidth)
+  -- check if folding is enabled
+  local enabled = config and config.enabled
+  if type(enabled) == "function" then enabled = enabled(bufnr) end
+  if enabled then
+    for _, method in ipairs(config and config.methods or {}) do
+      local fold_method = fold_methods[method]
+      if fold_method then
+        local fold = fold_method(lnum, bufnr)
+        if fold then return fold end
+      end
+    end
+  end
+  -- fallback to no folds
+  return "0"
 end
 
 function M.setup()
   -- TODO: remove check when dropping support for Neovim v0.10
-  if vim.fn.has "nvim-0.11" == 1 then
+  if vim.lsp.foldexpr then
     local augroup = vim.api.nvim_create_augroup("astroui_foldexpr", { clear = true })
     vim.api.nvim_create_autocmd("LspAttach", {
       desc = "Monitor attached LSP clients with fold providers",

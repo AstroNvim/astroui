@@ -29,6 +29,15 @@
 ---```
 ---@field file_icon AstroUIFileIconHighlights?
 
+---@alias AstroUIFoldingMethod
+---| "indent" # indentation based folding (`:h fold-indent`)
+---| "lsp" # LSP based folding (`:h vim.lsp.foldexpr`)
+---| "treesitter" # Treesitter based folding (`:h vim.treesitter.foldexpr`)
+
+---@class AstroUIFoldingOpts
+---@field enabled (boolean|fun(bufnr:integer):boolean)? whether folding should be enabled in a buffer or not
+---@field methods AstroUIFoldingMethod[]? a table of folding methods in priority order
+
 ---@class AstroUILazygitOpts
 ---@field theme_path string? the path to the storage location for the lazygit theme configuration
 ---@field theme table<string|number,{fg:string?,bg:string?,bold:boolean?,reverse:boolean?,underline:boolean?,strikethrough:boolean?}>? table of highlight groups to use for the lazygit theme
@@ -131,6 +140,16 @@
 ---colorscheme = "astrodark"
 ---```
 ---@field colorscheme string?
+---Configure how folding works
+---Example:
+---
+---```lua
+---folding = {
+---  enabled = function(bufnr) return require("astrocore.buffer").is_valid(bufnr) end,
+---  methods = { "lsp", "treesitter", "indent" },
+---}
+---```
+---@field folding AstroUIFoldingOpts|false?
 ---Override highlights in any colorscheme
 ---Keys can be:
 ---  `init`: table of highlights to apply to all colorschemes
@@ -218,6 +237,7 @@
 ---@type AstroUIOpts
 local M = {
   colorscheme = nil,
+  folding = {},
   highlights = {},
   icons = {},
   text_icons = {},
