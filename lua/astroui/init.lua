@@ -34,9 +34,6 @@ function M.setup(opts)
   })
 
   require("astroui.lazygit").setup()
-
-  -- TODO: remove check when dropping support for Neovim v0.10
-  if vim.fn.has "nvim-0.11" == 1 then require("astroui.folding").setup() end
 end
 
 --- Get highlight properties for a given highlight name
