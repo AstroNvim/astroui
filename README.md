@@ -51,6 +51,13 @@ require("astroui").setup({
 {
   -- Colorscheme set on startup, a string that is used with `:colorscheme astrodark`
   colorscheme = "astrodark",
+  -- Configure how folding works
+  folding = {
+    -- whether a buffer should have folding can be true/false for global enable/disable or fun(bufnr:integer):boolean
+    enabled = function(bufnr) return require("astrocore.buffer").is_valid(bufnr) end,
+    -- a priority list of fold methods to try using, available methods are "lsp", "treesitter", and "indent"
+    methods = { "lsp", "treesitter", "indent" },
+  },
   -- Override highlights in any colorscheme
   -- Keys can be:
   --   `init`: table of highlights to apply to all colorschemes
