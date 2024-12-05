@@ -18,9 +18,7 @@ local fold_methods = {
     if lsp_bufs[bufnr or vim.api.nvim_get_current_buf()] then return vim.lsp.foldexpr(lnum) end
   end,
   treesitter = function(lnum, bufnr)
-    if vim.bo.filetype and vim.treesitter.get_parser(bufnr, nil, { error = false }) then
-      return vim.treesitter.foldexpr(lnum)
-    end
+    if vim.bo.filetype and pcall(vim.treesitter.get_parser, bufnr) then return vim.treesitter.foldexpr(lnum) end
   end,
   indent = function(lnum, bufnr)
     if not lnum then lnum = vim.v.lnum end
