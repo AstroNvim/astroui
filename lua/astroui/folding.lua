@@ -30,16 +30,22 @@ local fold_methods = {
   end,
 }
 
+--- Check if folding is enabled for a buffer
+---@param bufnr integer The buffer to check (defaults to current buffer)
+---@return boolean enabled whether or not the buffer is enabled for folding
+function M.is_enabled(bufnr)
+  local enabled = config and config.enabled
+  if type(enabled) == "function" then enabled = enabled(bufnr or vim.api.nvim_get_current_buf()) end
+  return enabled == true
+end
+
 --- A fold expression for doing LSP and Treesitter based folding
 ---@param lnum? integer the current line number
----@return string the calculated fold level
+---@return string foldlevel the calculated fold level
 function M.foldexpr(lnum)
   if not is_setup then M.setup() end
   local bufnr = vim.api.nvim_get_current_buf()
-  -- check if folding is enabled
-  local enabled = config and config.enabled
-  if type(enabled) == "function" then enabled = enabled(bufnr) end
-  if enabled then
+  if M.is_enabled(bufnr) then
     for _, method in ipairs(config and config.methods or {}) do
       local fold_method = fold_methods[method]
       if fold_method then
@@ -52,7 +58,37 @@ function M.foldexpr(lnum)
   return "0"
 end
 
+--- Get the current folding status of a given buffer
+---@param bufnr? integer the buffer to check the folding status for
+function M.info(bufnr)
+  if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
+  local lines = {}
+  local enabled = M.is_enabled(bufnr)
+  table.insert(lines, "Buffer folding is **" .. (enabled and "Enabled" or "Disabled") .. "**\n")
+  local methods = config and config.methods or {}
+  for _, method in pairs(methods) do
+    local fold_method = fold_methods[method]
+    local available = "Unavailable"
+    local surround = ""
+    if not fold_method then
+      available = "*Invalid*"
+    elseif fold_method(1, bufnr) then
+      available = "Available"
+      if enabled then
+        surround = "**"
+        enabled = false
+      end
+    end
+    table.insert(lines, ("%s`%s`: %s%s"):format(surround, method, available, surround))
+  end
+  table.insert(lines, "```lua")
+  table.insert(lines, "methods = " .. vim.inspect(methods))
+  table.insert(lines, "```")
+  require("astrocore").notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "AstroNvim Folding" })
+end
+
 function M.setup()
+  vim.api.nvim_create_user_command("AstroFoldInfo", function() M.info() end, { desc = "Display folding information" })
   -- TODO: remove check when dropping support for Neovim v0.10
   if vim.lsp.foldexpr then
     local augroup = vim.api.nvim_create_augroup("astroui_foldexpr", { clear = true })
