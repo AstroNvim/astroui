@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/AstroNvim/astroui/compare/v2.5.1...v2.6.0) (2024-12-10)
+
+
+### Features
+
+* **status:** add `mini.diff` support to git diff components ([05b7d09](https://github.com/AstroNvim/astroui/commit/05b7d09cbfe176a9fbece87e796d309c960de7fa))
+
 ## [2.5.1](https://github.com/AstroNvim/astroui/compare/v2.5.0...v2.5.1) (2024-11-15)
 
 
