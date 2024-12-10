@@ -224,7 +224,7 @@ function M.git_diff(opts)
     surround = { separator = "left", color = "git_diff_bg", condition = condition.git_changed },
     update = {
       "User",
-      pattern = { "GitSignsUpdate", "GitSignsChanged" },
+      pattern = { "GitSignsUpdate", "GitSignsChanged", "MiniDiffUpdated" },
       callback = function() vim.schedule(vim.cmd.redrawstatus) end,
     },
     init = init.update_events { "BufEnter" },

@@ -433,6 +433,8 @@ function M.git_branch(opts)
   return function(self) return status_utils.stylize(vim.b[self and self.bufnr or 0].gitsigns_head or "", opts) end
 end
 
+local minidiff_types = { added = "add", changed = "change", removed = "delete" }
+
 --- A provider function for showing the current git diff count of a specific type
 ---@param opts? table options for type of git diff and options passed to the stylize function
 ---@return function|nil # the function for outputting the git diff
@@ -441,11 +443,13 @@ end
 function M.git_diff(opts)
   if not opts or not opts.type then return end
   return function(self)
-    local status = vim.b[self and self.bufnr or 0].gitsigns_status_dict
-    return status_utils.stylize(
-      status and status[opts.type] and status[opts.type] > 0 and tostring(status[opts.type]) or "",
-      opts
-    )
+    local bufnr, total = self and self.bufnr or 0, nil
+    if vim.b[bufnr].gitsigns_status_dict then -- gitsigns support
+      total = vim.b[bufnr].gitsigns_status_dict[opts.type]
+    elseif vim.b[bufnr].minidiff_summary then -- mini.diff support
+      total = vim.b[bufnr].minidiff_summary[minidiff_types[opts.type]]
+    end
+    return status_utils.stylize(total and total > 0 and tostring(total) or "", opts)
   end
 end
 

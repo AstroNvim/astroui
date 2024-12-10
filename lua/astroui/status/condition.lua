@@ -94,8 +94,15 @@ end
 function M.git_changed(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if not bufnr then bufnr = 0 end
-  local git_status = vim.b[bufnr].gitsigns_status_dict
-  return git_status and (git_status.added or 0) + (git_status.removed or 0) + (git_status.changed or 0) > 0
+  local git_status, total
+  if vim.b[bufnr].gitsigns_status_dict then -- gitsigns support
+    git_status = vim.b[bufnr].gitsigns_status_dict
+    total = (git_status.added or 0) + (git_status.removed or 0) + (git_status.changed or 0)
+  elseif vim.b[bufnr].minidiff_summary then -- mini.diff support
+    git_status = vim.b[bufnr].minidiff_summary
+    total = (git_status.add or 0) + (git_status.delete or 0) + (git_status.change or 0)
+  end
+  return total and total > 0
 end
 
 --- A condition function if the current buffer is modified
