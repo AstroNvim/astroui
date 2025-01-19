@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.7.0](https://github.com/AstroNvim/astroui/compare/v2.6.0...v2.7.0) (2025-01-19)
+
+
+### Features
+
+* **status:** add `snacks.picker` support to clickable components ([81b81d2](https://github.com/AstroNvim/astroui/commit/81b81d239be02e66b6431be4a3b9317d23ce51e2))
+
+
+### Bug Fixes
+
+* improve typos detection ([159839e](https://github.com/AstroNvim/astroui/commit/159839e503b8ea74cad2954cf1aa85eaa611af37))
+
 ## [2.6.0](https://github.com/AstroNvim/astroui/compare/v2.5.1...v2.6.0) (2024-12-10)
 
 
