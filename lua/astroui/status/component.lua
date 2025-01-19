@@ -192,7 +192,11 @@ function M.git_branch(opts)
     on_click = {
       name = "heirline_branch",
       callback = function()
-        if is_available "telescope.nvim" then require("telescope.builtin").git_branches { use_file_path = true } end
+        if is_available "telescope.nvim" then
+          require("telescope.builtin").git_branches { use_file_path = true }
+        elseif is_available "snacks.nvim" then
+          require("snacks").picker.git_branches()
+        end
       end,
     },
     update = {
@@ -218,7 +222,11 @@ function M.git_diff(opts)
     on_click = {
       name = "heirline_git",
       callback = function()
-        if is_available "telescope.nvim" then require("telescope.builtin").git_status { use_file_path = true } end
+        if is_available "telescope.nvim" then
+          require("telescope.builtin").git_status { use_file_path = true }
+        elseif is_available "snacks.nvim" then
+          require("snacks").picker.git_status()
+        end
       end,
     },
     surround = { separator = "left", color = "git_diff_bg", condition = condition.git_changed },
@@ -255,7 +263,11 @@ function M.diagnostics(opts)
     on_click = {
       name = "heirline_diagnostic",
       callback = function()
-        if is_available "telescope.nvim" then require("telescope.builtin").diagnostics() end
+        if is_available "telescope.nvim" then
+          require("telescope.builtin").diagnostics()
+        elseif is_available "snacks.nvim" then
+          require("snacks").picker.diagnostics()
+        end
       end,
     },
     update = { "DiagnosticChanged", "BufEnter" },
