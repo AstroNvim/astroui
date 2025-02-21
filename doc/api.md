@@ -754,7 +754,7 @@ function astroui.status.hl.get_attributes(name: string, include_bg?: boolean)
 
  Merge the color and attributes from user settings for a given name
 
-*param* `name` — the name of the element to get the attributes and colors for
+*param* `name` — , the name of the element to get the attributes and colors for
 
 *param* `include_bg` — whether or not to include background color (Default: false)
 

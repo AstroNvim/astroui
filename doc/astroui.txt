@@ -1,4 +1,4 @@
-*astroui.txt*         For Neovim >= 0.9.0         Last change: 2025 January 19
+*astroui.txt*         For Neovim >= 0.9.0        Last change: 2025 February 21
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -1001,7 +1001,8 @@ GET_ATTRIBUTES ~
 
 Merge the color and attributes from user settings for a given name
 
-_param_ `name` — the name of the element to get the attributes and colors for
+_param_ `name` — , the name of the element to get the attributes and colors
+for
 
 _param_ `include_bg` — whether or not to include background color (Default:
 false)
