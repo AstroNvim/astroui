@@ -12,7 +12,6 @@ local M = {}
 local astro = require "astrocore"
 local buf_utils = require "astrocore.buffer"
 local extend_tbl = astro.extend_tbl
-local is_available = astro.is_available
 
 local ui = require "astroui"
 local config = assert(ui.config.status)
@@ -192,10 +191,22 @@ function M.git_branch(opts)
     on_click = {
       name = "heirline_branch",
       callback = function()
-        if is_available "telescope.nvim" then
-          require("telescope.builtin").git_branches { use_file_path = true }
-        elseif is_available "snacks.nvim" then
-          require("snacks").picker.git_branches()
+        local fzf_lua_avail, fzf_lua = pcall(require, "fzf-lua")
+        if fzf_lua_avail then
+          fzf_lua.git_branches()
+          return
+        end
+
+        local telescope_avail, telescope_builtin = pcall(require, "telescope.builtin")
+        if telescope_avail then
+          telescope_builtin.git_branches { use_file_path = true }
+          return
+        end
+
+        local snacks_avail, snacks = pcall(require, "snacks")
+        if snacks_avail then
+          snacks.picker.git_branches()
+          return
         end
       end,
     },
@@ -222,10 +233,22 @@ function M.git_diff(opts)
     on_click = {
       name = "heirline_git",
       callback = function()
-        if is_available "telescope.nvim" then
-          require("telescope.builtin").git_status { use_file_path = true }
-        elseif is_available "snacks.nvim" then
-          require("snacks").picker.git_status()
+        local fzf_lua_avail, fzf_lua = pcall(require, "fzf-lua")
+        if fzf_lua_avail then
+          fzf_lua.git_status()
+          return
+        end
+
+        local telescope_avail, telescope_builtin = pcall(require, "telescope.builtin")
+        if telescope_avail then
+          telescope_builtin.git_status { use_file_path = true }
+          return
+        end
+
+        local snacks_avail, snacks = pcall(require, "snacks")
+        if snacks_avail then
+          snacks.picker.git_status()
+          return
         end
       end,
     },
@@ -263,10 +286,22 @@ function M.diagnostics(opts)
     on_click = {
       name = "heirline_diagnostic",
       callback = function()
-        if is_available "telescope.nvim" then
-          require("telescope.builtin").diagnostics()
-        elseif is_available "snacks.nvim" then
-          require("snacks").picker.diagnostics()
+        local fzf_lua_avail, fzf_lua = pcall(require, "fzf-lua")
+        if fzf_lua_avail then
+          fzf_lua.diagnostics_document()
+          return
+        end
+
+        local telescope_avail, telescope_builtin = pcall(require, "telescope.builtin")
+        if telescope_avail then
+          telescope_builtin.diagnostics { bufnr = 0 }
+          return
+        end
+
+        local snacks_avail, snacks = pcall(require, "snacks")
+        if snacks_avail then
+          snacks.picker.diagnostics_buffer()
+          return
         end
       end,
     },
@@ -363,7 +398,7 @@ function M.virtual_env(opts)
     on_click = {
       name = "heirline_virtual_env",
       callback = function()
-        if is_available "venv-selector.nvim" then vim.schedule(vim.cmd.VenvSelect) end
+        if vim.fn.exists ":VenvSelect" > 0 then vim.schedule(vim.cmd.VenvSelect) end
       end,
     },
   }, opts)
@@ -407,7 +442,8 @@ function M.numbercolumn(opts)
       callback = function(...)
         local args = status_utils.statuscolumn_clickargs(...)
         if args.mods:find "c" then
-          if is_available "nvim-dap" then require("dap").toggle_breakpoint() end
+          local dap_avail, dap = pcall(require, "dap")
+          if dap_avail then dap.toggle_breakpoint() end
         end
       end,
     },
