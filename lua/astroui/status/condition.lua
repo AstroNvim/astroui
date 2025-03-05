@@ -133,7 +133,6 @@ end
 function M.has_diagnostics(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if not bufnr then bufnr = 0 end
-  if package.loaded["astrocore"] and require("astrocore").config.features.diagnostics_mode == 0 then return false end
   return vim.tbl_contains(vim.diagnostic.count(bufnr), function(v) return v > 0 end, { predicate = true })
 end
 
