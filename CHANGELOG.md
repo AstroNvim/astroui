@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/AstroNvim/astroui/compare/v2.7.0...v2.8.0) (2025-03-05)
+
+
+### Features
+
+* **provider:** add the ability to do custom client name mappings for lsp clients ([e56580e](https://github.com/AstroNvim/astroui/commit/e56580e52eba357f9853041d36ebaa28893f233d))
+
 ## [2.7.0](https://github.com/AstroNvim/astroui/compare/v2.6.0...v2.7.0) (2025-02-21)
 
 
