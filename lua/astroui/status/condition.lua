@@ -58,7 +58,7 @@ function M.buffer_matches(patterns, bufnr, op)
 end
 
 --- A condition function if the window is currently active
----@return boolean # whether or not the window is currently actie
+---@return boolean # whether or not the window is currently active
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_active }
 function M.is_active() return vim.api.nvim_get_current_win() == tonumber(vim.g.actual_curwin) end
 
