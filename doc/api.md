@@ -517,7 +517,7 @@ function astroui.status.condition.is_active()
 
  A condition function if the window is currently active
 
-*return* — whether or not the window is currently actie
+*return* — whether or not the window is currently active
 
  @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.is_active }
 
