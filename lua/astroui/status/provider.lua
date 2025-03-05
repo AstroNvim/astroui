@@ -501,6 +501,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.lsp_client_names(opts)
   opts = extend_tbl({
+    mappings = {},
     integrations = {
       null_ls = is_available "none-ls.nvim",
       conform = is_available "conform.nvim",
@@ -541,6 +542,9 @@ function M.lsp_client_names(opts)
     end
     local buf_client_names_set, client_name_lookup = {}, {}
     for _, client in ipairs(buf_client_names) do
+      local mapping = opts.mappings and (opts.mappings[client] or opts.mappings["*"])
+      if mapping then client = type(mapping) == "string" and mapping or mapping(client) end
+      if opts.mappings and opts.mappings[client] then client = opts.mappings[client] end
       if not client_name_lookup[client] then
         client_name_lookup[client] = true
         table.insert(buf_client_names_set, client)
