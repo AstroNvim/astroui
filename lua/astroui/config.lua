@@ -108,6 +108,19 @@
 ---}
 ---```
 ---@field modes table<string,string[]>?
+---Set up the default configuration options for the provided statusline providers.
+---TODO: this field still needs to add strong typing
+---Example:
+---```lua
+---provider = {
+---  lsp_client_names = {
+---    mappings = {
+---      ruff_organize_imports = "ruff"
+---    }
+---  }
+---}
+---```
+---@field providers table?
 ---Configure characters used as separators for various elements
 ---Example:
 ---
@@ -247,6 +260,39 @@ local M = {
     fallback_colors = {},
     icon_highlights = {},
     modes = {},
+    providers = {
+      signcolumn = { escape = false },
+      numbercolumn = { thousands = false, culright = true, escape = false },
+      foldcolumn = { escape = false },
+      spell = { str = "", icon = { kind = "Spellcheck" }, show_empty = true },
+      paste = { str = "", icon = { kind = "Paste" }, show_empty = true },
+      macro_recording = { prefix = "@" },
+      showcmd = { minwid = 0, maxwid = 5, escape = false },
+      search_count = {},
+      mode_text = { pad_text = false },
+      percentage = { escape = false, fixed_width = true, edge_text = true },
+      ruler = { pad_ruler = { line = 3, char = 2 } },
+      close_button = { kind = "BufferClose" },
+      filename = {
+        fallback = "Untitled",
+        fname = function(bufnr) return vim.api.nvim_buf_get_name(bufnr) end,
+        modify = ":t",
+      },
+      unique_path = {
+        buf_name = function(bufnr) return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t") end,
+        bufnr = 0,
+        max_length = 16,
+      },
+      file_modified = { str = "", icon = { kind = "FileModified" }, show_empty = true },
+      file_read_only = { str = "", icon = { kind = "FileReadOnly" }, show_empty = true },
+      lsp_client_names = {
+        mappings = {},
+        integrations = { null_ls = true, conform = true, ["nvim-lint"] = true },
+        truncate = 0.25,
+      },
+      virtual_env = { env_names = { "env", ".env", "venv", ".venv" }, conda = { enabled = true, ignore_base = true } },
+      str = { str = " " },
+    },
     separators = {},
     setup_colors = nil,
     sign_handlers = {},
