@@ -10,14 +10,10 @@
 local M = {}
 
 local astro = require "astrocore"
-local buf_utils = require "astrocore.buffer"
 local extend_tbl = astro.extend_tbl
 
 local ui = require "astroui"
 local config = assert(ui.config.status)
-local get_icon = ui.get_icon
-local condition = require "astroui.status.condition"
-local hl = require "astroui.status.hl"
 local init = require "astroui.status.init"
 local provider = require "astroui.status.provider"
 local status_utils = require "astroui.status.utils"
@@ -35,15 +31,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.file_info()
 function M.file_info(opts)
-  opts = extend_tbl({
-    file_icon = { hl = hl.file_icon "statusline", padding = { left = 1, right = 1 } },
-    filename = false,
-    filetype = {},
-    file_modified = { padding = { left = 1 }, condition = condition.is_file },
-    file_read_only = { padding = { left = 1 }, condition = condition.is_file },
-    surround = { separator = "left", color = "file_info_bg", condition = condition.has_filetype },
-    hl = hl.get_attributes "file_info",
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "file_info"), opts)
   return M.builder(status_utils.setup_providers(opts, {
     "file_icon",
     "unique_path",
@@ -60,33 +48,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.tabline_file_info()
 function M.tabline_file_info(opts)
-  return M.file_info(extend_tbl({
-    file_icon = {
-      condition = function(self) return not self._show_picker end,
-      hl = hl.file_icon "tabline",
-    },
-    filename = {},
-    filetype = false,
-    unique_path = {
-      hl = function(self) return hl.get_attributes(self.tab_type .. "_path") end,
-    },
-    close_button = {
-      hl = function(self) return hl.get_attributes(self.tab_type .. "_close") end,
-      padding = { left = 1, right = 1 },
-      on_click = {
-        callback = function(_, minwid) buf_utils.close(minwid) end,
-        minwid = function(self) return self.bufnr end,
-        name = "heirline_tabline_close_buffer_callback",
-      },
-    },
-    padding = { right = 1 },
-    hl = function(self)
-      local tab_type = self.tab_type
-      if self._show_picker and self.tab_type ~= "buffer_active" then tab_type = "buffer_visible" end
-      return hl.get_attributes(tab_type)
-    end,
-    surround = false,
-  }, opts))
+  return M.file_info(extend_tbl(vim.tbl_get(config, "components", "tabline_file_info"), opts))
 end
 
 --- A function to build a set of children components for an entire navigation section
@@ -94,14 +56,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.nav()
 function M.nav(opts)
-  opts = extend_tbl({
-    ruler = {},
-    percentage = { padding = { left = 1 } },
-    scrollbar = { padding = { left = 1 }, hl = { fg = "scrollbar" } },
-    surround = { separator = "right", color = "nav_bg" },
-    hl = hl.get_attributes "nav",
-    update = { "CursorMoved", "CursorMovedI", "BufEnter" },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "nav"), opts)
   return M.builder(status_utils.setup_providers(opts, { "ruler", "percentage", "scrollbar" }))
 end
 
@@ -110,31 +65,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.cmd_info()
 function M.cmd_info(opts)
-  opts = extend_tbl({
-    macro_recording = {
-      icon = { kind = "MacroRecording", padding = { right = 1 } },
-      condition = condition.is_macro_recording,
-      update = { "RecordingEnter", "RecordingLeave" },
-    },
-    search_count = {
-      icon = { kind = "Search", padding = { right = 1 } },
-      padding = { left = 1 },
-      condition = condition.is_hlsearch,
-    },
-    showcmd = {
-      padding = { left = 1 },
-      condition = condition.is_statusline_showcmd,
-    },
-    surround = {
-      separator = "center",
-      color = "cmd_info_bg",
-      condition = function()
-        return condition.is_hlsearch() or condition.is_macro_recording() or condition.is_statusline_showcmd()
-      end,
-    },
-    condition = function() return vim.opt.cmdheight:get() == 0 end,
-    hl = hl.get_attributes "cmd_info",
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "cmd_info"), opts)
   return M.builder(status_utils.setup_providers(opts, { "macro_recording", "search_count", "showcmd" }))
 end
 
@@ -143,18 +74,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.mode { mode_text = true }
 function M.mode(opts)
-  opts = extend_tbl({
-    mode_text = false,
-    paste = false,
-    spell = false,
-    surround = { separator = "left", color = hl.mode_bg, update = { "ModeChanged", pattern = "*:*" } },
-    hl = hl.get_attributes "mode",
-    update = {
-      "ModeChanged",
-      pattern = "*:*",
-      callback = function() vim.schedule(vim.cmd.redrawstatus) end,
-    },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "mode"), opts)
   if not opts["mode_text"] then opts.str = { str = " " } end
   return M.builder(status_utils.setup_providers(opts, { "mode_text", "str", "paste", "spell" }))
 end
@@ -164,7 +84,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.breadcrumbs()
 function M.breadcrumbs(opts)
-  opts = extend_tbl({ padding = { left = 1 }, condition = condition.aerial_available, update = "CursorMoved" }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "breadcrumbs"), opts)
   opts.init = init.breadcrumbs(opts)
   return opts
 end
@@ -174,7 +94,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.separated_path()
 function M.separated_path(opts)
-  opts = extend_tbl({ padding = { left = 1 }, update = { "BufEnter", "DirChanged" } }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "separated_path"), opts)
   opts.init = init.separated_path(opts)
   return opts
 end
@@ -184,39 +104,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.git_branch()
 function M.git_branch(opts)
-  opts = extend_tbl({
-    git_branch = { icon = { kind = "GitBranch", padding = { right = 1 } } },
-    surround = { separator = "left", color = "git_branch_bg", condition = condition.is_git_repo },
-    hl = hl.get_attributes "git_branch",
-    on_click = {
-      name = "heirline_branch",
-      callback = function()
-        local fzf_lua_avail, fzf_lua = pcall(require, "fzf-lua")
-        if fzf_lua_avail then
-          fzf_lua.git_branches()
-          return
-        end
-
-        local telescope_avail, telescope_builtin = pcall(require, "telescope.builtin")
-        if telescope_avail then
-          telescope_builtin.git_branches { use_file_path = true }
-          return
-        end
-
-        local snacks_avail, snacks = pcall(require, "snacks")
-        if snacks_avail then
-          snacks.picker.git_branches()
-          return
-        end
-      end,
-    },
-    update = {
-      "User",
-      pattern = { "GitSignsUpdate", "GitSignsChanged" },
-      callback = function() vim.schedule(vim.cmd.redrawstatus) end,
-    },
-    init = init.update_events { "BufEnter" },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "git_branch"), opts)
   return M.builder(status_utils.setup_providers(opts, { "git_branch" }))
 end
 
@@ -225,41 +113,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.git_diff()
 function M.git_diff(opts)
-  opts = extend_tbl({
-    added = { icon = { kind = "GitAdd", padding = { left = 1, right = 1 } } },
-    changed = { icon = { kind = "GitChange", padding = { left = 1, right = 1 } } },
-    removed = { icon = { kind = "GitDelete", padding = { left = 1, right = 1 } } },
-    hl = hl.get_attributes "git_diff",
-    on_click = {
-      name = "heirline_git",
-      callback = function()
-        local fzf_lua_avail, fzf_lua = pcall(require, "fzf-lua")
-        if fzf_lua_avail then
-          fzf_lua.git_status()
-          return
-        end
-
-        local telescope_avail, telescope_builtin = pcall(require, "telescope.builtin")
-        if telescope_avail then
-          telescope_builtin.git_status { use_file_path = true }
-          return
-        end
-
-        local snacks_avail, snacks = pcall(require, "snacks")
-        if snacks_avail then
-          snacks.picker.git_status()
-          return
-        end
-      end,
-    },
-    surround = { separator = "left", color = "git_diff_bg", condition = condition.git_changed },
-    update = {
-      "User",
-      pattern = { "GitSignsUpdate", "GitSignsChanged", "MiniDiffUpdated" },
-      callback = function() vim.schedule(vim.cmd.redrawstatus) end,
-    },
-    init = init.update_events { "BufEnter" },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "git_diff"), opts)
   return M.builder(status_utils.setup_providers(opts, { "added", "changed", "removed" }, function(p_opts, p)
     local out = status_utils.build_provider(p_opts, p)
     if out then
@@ -276,37 +130,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.diagnostics()
 function M.diagnostics(opts)
-  opts = extend_tbl({
-    ERROR = { icon = { kind = "DiagnosticError", padding = { left = 1, right = 1 } } },
-    WARN = { icon = { kind = "DiagnosticWarn", padding = { left = 1, right = 1 } } },
-    INFO = { icon = { kind = "DiagnosticInfo", padding = { left = 1, right = 1 } } },
-    HINT = { icon = { kind = "DiagnosticHint", padding = { left = 1, right = 1 } } },
-    surround = { separator = "left", color = "diagnostics_bg", condition = condition.has_diagnostics },
-    hl = hl.get_attributes "diagnostics",
-    on_click = {
-      name = "heirline_diagnostic",
-      callback = function()
-        local fzf_lua_avail, fzf_lua = pcall(require, "fzf-lua")
-        if fzf_lua_avail then
-          fzf_lua.diagnostics_document()
-          return
-        end
-
-        local telescope_avail, telescope_builtin = pcall(require, "telescope.builtin")
-        if telescope_avail then
-          telescope_builtin.diagnostics { bufnr = 0 }
-          return
-        end
-
-        local snacks_avail, snacks = pcall(require, "snacks")
-        if snacks_avail then
-          snacks.picker.diagnostics_buffer()
-          return
-        end
-      end,
-    },
-    update = { "DiagnosticChanged", "BufEnter" },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "diagnostics"), opts)
   return M.builder(status_utils.setup_providers(opts, { "ERROR", "WARN", "INFO", "HINT" }, function(p_opts, p)
     local out = status_utils.build_provider(p_opts, p)
     if out then
@@ -323,17 +147,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.treesitter()
 function M.treesitter(opts)
-  opts = extend_tbl({
-    str = { str = "TS", icon = { kind = "ActiveTS", padding = { right = 1 } } },
-    surround = {
-      separator = "right",
-      color = "treesitter_bg",
-      condition = condition.treesitter_available,
-    },
-    hl = hl.get_attributes "treesitter",
-    update = { "OptionSet", pattern = "syntax" },
-    init = init.update_events { "BufEnter" },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "treesitter"), opts)
   return M.builder(status_utils.setup_providers(opts, { "str" }))
 end
 
@@ -342,35 +156,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.lsp()
 function M.lsp(opts)
-  opts = extend_tbl({
-    lsp_progress = {
-      str = "",
-      padding = { right = 1 },
-      update = {
-        "User",
-        pattern = "AstroLspProgress",
-        callback = function() vim.schedule(vim.cmd.redrawstatus) end,
-      },
-    },
-    lsp_client_names = {
-      str = "LSP",
-      update = {
-        "LspAttach",
-        "LspDetach",
-        "BufEnter",
-        "FileType",
-        "VimResized",
-        callback = function() vim.schedule(vim.cmd.redrawstatus) end,
-      },
-      icon = { kind = "ActiveLSP", padding = { right = 2 } },
-    },
-    hl = hl.get_attributes "lsp",
-    surround = { separator = "right", color = "lsp_bg", condition = condition.lsp_attached },
-    on_click = {
-      name = "heirline_lsp",
-      callback = function() vim.schedule(vim.cmd.LspInfo) end,
-    },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "lsp"), opts)
   return M.builder(status_utils.setup_providers(
     opts,
     { "lsp_progress", "lsp_client_names" },
@@ -391,17 +177,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.git_branch()
 function M.virtual_env(opts)
-  opts = extend_tbl({
-    virtual_env = { icon = { kind = "Environment", padding = { right = 1 } } },
-    surround = { separator = "right", color = "virtual_env_bg", condition = condition.has_virtual_env },
-    hl = hl.get_attributes "virtual_env",
-    on_click = {
-      name = "heirline_virtual_env",
-      callback = function()
-        if vim.fn.exists ":VenvSelect" > 0 then vim.schedule(vim.cmd.VenvSelect) end
-      end,
-    },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "virtual_env"), opts)
   return M.builder(status_utils.setup_providers(opts, { "virtual_env" }))
 end
 
@@ -410,22 +186,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.foldcolumn()
 function M.foldcolumn(opts)
-  opts = extend_tbl({
-    foldcolumn = { padding = { right = 1 } },
-    condition = condition.foldcolumn_enabled,
-    on_click = {
-      name = "fold_click",
-      callback = function(...)
-        local char = status_utils.statuscolumn_clickargs(...).char
-        local fillchars = vim.opt_local.fillchars:get()
-        if char == (fillchars.foldopen or get_icon "FoldOpened") then
-          vim.cmd "norm! zc"
-        elseif char == (fillchars.foldclose or get_icon "FoldClosed") then
-          vim.cmd "norm! zo"
-        end
-      end,
-    },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "foldcolumn"), opts)
   return M.builder(status_utils.setup_providers(opts, { "foldcolumn" }))
 end
 
@@ -434,20 +195,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.numbercolumn()
 function M.numbercolumn(opts)
-  opts = extend_tbl({
-    numbercolumn = { padding = { right = 1 } },
-    condition = condition.numbercolumn_enabled,
-    on_click = {
-      name = "line_click",
-      callback = function(...)
-        local args = status_utils.statuscolumn_clickargs(...)
-        if args.mods:find "c" then
-          local dap_avail, dap = pcall(require, "dap")
-          if dap_avail then dap.toggle_breakpoint() end
-        end
-      end,
-    },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "numbercolumn"), opts)
   return M.builder(status_utils.setup_providers(opts, { "numbercolumn" }))
 end
 
@@ -456,22 +204,7 @@ end
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.signcolumn()
 function M.signcolumn(opts)
-  opts = extend_tbl({
-    signcolumn = {},
-    condition = condition.signcolumn_enabled,
-    on_click = {
-      name = "sign_click",
-      callback = function(...)
-        local args = status_utils.statuscolumn_clickargs(...)
-        if args.sign then
-          local handler = args.sign.name ~= "" and config.sign_handlers[args.sign.name]
-          if not handler then handler = config.sign_handlers[args.sign.namespace] end
-          if not handler then handler = config.sign_handlers[args.sign.texthl] end
-          if handler then handler(args) end
-        end
-      end,
-    },
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "components", "signcolumn"), opts)
   return M.builder(status_utils.setup_providers(opts, { "signcolumn" }))
 end
 
