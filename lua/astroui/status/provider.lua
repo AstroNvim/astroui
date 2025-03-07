@@ -12,7 +12,6 @@ local M = {}
 local astro = require "astrocore"
 local extend_tbl = astro.extend_tbl
 local is_available = astro.is_available
-local luv = vim.uv or vim.loop -- TODO: REMOVE WHEN DROPPING SUPPORT FOR Neovim v0.9
 
 local ui = require "astroui"
 local config = assert(ui.config.status)
@@ -31,21 +30,13 @@ function M.fill() return "%=" end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.signcolumn }
 -- @see astroui.status.utils.stylize
 function M.signcolumn(opts)
-  opts = extend_tbl({ escape = false }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "signcolumn"), opts)
   return status_utils.stylize("%s", opts)
 end
 
 -- local function to resolve the first sign in the signcolumn
 -- specifically for usage when `signcolumn=number`
 local function resolve_sign(bufnr, lnum)
-  --- TODO: remove when dropping support for Neovim v0.9
-  if vim.fn.has "nvim-0.10" == 0 then
-    for _, sign in ipairs(vim.fn.sign_getplaced(bufnr, { group = "*", lnum = lnum })[1].signs) do
-      local defined = vim.fn.sign_getdefined(sign.name)[1]
-      if defined then return defined end
-    end
-  end
-
   local row = lnum - 1
   local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, -1, { row, 0 }, { row, -1 }, { details = true, type = "sign" })
   local ret
@@ -62,7 +53,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.numbercolumn }
 -- @see astroui.status.utils.stylize
 function M.numbercolumn(opts)
-  opts = extend_tbl({ thousands = false, culright = true, escape = false }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "numbercolumn"), opts)
   return function(self)
     local lnum, rnum, virtnum = vim.v.lnum, vim.v.relnum, vim.v.virtnum
     local num, relnum = vim.opt.number:get(), vim.opt.relativenumber:get()
@@ -94,7 +85,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.foldcolumn }
 -- @see astroui.status.utils.stylize
 function M.foldcolumn(opts)
-  opts = extend_tbl({ escape = false }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "foldcolumn"), opts)
   local ffi = require "astroui.ffi" -- get AstroUI C extensions
   local fillchars = vim.opt.fillchars:get()
   local foldopen = fillchars.foldopen or get_icon "FoldOpened"
@@ -148,7 +139,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.spell() }
 -- @see astroui.status.utils.stylize
 function M.spell(opts)
-  opts = extend_tbl({ str = "", icon = { kind = "Spellcheck" }, show_empty = true }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "spell"), opts)
   return function() return status_utils.stylize(vim.wo.spell and opts.str or nil, opts) end
 end
 
@@ -158,7 +149,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.paste() }
 -- @see astroui.status.utils.stylize
 function M.paste(opts)
-  opts = extend_tbl({ str = "", icon = { kind = "Paste" }, show_empty = true }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "paste"), opts)
   local paste = vim.opt.paste
   if type(paste) ~= "boolean" then paste = paste:get() end
   return function() return status_utils.stylize(paste and opts.str or nil, opts) end
@@ -170,7 +161,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.macro_recording() }
 -- @see astroui.status.utils.stylize
 function M.macro_recording(opts)
-  opts = extend_tbl({ prefix = "@" }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "macro_recording"), opts)
   return function()
     local register = vim.fn.reg_recording()
     if register ~= "" then register = opts.prefix .. register end
@@ -184,7 +175,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.showcmd() }
 -- @see astroui.status.utils.stylize
 function M.showcmd(opts)
-  opts = extend_tbl({ minwid = 0, maxwid = 5, escape = false }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "showcmd"), opts)
   return status_utils.stylize(("%%%d.%d(%%S%%)"):format(opts.minwid, opts.maxwid), opts)
 end
 
@@ -194,6 +185,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.search_count() }
 -- @see astroui.status.utils.stylize
 function M.search_count(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "search_count"), opts)
   local search_func = vim.tbl_isempty(opts or {}) and function() return vim.fn.searchcount() end
     or function() return vim.fn.searchcount(opts) end
   return function()
@@ -218,6 +210,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.mode_text() }
 -- @see astroui.status.utils.stylize
 function M.mode_text(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "mode_text"), opts)
   local max_length = math.max(unpack(vim.tbl_map(function(str) return #str[1] end, vim.tbl_values(config.modes))))
   return function()
     local text = config.modes[vim.fn.mode()][1]
@@ -242,7 +235,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.percentage() }
 -- @see astroui.status.utils.stylize
 function M.percentage(opts)
-  opts = extend_tbl({ escape = false, fixed_width = true, edge_text = true }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "percentage"), opts)
   return function()
     local text = "%" .. (opts.fixed_width and (opts.edge_text and "2" or "3") or "") .. "p%%"
     if opts.edge_text then
@@ -263,7 +256,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.ruler({ pad_ruler = { line = 3, char = 2 } }) }
 -- @see astroui.status.utils.stylize
 function M.ruler(opts)
-  opts = extend_tbl({ pad_ruler = { line = 3, char = 2 } }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "ruler"), opts)
   local padding_str = ("%%%dd:%%-%dd"):format(opts.pad_ruler.line, opts.pad_ruler.char)
   return function()
     local line = vim.fn.line "."
@@ -278,6 +271,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.scrollbar() }
 -- @see astroui.status.utils.stylize
 function M.scrollbar(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "scrollbar"), opts)
   local sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
   return function()
     local curr_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -293,7 +287,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.close_button() }
 -- @see astroui.status.utils.stylize
 function M.close_button(opts)
-  opts = extend_tbl({ kind = "BufferClose" }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "close_button"), opts)
   return status_utils.stylize(get_icon(opts.kind), opts)
 end
 
@@ -303,6 +297,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.filetype() }
 -- @see astroui.status.utils.stylize
 function M.filetype(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "filetype"), opts)
   return function(self) return status_utils.stylize(vim.bo[self and self.bufnr or 0].filetype, opts) end
 end
 
@@ -312,11 +307,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.filename() }
 -- @see astroui.status.utils.stylize
 function M.filename(opts)
-  opts = extend_tbl({
-    fallback = "Untitled",
-    fname = function(nr) return vim.api.nvim_buf_get_name(nr) end,
-    modify = ":t",
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "filename"), opts)
   return function(self)
     local path = opts.fname(self and self.bufnr or 0)
     return status_utils.stylize((path == "" and opts.fallback or vim.fn.fnamemodify(path, opts.modify)), opts)
@@ -329,6 +320,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_encoding() }
 -- @see astroui.status.utils.stylize
 function M.file_encoding(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "file_encoding"), opts)
   return function(self)
     local buf_enc = vim.bo[self and self.bufnr or 0].fenc
     return status_utils.stylize((buf_enc ~= "" and buf_enc or vim.o.enc):upper(), opts)
@@ -341,6 +333,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_format() }
 -- @see astroui.status.utils.stylize
 function M.file_format(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "file_format"), opts)
   return function(self)
     local buf_format = vim.bo[self and self.bufnr or 0].fileformat
     return status_utils.stylize((buf_format ~= "" and buf_format or vim.o.fileformat):upper(), opts)
@@ -353,11 +346,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.unique_path() }
 -- @see astroui.status.utils.stylize
 function M.unique_path(opts)
-  opts = extend_tbl({
-    buf_name = function(bufnr) return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t") end,
-    bufnr = 0,
-    max_length = 16,
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "unique_path"), opts)
   local function path_parts(bufnr)
     local parts = {}
     for match in (vim.api.nvim_buf_get_name(bufnr) .. "/"):gmatch("(.-)" .. "/") do
@@ -401,7 +390,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_modified() }
 -- @see astroui.status.utils.stylize
 function M.file_modified(opts)
-  opts = extend_tbl({ str = "", icon = { kind = "FileModified" }, show_empty = true }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "file_modified"), opts)
   return function(self) return status_utils.stylize(condition.file_modified(self or {}) and opts.str or nil, opts) end
 end
 
@@ -411,7 +400,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_read_only() }
 -- @see astroui.status.utils.stylize
 function M.file_read_only(opts)
-  opts = extend_tbl({ str = "", icon = { kind = "FileReadOnly" }, show_empty = true }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "file_read_only"), opts)
   return function(self) return status_utils.stylize(condition.file_read_only(self or {}) and opts.str or nil, opts) end
 end
 
@@ -421,6 +410,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_icon() }
 -- @see astroui.status.utils.stylize
 function M.file_icon(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "file_icon"), opts)
   return function(self) return status_utils.stylize(status_utils.icon_provider(self and self.bufnr or 0), opts) end
 end
 
@@ -430,6 +420,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.git_branch() }
 -- @see astroui.status.utils.stylize
 function M.git_branch(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "git_branch"), opts)
   return function(self) return status_utils.stylize(vim.b[self and self.bufnr or 0].gitsigns_head or "", opts) end
 end
 
@@ -441,6 +432,7 @@ local minidiff_types = { added = "add", changed = "change", removed = "delete" }
 -- @usage local heirline_component = { provider = require("astroui.status").provider.git_diff({ type = "added" }) }
 -- @see astroui.status.utils.stylize
 function M.git_diff(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "git_diff"), opts)
   if not opts or not opts.type then return end
   return function(self)
     local bufnr, total = self and self.bufnr or 0, nil
@@ -459,16 +451,11 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.diagnostics({ severity = "ERROR" }) }
 -- @see astroui.status.utils.stylize
 function M.diagnostics(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "diagnostics"), opts)
   if not opts or not opts.severity then return end
   return function(self)
     local bufnr = self and self.bufnr or 0
-    local count
-    -- TODO: remove when dropping support for neovim 0.9
-    if vim.diagnostic.count then
-      count = vim.diagnostic.count(bufnr)[vim.diagnostic.severity[opts.severity]] or 0
-    else
-      count = #vim.diagnostic.get(bufnr, opts.severity and { severity = vim.diagnostic.severity[opts.severity] })
-    end
+    local count = vim.diagnostic.count(bufnr)[vim.diagnostic.severity[opts.severity]] or 0
     return status_utils.stylize(count ~= 0 and tostring(count) or "", opts)
   end
 end
@@ -479,6 +466,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_progress() }
 -- @see astroui.status.utils.stylize
 function M.lsp_progress(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "lsp_progress"), opts)
   local spinner = ui.get_spinner("LSPLoading", 1) or { "" }
   return function()
     local astrolsp_avail, astrolsp = pcall(require, "astrolsp")
@@ -486,7 +474,7 @@ function M.lsp_progress(opts)
     if astrolsp_avail and astrolsp.lsp_progress then
       _, status = next(astrolsp.lsp_progress)
     end
-    return status_utils.stylize(status and (spinner[math.floor(luv.hrtime() / 12e7) % #spinner + 1] .. table.concat({
+    return status_utils.stylize(status and (spinner[math.floor(vim.uv.hrtime() / 12e7) % #spinner + 1] .. table.concat({
       status.title or "",
       status.message or "",
       status.percentage and "(" .. status.percentage .. "%)" or "",
@@ -500,21 +488,20 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }) }
 -- @see astroui.status.utils.stylize
 function M.lsp_client_names(opts)
-  opts = extend_tbl({
-    mappings = {},
-    integrations = {
-      null_ls = is_available "none-ls.nvim",
-      conform = is_available "conform.nvim",
-      ["nvim-lint"] = is_available "nvim-lint",
-    },
-    truncate = 0.25,
-  }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "lsp_client_names"), opts)
+  if vim.tbl_get(opts, "integrations", "null_ls") and not is_available "none-ls.nvim" then
+    opts.integrations.null_ls = false
+  end
+  if vim.tbl_get(opts, "integrations", "conform") and not is_available "conform.nvim" then
+    opts.integrations.conform = false
+  end
+  if vim.tbl_get(opts, "integrations", "nvim-lint") and not is_available "nvim-lint" then
+    opts.integrations["nvim-lint"] = false
+  end
   return function(self)
     local bufnr = self and self.bufnr or 0
     local buf_client_names = {}
-    -- TODO: remove get_active_clients when dropping support for Neovim 0.9
-    ---@diagnostic disable-next-line: deprecated
-    for _, client in pairs((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) do
+    for _, client in pairs(vim.lsp.get_clients { bufnr = bufnr }) do
       if client.name == "null-ls" and opts.integrations.null_ls then
         local null_ls_sources = {}
         local ft = vim.bo[bufnr].filetype
@@ -565,8 +552,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.virtual_env() }
 -- @see astroui.status.utils.stylize
 function M.virtual_env(opts)
-  opts =
-    extend_tbl({ env_names = { "env", ".env", "venv", ".venv" }, conda = { enabled = true, ignore_base = true } }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "virtual_env"), opts)
   return function()
     local conda = vim.env.CONDA_DEFAULT_ENV
     local venv = vim.env.VIRTUAL_ENV
@@ -588,6 +574,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.treesitter_status() }
 -- @see astroui.status.utils.stylize
 function M.treesitter_status(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "treesitter_status"), opts)
   return function(self)
     return status_utils.stylize(condition.treesitter_available(self and self.bufnr or 0) and "TS" or "", opts)
   end
@@ -599,7 +586,7 @@ end
 -- @usage local heirline_component = { provider = require("astroui.status").provider.str({ str = "Hello" }) }
 -- @see astroui.status.utils.stylize
 function M.str(opts)
-  opts = extend_tbl({ str = " " }, opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "str"), opts)
   return status_utils.stylize(opts.str, opts)
 end
 

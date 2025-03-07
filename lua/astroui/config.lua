@@ -29,99 +29,19 @@
 ---```
 ---@field file_icon AstroUIFileIconHighlights?
 
+---@alias AstroUIFoldingMethod
+---| "indent" # indentation based folding (`:h fold-indent`)
+---| "lsp" # LSP based folding (`:h vim.lsp.foldexpr`)
+---| "treesitter" # Treesitter based folding (`:h vim.treesitter.foldexpr`)
+
+---@class AstroUIFoldingOpts
+---@field enabled (boolean|fun(bufnr:integer):boolean)? whether folding should be enabled in a buffer or not
+---@field methods AstroUIFoldingMethod[]? a table of folding methods in priority order
+
 ---@class AstroUILazygitOpts
 ---@field theme_path string? the path to the storage location for the lazygit theme configuration
 ---@field theme table<string|number,{fg:string?,bg:string?,bold:boolean?,reverse:boolean?,underline:boolean?,strikethrough:boolean?}>? table of highlight groups to use for the lazygit theme
 ---@field config table? arbitrary lazygit configuration structure
-
----@class AstroUISeparators
----@field none string[]? placeholder separator for elements with "no" separator, typically two empty strings
----@field left string[]? Separators used for elements designated as being on the left of the statusline
----@field right string[]? Separators used for elements designated as being on the right of the statusline
----@field center string[]? Separators used for elements designated as being in the center of the statusline
----@field tab string[]? Separators used for tabs rendered in the tabline
----@field breadcrumbs string? Separator used in between symbols in the breadcrumbs
----@field path string? Separator used in between symbols in a file path
-
----@class AstroUIWinbar
----@field enabled table<BufMatcherKinds, BufMatcherPattern[]>? Buffer matching patterns for whitelisting buffers to enable winbar
----@field disabled table<BufMatcherKinds, BufMatcherPattern[]>? Buffer matching patterns for blacklisting buffers from enabling winbar
-
----@class AstroUIStatusOpts
----Configure attributes of components defined in the `status` API. Check the AstroNvim documentation for a complete list of color names, this applies to colors that have `_fg` and/or `_bg` names with the suffix removed (ex. `git_branch_fg` as attributes from `git_branch`).
----Example:
----
----```lua
----attributes = {
----  git_branch = { bold = true },
----}
----```
----@field attributes table<string,table>?
----Configure colors of components defined in the `status` API. Check the AstroNvim documentation for a complete list of color names.
----Example:
----
----```lua
----colors = {
----  git_branch_fg = "#ABCDEF",
----}
----```
----@field colors (StringMap|(fun(colors:StringMap):StringMap?))?
----**MEANT FOR INTERNAL USE ONLY**
----A table of fallback colors if a colorscheme used by the user does not have a highlight group, the entry point to this are typically through the `status.colors` option.
----@field fallback_colors StringMap?
----Configure which icons that are highlighted based on context
----Example:
----
----```lua
----icon_highlights = {
----  breadcrumbs = false,
----  file_icon = {
----    tabline = function(self) return self.is_active or self.is_visible end,
----    statusline = true,
----  }
----}
----```
----@field icon_highlights AstroUIIconHighlights?
----**MEANT FOR INTERNAL USE ONLY**
----Conversion table of vim mode text to readable text and color name to be used
----Example:
----
----```lua
----modes = {
----  ["n"] = {
----    "NORMAL", -- readable name
----    "normal", -- color name
----  },
----  ["no"] = {
----    "OP",     -- readable name
----    "normal", -- color name
----  }
----}
----```
----@field modes table<string,string[]>?
----Configure characters used as separators for various elements
----Example:
----
----```lua
----separators = {
----  none = { "", "" },
----  left = { "", "  " },
----  right = { "  ", "" },
----  center = { "  ", "  " },
----  tab = { "", "" },
----  breadcrumbs = "  ",
----  path = "  ",
----}
----```
----@field separators AstroUISeparators?
----Configure when winbar is enabled/disabled
----@field winbar AstroUIWinbar?
----**MEANT FOR INTERNAL USE ONLY**
----Function used for setting up colors in Heirline, the entry point to this are typically through the `status.colors` option.
----@field setup_colors (fun():StringMap)?
----**MEANT FOR INTERNAL USE ONLY**
----A collection of click handlers for internal heirline components such as `gitsigns`, `diagnostics`, and `dap`
----@field sign_handlers table<string,fun(args:table)>?
 
 ---@class AstroUIOpts
 ---Colorscheme set on startup, a string that is used with `:colorscheme astrodark`
@@ -131,6 +51,16 @@
 ---colorscheme = "astrodark"
 ---```
 ---@field colorscheme string?
+---Configure how folding works
+---Example:
+---
+---```lua
+---folding = {
+---  enabled = function(bufnr) return require("astrocore.buffer").is_valid(bufnr) end,
+---  methods = { "lsp", "treesitter", "indent" },
+---}
+---```
+---@field folding AstroUIFoldingOpts|false?
 ---Override highlights in any colorscheme
 ---Keys can be:
 ---  `init`: table of highlights to apply to all colorschemes
@@ -218,20 +148,11 @@
 ---@type AstroUIOpts
 local M = {
   colorscheme = nil,
+  folding = {},
   highlights = {},
   icons = {},
   text_icons = {},
-  status = {
-    attributes = {},
-    colors = {},
-    fallback_colors = {},
-    icon_highlights = {},
-    modes = {},
-    separators = {},
-    setup_colors = nil,
-    sign_handlers = {},
-    winbar = {},
-  },
+  status = require "astroui.status.config",
   lazygit = false,
 }
 
