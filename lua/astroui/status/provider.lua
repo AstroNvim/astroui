@@ -25,7 +25,7 @@ local status_utils = require "astroui.status.utils"
 function M.fill() return "%=" end
 
 --- A provider function for the signcolumn string
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderSigncolumnOpts provider options
 ---@return string # the statuscolumn string for adding the signcolumn
 -- @usage local heirline_component = { provider = require("astroui.status").provider.signcolumn }
 -- @see astroui.status.utils.stylize
@@ -48,7 +48,7 @@ local function resolve_sign(bufnr, lnum)
 end
 
 --- A provider function for the numbercolumn string
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderNumbercolumnOpts provider options
 ---@return function # the statuscolumn string for adding the numbercolumn
 -- @usage local heirline_component = { provider = require("astroui.status").provider.numbercolumn }
 -- @see astroui.status.utils.stylize
@@ -71,7 +71,7 @@ function M.numbercolumn(opts)
     else
       local cur = relnum and (rnum > 0 and rnum or (num and lnum or 0)) or lnum
       if opts.thousands and cur > 999 then
-        cur = cur:reverse():gsub("%d%d%d", "%1" .. opts.thousands):reverse():gsub("^%" .. opts.thousands, "")
+        cur = tostring(cur):reverse():gsub("%d%d%d", "%1" .. opts.thousands):reverse():gsub("^%" .. opts.thousands, "")
       end
       str = (rnum == 0 and not opts.culright and relnum) and cur .. "%=" or "%=" .. cur
     end
@@ -80,7 +80,7 @@ function M.numbercolumn(opts)
 end
 
 --- A provider function for building a foldcolumn
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFoldcolumnOpts provider options
 ---@return function # a custom foldcolumn function for the statuscolumn that doesn't show the nest levels
 -- @usage local heirline_component = { provider = require("astroui.status").provider.foldcolumn }
 -- @see astroui.status.utils.stylize
@@ -126,7 +126,7 @@ function M.foldcolumn(opts)
   end
 end
 
---- A provider function for the current tab numbre
+--- A provider function for the current tab number
 ---@return function # the statusline function to return a string for a tab number
 -- @usage local heirline_component = { provider = require("astroui.status").provider.tabnr() }
 function M.tabnr()
@@ -134,7 +134,7 @@ function M.tabnr()
 end
 
 --- A provider function for showing if spellcheck is on
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderSpellOpts provider options
 ---@return function # the function for outputting if spell is enabled
 -- @usage local heirline_component = { provider = require("astroui.status").provider.spell() }
 -- @see astroui.status.utils.stylize
@@ -144,7 +144,7 @@ function M.spell(opts)
 end
 
 --- A provider function for showing if paste is enabled
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderPasteOpts provider options
 ---@return function # the function for outputting if paste is enabled
 -- @usage local heirline_component = { provider = require("astroui.status").provider.paste() }
 -- @see astroui.status.utils.stylize
@@ -156,7 +156,7 @@ function M.paste(opts)
 end
 
 --- A provider function for displaying if a macro is currently being recorded
----@param opts? table a prefix before the recording register and options passed to the stylize function
+---@param opts? AstroUIProviderMacroRecordingOpts provider options
 ---@return function # a function that returns a string of the current recording status
 -- @usage local heirline_component = { provider = require("astroui.status").provider.macro_recording() }
 -- @see astroui.status.utils.stylize
@@ -170,7 +170,7 @@ function M.macro_recording(opts)
 end
 
 --- A provider function for displaying the current command
----@param opts? table of options passed to the stylize function
+---@param opts? AstroUIProviderShowcmdOpts provider options
 ---@return string # the statusline string for showing the current command
 -- @usage local heirline_component = { provider = require("astroui.status").provider.showcmd() }
 -- @see astroui.status.utils.stylize
@@ -180,7 +180,7 @@ function M.showcmd(opts)
 end
 
 --- A provider function for displaying the current search count
----@param opts? table options for `vim.fn.searchcount` and options passed to the stylize function
+---@param opts? AstroUIProviderSearchCountOpts provider options
 ---@return function # a function that returns a string of the current search location
 -- @usage local heirline_component = { provider = require("astroui.status").provider.search_count() }
 -- @see astroui.status.utils.stylize
@@ -205,7 +205,7 @@ function M.search_count(opts)
 end
 
 --- A provider function for showing the text of the current vim mode
----@param opts? table options for padding the text and options passed to the stylize function
+---@param opts? AstroUIProviderModeTextOpts provider options
 ---@return function # the function for displaying the text of the current vim mode
 -- @usage local heirline_component = { provider = require("astroui.status").provider.mode_text() }
 -- @see astroui.status.utils.stylize
@@ -230,7 +230,7 @@ function M.mode_text(opts)
 end
 
 --- A provider function for showing the percentage of the current location in a document
----@param opts? table options for Top/Bot text, fixed width, and options passed to the stylize function
+---@param opts? AstroUIProviderPercentageOpts provider options
 ---@return function # the statusline string for displaying the percentage of current document location
 -- @usage local heirline_component = { provider = require("astroui.status").provider.percentage() }
 -- @see astroui.status.utils.stylize
@@ -251,7 +251,7 @@ function M.percentage(opts)
 end
 
 --- A provider function for showing the current line and character in a document
----@param opts? table options for padding the line and character locations and options passed to the stylize function
+---@param opts? AstroUIProviderRulerOpts provider options
 ---@return function # the statusline string for showing location in document line_num:char_num
 -- @usage local heirline_component = { provider = require("astroui.status").provider.ruler({ pad_ruler = { line = 3, char = 2 } }) }
 -- @see astroui.status.utils.stylize
@@ -266,13 +266,13 @@ function M.ruler(opts)
 end
 
 --- A provider function for showing the current location as a scrollbar
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderScrollbarOpts provider options
 ---@return function # the function for outputting the scrollbar
 -- @usage local heirline_component = { provider = require("astroui.status").provider.scrollbar() }
 -- @see astroui.status.utils.stylize
 function M.scrollbar(opts)
   opts = extend_tbl(vim.tbl_get(config, "providers", "scrollbar"), opts)
-  local sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
+  local sbar = opts.chars
   return function()
     local curr_line = vim.api.nvim_win_get_cursor(0)[1]
     local lines = vim.api.nvim_buf_line_count(0)
@@ -282,7 +282,7 @@ function M.scrollbar(opts)
 end
 
 --- A provider to simply show a close button icon
----@param opts? table options passed to the stylize function and the kind of icon to use
+---@param opts? AstroUIProviderCloseButtonOpts provider options
 ---@return string # the stylized icon
 -- @usage local heirline_component = { provider = require("astroui.status").provider.close_button() }
 -- @see astroui.status.utils.stylize
@@ -292,7 +292,7 @@ function M.close_button(opts)
 end
 
 --- A provider function for showing the current filetype
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFiletypeOpts provider options
 ---@return function  # the function for outputting the filetype
 -- @usage local heirline_component = { provider = require("astroui.status").provider.filetype() }
 -- @see astroui.status.utils.stylize
@@ -302,7 +302,7 @@ function M.filetype(opts)
 end
 
 --- A provider function for showing the current filename
----@param opts? table options for argument to fnamemodify to format filename and options passed to the stylize function
+---@param opts? AstroUIProviderFilenameOpts provider options
 ---@return function # the function for outputting the filename
 -- @usage local heirline_component = { provider = require("astroui.status").provider.filename() }
 -- @see astroui.status.utils.stylize
@@ -315,7 +315,7 @@ function M.filename(opts)
 end
 
 --- A provider function for showing the current file encoding
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFileEncodingOpts provider options
 ---@return function  # the function for outputting the file encoding
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_encoding() }
 -- @see astroui.status.utils.stylize
@@ -328,7 +328,7 @@ function M.file_encoding(opts)
 end
 
 --- A provider function for showing the current file format
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFileFormatOpts provider options
 ---@return function  # the function for outputting the file format
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_format() }
 -- @see astroui.status.utils.stylize
@@ -341,7 +341,7 @@ function M.file_format(opts)
 end
 
 --- Get a unique filepath between all buffers
----@param opts? table options for function to get the buffer name, a buffer number, max length, and options passed to the stylize function
+---@param opts? AstroUIProviderUniquePathOpts provider options
 ---@return function # path to file that uniquely identifies each buffer
 -- @usage local heirline_component = { provider = require("astroui.status").provider.unique_path() }
 -- @see astroui.status.utils.stylize
@@ -385,7 +385,7 @@ function M.unique_path(opts)
 end
 
 --- A provider function for showing if the current file is modifiable
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFileModifiedOpts provider options
 ---@return function # the function for outputting the indicator if the file is modified
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_modified() }
 -- @see astroui.status.utils.stylize
@@ -395,7 +395,7 @@ function M.file_modified(opts)
 end
 
 --- A provider function for showing if the current file is read-only
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFileReadOnlyOpts provider options
 ---@return function # the function for outputting the indicator if the file is read-only
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_read_only() }
 -- @see astroui.status.utils.stylize
@@ -405,7 +405,7 @@ function M.file_read_only(opts)
 end
 
 --- A provider function for showing the current filetype icon
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderFileIconOpts provider options
 ---@return function # the function for outputting the filetype icon
 -- @usage local heirline_component = { provider = require("astroui.status").provider.file_icon() }
 -- @see astroui.status.utils.stylize
@@ -415,7 +415,7 @@ function M.file_icon(opts)
 end
 
 --- A provider function for showing the current git branch
----@param opts table options passed to the stylize function
+---@param opts? AstroUIProviderGitBranchOpts provider options
 ---@return function # the function for outputting the git branch
 -- @usage local heirline_component = { provider = require("astroui.status").provider.git_branch() }
 -- @see astroui.status.utils.stylize
@@ -427,7 +427,7 @@ end
 local minidiff_types = { added = "add", changed = "change", removed = "delete" }
 
 --- A provider function for showing the current git diff count of a specific type
----@param opts? table options for type of git diff and options passed to the stylize function
+---@param opts? AstroUIProviderGitDiffOpts provider options
 ---@return function|nil # the function for outputting the git diff
 -- @usage local heirline_component = { provider = require("astroui.status").provider.git_diff({ type = "added" }) }
 -- @see astroui.status.utils.stylize
@@ -446,7 +446,7 @@ function M.git_diff(opts)
 end
 
 --- A provider function for showing the current diagnostic count of a specific severity
----@param opts table options for severity of diagnostic and options passed to the stylize function
+---@param opts? AstroUIProviderDiagnosticsOpts provider options
 ---@return function|nil # the function for outputting the diagnostic count
 -- @usage local heirline_component = { provider = require("astroui.status").provider.diagnostics({ severity = "ERROR" }) }
 -- @see astroui.status.utils.stylize
@@ -461,7 +461,7 @@ function M.diagnostics(opts)
 end
 
 --- A provider function for showing the current progress of loading language servers
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderLspProgressOpts provider options
 ---@return function # the function for outputting the LSP progress
 -- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_progress() }
 -- @see astroui.status.utils.stylize
@@ -483,7 +483,7 @@ function M.lsp_progress(opts)
 end
 
 --- A provider function for showing the connected LSP client names
----@param opts? table options for explanding null_ls clients, max width percentage, and options passed to the stylize function
+---@param opts? AstroUIProviderLspClientNamesOpts provider options
 ---@return function # the function for outputting the LSP client names
 -- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }) }
 -- @see astroui.status.utils.stylize
@@ -547,7 +547,7 @@ function M.lsp_client_names(opts)
 end
 
 --- A provider function for showing the current virtual environment name
----@param opts table options passed to the stylize function
+---@param opts? AstroUIProviderVirtualEnvOpts provider options
 ---@return function # the function for outputting the virtual environment
 -- @usage local heirline_component = { provider = require("astroui.status").provider.virtual_env() }
 -- @see astroui.status.utils.stylize
@@ -569,7 +569,7 @@ function M.virtual_env(opts)
 end
 
 --- A provider function for showing if treesitter is connected
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderTreesitterStatusOpts provider options
 ---@return function # function for outputting TS if treesitter is connected
 -- @usage local heirline_component = { provider = require("astroui.status").provider.treesitter_status() }
 -- @see astroui.status.utils.stylize
@@ -581,7 +581,7 @@ function M.treesitter_status(opts)
 end
 
 --- A provider function for displaying a single string
----@param opts? table options passed to the stylize function
+---@param opts? AstroUIProviderStrOpts provider options
 ---@return string # the stylized statusline string
 -- @usage local heirline_component = { provider = require("astroui.status").provider.str({ str = "Hello" }) }
 -- @see astroui.status.utils.stylize
