@@ -11,6 +11,12 @@
 ---@field left integer? number of spaces to pad to the left
 ---@field right integer? number of spaces to pad to the right
 
+---@class AstroUIStatusSurround
+---@field separator string|string[]? the separator index to use in the `separators` table
+---@field color (fun(self: table): string|table)|string|table? the color to use as the separator foreground/component background
+---@field condition (boolean|fun(self: table): boolean?)? the condition for displaying the surrounded component
+---@field update AstroUIUpdateEvents? control updating of separators, either a list of events or true to update freely
+
 ---@class AstroUIStatusIcon
 ---@field kind string? the icon name as set in the AstroUI icons
 ---@field padding AstroUIStatusPadding? padding settings to apply to the icon
@@ -98,7 +104,7 @@
 ---@class AstroUIProviderLspProgressOpts: AstroUIStatusStylizeOpts
 
 ---@class AstroUIProviderLspClientNamesOpts: AstroUIStatusStylizeOpts
----@field integrations { null_ls: boolean?, conform: boolean?, nvim-lint: boolean? } enable or disable client name integrations
+---@field integrations { null_ls: boolean?, conform: boolean?, nvim-lint: boolean? }? enable or disable client name integrations
 ---@field mappings { [string]: (string|fun(client: string): string)? }? add custom client name mappings ("*" will apply to all as a fallback)
 ---@field truncate number? percentage of statusline of the maximum width before truncation with ellipsis
 
@@ -143,6 +149,113 @@
 ---@field treesitter_status AstroUIProviderTreesitterStatusOpts? default options for the `treesitter_status` provider
 ---@field str AstroUIProviderStrOpts? default options for the `str` provider
 
+---@class AstroUIInitBreadcrumbsOpts
+---@field max_depth integer? the maximum depth of breadcrumbs to show moving upwards
+---@field separator string? the string to use when separating breadcrumbs
+---@field icon { enabled: boolean?, hl: boolean? }? enable/disable icon and it's semantic highlighting
+---@field padding AstroUIStatusPadding? padding options for the component
+
+---@class AstroUIInitSeparatedPathOpts
+---@field max_depth integer? the maximum depth of breadcrumbs to show moving upwards
+---@field path_func (fun(self: table): string)? the function for calculating the path to separate
+---@field delimiter string? the string used when splitting the path into pieces
+---@field separator string? the string to use for the path separator
+---@field prefix boolean? whether or not to apply a prefix of the separator at the start of the path
+---@field suffix boolean? whether or not to apply a suffix of the separator at the end of the path
+---@field padding AstroUIStatusPadding? padding options for the component
+
+---@class AstroUIComponentBuilderProviderOpts
+---@field provider (fun(self: table): string?)|string a statusline provider function or the name of an AstroUI status provider
+---@field opts table? a table of options to provide to the provider if the provider is an AstroUI status provider
+
+---Configuration of the component building. Other keys are supported which are all keys which are allowed inside of a Heirline statusline component. See the `heirline` documentation for more details
+---@class AstroUIComponentBuilderOpts
+---@field padding AstroUIStatusPadding|false? padding options for final component
+---@field surround AstroUIStatusSurround|false? surround options for final component
+---@field [integer] AstroUIComponentBuilderProviderOpts? table of providers to include in the final component in an ordered list. Must provide a `provider` key
+
+---@class AstroUIComponentFileInfoOpts: AstroUIComponentBuilderOpts
+---@field file_icon AstroUIProviderFileIconOpts|false? `file_icon` provider options
+---@field unique_path AstroUIProviderUniquePathOpts|false? `unique_path` provider options
+---@field filename AstroUIProviderFilenameOpts|false? `filename` provider options
+---@field filetype AstroUIProviderFiletypeOpts|false? `filetype` provider options
+---@field file_modified AstroUIProviderFileModifiedOpts|false? `file_modified` provider options
+---@field file_read_only AstroUIProviderFileReadOnlyOpts|false? `file_read_only` provider options
+---@field close_button AstroUIProviderCloseButtonOpts|false? `close_button` provider options
+
+---@class AstroUIComponentTablineFileInfoOpts: AstroUIComponentFileInfoOpts
+
+---@class AstroUIComponentNavOpts: AstroUIComponentBuilderOpts
+---@field ruler AstroUIProviderRulerOpts|false? `ruler` provider options
+---@field percentage AstroUIProviderPercentageOpts|false? `percentage` provider options
+---@field scrollbar AstroUIProviderScrollbarOpts|false? `scrollbar` provider options
+
+---@class AstroUIComponentCmdInfoOpts: AstroUIComponentBuilderOpts
+---@field macro_recording AstroUIProviderMacroRecordingOpts|false? `macro_recording` provider options
+---@field search_count AstroUIProviderSearchCountOpts|false? `search_count` provider options
+---@field showcmd AstroUIProviderShowcmdOpts|false? `showcmd` provider options
+
+---@class AstroUIComponentModeOpts: AstroUIComponentBuilderOpts
+---@field mode_text AstroUIProviderModeTextOpts|false? `mode_text` provider options
+---@field str AstroUIProviderStrOpts|false? `str` provider options
+---@field paste AstroUIProviderPasteOpts|false? `paste` provider options
+---@field spell AstroUIProviderSpellOpts|false? `spell` provider options
+
+---@class AstroUIComponentBreadcrumbsOpts: AstroUIInitBreadcrumbsOpts
+
+---@class AstroUIComponentSeparatedPathOpts: AstroUIInitSeparatedPathOpts
+
+---@class AstroUIComponentGitBranchOpts: AstroUIComponentBuilderOpts
+---@field git_branch AstroUIProviderGitBranchOpts|false? `git_branch` provider options
+
+---@class AstroUIComponentGitDiffOpts: AstroUIComponentBuilderOpts
+---@field added AstroUIProviderGitDiffOpts|false? `git_diff` provider options for added git differences
+---@field changed AstroUIProviderGitDiffOpts|false? `git_diff` provider options for changed git differences
+---@field removed AstroUIProviderGitDiffOpts|false? `git_diff` provider options for removed git differences
+
+---@class AstroUIComponentDiagnosticsOpts: AstroUIComponentBuilderOpts
+---@field ERROR AstroUIProviderDiagnosticsOpts|false? `diagnostics` provider options for errors
+---@field WARN AstroUIProviderDiagnosticsOpts|false? `diagnostics` provider options for warnings
+---@field INFO AstroUIProviderDiagnosticsOpts|false? `diagnostics` provider options for information
+---@field HINT AstroUIProviderDiagnosticsOpts|false? `diagnostics` provider options for hints
+
+---@class AstroUIComponentTreesitterOpts: AstroUIComponentBuilderOpts
+---@field str AstroUIProviderStrOpts|false? `str` provider options for when treesitter is available
+
+---@class AstroUIComponentLspOpts: AstroUIComponentBuilderOpts
+---@field lsp_progress AstroUIProviderLspProgressOpts|false? `lsp_progress` provider options
+---@field lsp_client_names AstroUIProviderLspClientNamesOpts|false? `lsp_client_names` provider options
+
+---@class AstroUIComponentVirtualEnvOpts: AstroUIComponentBuilderOpts
+---@field virtual_env AstroUIProviderVirtualEnvOpts|false? `virtual_env` provider options
+
+---@class AstroUIComponentFoldcolumnOpts: AstroUIComponentBuilderOpts
+---@field foldcolumn AstroUIProviderFoldcolumnOpts|false? `foldcolumn` provider options
+
+---@class AstroUIComponentNumbercolumnOpts: AstroUIComponentBuilderOpts
+---@field numbercolumn AstroUIProviderNumbercolumnOpts|false? `numbercolumn` provider options
+
+---@class AstroUIComponentSigncolumnOpts: AstroUIComponentBuilderOpts
+---@field signcolumn AstroUIProviderSigncolumnOpts|false? `signcolumn` provider options
+
+---@class AstroUIComponents
+---@field file_info AstroUIComponentFileInfoOpts? default options for the `file_info` component
+---@field tabline_file_info AstroUIComponentTablineFileInfoOpts? default options for the `tabline_file_info` component
+---@field nav AstroUIComponentNavOpts? default options for the `nav` component
+---@field cmd_info AstroUIComponentCmdInfoOpts? default options for the `cmd_info` component
+---@field mode AstroUIComponentModeOpts? default options for the `mode` component
+---@field breadcrumbs AstroUIComponentBreadcrumbsOpts? default options for the `breadcrumbs` component
+---@field separated_path AstroUIComponentSeparatedPathOpts? default options for the `separated_path` component
+---@field git_branch AstroUIComponentGitBranchOpts? default options for the `git_branch` component
+---@field git_diff AstroUIComponentGitDiffOpts? default options for the `git_diff` component
+---@field diagnostics AstroUIComponentDiagnosticsOpts? default options for the `diagnostics` component
+---@field treesitter AstroUIComponentTreesitterOpts? default options for the `treesitter` component
+---@field lsp AstroUIComponentLspOpts? default options for the `lsp` component
+---@field virtual_env AstroUIComponentVirtualEnvOpts? default options for the `virtual_env` component
+---@field foldcolumn AstroUIComponentFoldcolumnOpts? default options for the `foldcolumn` component
+---@field numbercolumn AstroUIComponentNumbercolumnOpts? default options for the `numbercolumn` component
+---@field signcolumn AstroUIComponentSigncolumnOpts? default options for the `signcolumn` component
+
 ---@class AstroUISeparators
 ---@field none string[]? placeholder separator for elements with "no" separator, typically two empty strings
 ---@field left string[]? Separators used for elements designated as being on the left of the statusline
@@ -185,7 +298,7 @@
 ---  }
 ---}
 ---```
----@field components table?
+---@field components AstroUIComponents?
 ---**MEANT FOR INTERNAL USE ONLY**
 ---A table of fallback colors if a colorscheme used by the user does not have a highlight group, the entry point to this are typically through the `status.colors` option.
 ---@field fallback_colors StringMap?

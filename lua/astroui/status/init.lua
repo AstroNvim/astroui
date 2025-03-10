@@ -19,7 +19,7 @@ local provider = require "astroui.status.provider"
 local status_utils = require "astroui.status.utils"
 
 --- An `init` function to build a set of children components for LSP breadcrumbs
----@param opts? table # options for configuring the breadcrumbs (default: `{ max_depth = 5, separator = "  ", icon = { enabled = true, hl = false }, padding = { left = 0, right = 0 } }`)
+---@param opts? AstroUIInitBreadcrumbsOpts component init options
 ---@return function # The Heirline init function
 -- @usage local heirline_component = { init = require("astroui.status").init.breadcrumbs { padding = { left = 1 } } }
 function M.breadcrumbs(opts)
@@ -80,7 +80,7 @@ function M.breadcrumbs(opts)
 end
 
 --- An `init` function to build a set of children components for a separated path to file
----@param opts? table options for configuring the breadcrumbs (default: `{ max_depth = 3, path_func = provider.unique_path(), delimiter = "/", separator = "  ", suffix = true, padding = { left = 0, right = 0 } }`)
+---@param opts? AstroUIInitSeparatedPathOpts component init options
 ---@return function # The Heirline init function
 -- @usage local heirline_component = { init = require("astroui.status").init.separated_path { padding = { left = 1 } } }
 function M.separated_path(opts)
