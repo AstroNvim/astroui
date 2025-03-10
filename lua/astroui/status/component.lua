@@ -27,7 +27,7 @@ function M.fill(opts)
 end
 
 --- A function to build a set of children components for an entire file information section
----@param opts? table options for configuring file_icon, filename, filetype, file_modified, file_read_only, and the overall padding
+---@param opts? AstroUIComponentFileInfoOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.file_info()
 function M.file_info(opts)
@@ -44,7 +44,7 @@ function M.file_info(opts)
 end
 
 --- A function with different file_info defaults specifically for use in the tabline
----@param opts? table options for configuring file_icon, filename, filetype, file_modified, file_read_only, and the overall padding
+---@param opts? AstroUIComponentTablineFileInfoOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.tabline_file_info()
 function M.tabline_file_info(opts)
@@ -52,7 +52,7 @@ function M.tabline_file_info(opts)
 end
 
 --- A function to build a set of children components for an entire navigation section
----@param opts? table options for configuring ruler, percentage, scrollbar, and the overall padding
+---@param opts? AstroUIComponentNavOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.nav()
 function M.nav(opts)
@@ -61,7 +61,7 @@ function M.nav(opts)
 end
 
 --- A function to build a set of children components for information shown in the cmdline
----@param opts? table options for configuring macro recording, search count, and the overall padding
+---@param opts? AstroUIComponentCmdInfoOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.cmd_info()
 function M.cmd_info(opts)
@@ -70,7 +70,7 @@ function M.cmd_info(opts)
 end
 
 --- A function to build a set of children components for a mode section
----@param opts? table options for configuring mode_text, paste, spell, and the overall padding
+---@param opts? AstroUIComponentModeOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.mode { mode_text = true }
 function M.mode(opts)
@@ -80,7 +80,7 @@ function M.mode(opts)
 end
 
 --- A function to build a set of children components for an LSP breadcrumbs section
----@param opts? table options for configuring breadcrumbs and the overall padding
+---@param opts? AstroUIComponentBreadcrumbsOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.breadcrumbs()
 function M.breadcrumbs(opts)
@@ -90,7 +90,7 @@ function M.breadcrumbs(opts)
 end
 
 --- A function to build a set of children components for the current file path
----@param opts? table options for configuring path and the overall padding
+---@param opts? AstroUIComponentSeparatedPathOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.separated_path()
 function M.separated_path(opts)
@@ -100,7 +100,7 @@ function M.separated_path(opts)
 end
 
 --- A function to build a set of children components for a git branch section
----@param opts? table options for configuring git branch and the overall padding
+---@param opts? AstroUIComponentGitBranchOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.git_branch()
 function M.git_branch(opts)
@@ -109,7 +109,7 @@ function M.git_branch(opts)
 end
 
 --- A function to build a set of children components for a git difference section
----@param opts? table options for configuring git changes and the overall padding
+---@param opts? AstroUIComponentGitDiffOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.git_diff()
 function M.git_diff(opts)
@@ -126,7 +126,7 @@ function M.git_diff(opts)
 end
 
 --- A function to build a set of children components for a diagnostics section
----@param opts? table options for configuring diagnostic providers and the overall padding
+---@param opts? AstroUIComponentDiagnosticsOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.diagnostics()
 function M.diagnostics(opts)
@@ -143,7 +143,7 @@ function M.diagnostics(opts)
 end
 
 --- A function to build a set of children components for a Treesitter section
----@param opts? table options for configuring diagnostic providers and the overall padding
+---@param opts? AstroUIComponentTreesitterOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.treesitter()
 function M.treesitter(opts)
@@ -152,7 +152,7 @@ function M.treesitter(opts)
 end
 
 --- A function to build a set of children components for an LSP section
----@param opts? table options for configuring lsp progress and client_name providers and the overall padding
+---@param opts? AstroUIComponentLspOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.lsp()
 function M.lsp(opts)
@@ -173,7 +173,7 @@ function M.lsp(opts)
 end
 
 --- A function to build a set of children components for a git branch section
----@param opts? table options for configuring git branch and the overall padding
+---@param opts? AstroUIComponentVirtualEnvOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.git_branch()
 function M.virtual_env(opts)
@@ -182,7 +182,7 @@ function M.virtual_env(opts)
 end
 
 --- A function to build a set of components for a foldcolumn section in a statuscolumn
----@param opts? table options for configuring foldcolumn and the overall padding
+---@param opts? AstroUIComponentFoldcolumnOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.foldcolumn()
 function M.foldcolumn(opts)
@@ -191,7 +191,7 @@ function M.foldcolumn(opts)
 end
 
 --- A function to build a set of components for a numbercolumn section in statuscolumn
----@param opts? table options for configuring numbercolumn and the overall padding
+---@param opts? AstroUIComponentNumbercolumnOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.numbercolumn()
 function M.numbercolumn(opts)
@@ -200,7 +200,7 @@ function M.numbercolumn(opts)
 end
 
 --- A function to build a set of components for a signcolumn section in statuscolumn
----@param opts? table options for configuring signcolumn and the overall padding
+---@param opts? AstroUIComponentSigncolumnOpts provider options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").component.signcolumn()
 function M.signcolumn(opts)
@@ -209,7 +209,7 @@ function M.signcolumn(opts)
 end
 
 --- A general function to build a section of astronvim status providers with highlights, conditions, and section surrounding
----@param opts? table a list of components to build into a section
+---@param opts? AstroUIComponentBuilderOpts component builder options
 ---@return table # The Heirline component table
 -- @usage local heirline_component = require("astroui.status").components.builder({ { provider = "file_icon", opts = { padding = { right = 1 } } }, { provider = "filename" } })
 function M.builder(opts)
