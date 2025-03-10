@@ -7,6 +7,142 @@
 -- copyright 2023
 -- license GNU General Public License v3.0
 
+---@class AstroUIStatusPadding
+---@field left integer? number of spaces to pad to the left
+---@field right integer? number of spaces to pad to the right
+
+---@class AstroUIStatusIcon
+---@field kind string? the icon name as set in the AstroUI icons
+---@field padding AstroUIStatusPadding? padding settings to apply to the icon
+
+---@class AstroUIStatusStylizeOpts
+---@field padding AstroUIStatusPadding? padding settings to apply to the string
+---@field separator { left: string?, right: string? }? the separator characters to the left and right of the string
+---@field escape boolean? whether to escape the provided string for special character handling or to return the string as is
+---@field show_empty boolean? whether to show empty strings with padding and separators or just return and empty string
+---@field icon AstroUIStatusIcon? icon settings to prepend to the string
+
+---@class AstroUIProviderSigncolumnOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderNumbercolumnOpts: AstroUIStatusStylizeOpts
+---@field thousands string|false? a string separator for numbers >= 1,000
+---@field culright boolean? whether to right align the current line number
+
+---@class AstroUIProviderFoldcolumnOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderSpellOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderPasteOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderMacroRecordingOpts: AstroUIStatusStylizeOpts
+---@field prefix string? a character to prefix before a register
+
+---@class AstroUIProviderShowcmdOpts: AstroUIStatusStylizeOpts
+---@field minwid integer? minimum width
+---@field maxwid integer? maximum width
+
+---@class AstroUIProviderSearchCountOpts: AstroUIStatusStylizeOpts
+---@field recompute boolean? Always recompute when calculating search (default: True)
+---@field pattern string? Specify a pattern (default: `@/`)
+---@field timeout integer? timeout in milliseconds, negative or 0 is no timeout (default: 0)
+---@field maxcount integer? limit of matches, negative or 0 is no limit (default: 0)
+---@field pos integer[]? position list ([lnum, col, off]) see `:h cursor()` for details (default: current position)
+
+---@class AstroUIProviderModeTextOpts: AstroUIStatusStylizeOpts
+---@field pad_text "right"|"left"|"center"|false? alignment of mode text
+
+---@class AstroUIProviderPercentageOpts: AstroUIStatusStylizeOpts
+---@field edge_text boolean? whether to show "Top"/"Bot" when on the first/last line
+
+---@class AstroUIProviderRulerOpts: AstroUIStatusStylizeOpts
+---@field pad_ruler { line: integer?, char: integer? }? padding to apply to line and character values
+
+---@class AstroUIProviderScrollbarOpts: AstroUIStatusStylizeOpts
+---@field chars string[]? characters to use for the scrollbar, ordered from bottom to top
+
+---@class AstroUIProviderCloseButtonOpts: AstroUIStatusStylizeOpts
+---@field kind string? the icon kind to use for the close button as defined in AstroUI icons
+
+---@class AstroUIProviderFiletypeOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderFilenameOpts: AstroUIStatusStylizeOpts
+---@field fname (fun(bufnr: integer): string)? function for calculating the buffer name
+---@field modify string? modifiers to pass to `fnamemodify` on final path
+---@field fallback string? Fallback string for when a buffer does not have a filename
+
+---@class AstroUIProviderFileEncodingOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderFileFormatOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderUniquePathOpts: AstroUIStatusStylizeOpts
+---@field bufnr integer? the buffer number to fallback to if not provided to provider function
+---@field buf_name (fun(bufnr: integer): string)? function for calculating buffer name
+---@field max_length integer? maximum length before truncating with ellipsis
+
+---@class AstroUIProviderFileModifiedOpts: AstroUIStatusStylizeOpts
+---@field str string? the string to display when file is modified
+
+---@class AstroUIProviderFileReadOnlyOpts: AstroUIStatusStylizeOpts
+---@field str string? the string to display when file is read only
+
+---@class AstroUIProviderFileIconOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderGitBranchOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderGitDiffOpts: AstroUIStatusStylizeOpts
+---@field type "added"|"changed"|"removed"? the type of diff to display
+
+---@class AstroUIProviderDiagnosticsOpts: AstroUIStatusStylizeOpts
+---@field severity "ERROR"|"WARN"|"INFO"|"HINT"? the diagnostic severity to display
+
+---@class AstroUIProviderLspProgressOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderLspClientNamesOpts: AstroUIStatusStylizeOpts
+---@field integrations { null_ls: boolean?, conform: boolean?, nvim-lint: boolean? } enable or disable client name integrations
+---@field mappings { [string]: (string|fun(client: string): string)? }? add custom client name mappings ("*" will apply to all as a fallback)
+---@field truncate number? percentage of statusline of the maximum width before truncation with ellipsis
+
+---@class AstroUIProviderVirtualEnvOpts: AstroUIStatusStylizeOpts
+---@field env_names string[]? base environment names to replace with the project directory name
+---@field conda { enabled: boolean?, ignore_base: boolean? }? enable/disable conda environments and base conda environment
+---@field format (fun(env: string): string)? function to customize formatting of environment name
+
+---@class AstroUIProviderTreesitterStatusOpts: AstroUIStatusStylizeOpts
+
+---@class AstroUIProviderStrOpts: AstroUIStatusStylizeOpts
+---@field str string the static string to display
+
+---@class AstroUIProviders
+---@field signcolumn AstroUIProviderSigncolumnOpts? default options for the `signcolumn` provider
+---@field numbercolumn AstroUIProviderNumbercolumnOpts? default options for the `numbercolumn` provider
+---@field foldcolumn AstroUIProviderSigncolumnOpts? default options for the `foldcolumn` provider
+---@field spell AstroUIProviderSpellOpts? default options for the `spell` provider
+---@field paste AstroUIProviderSpellOpts? default options for the `paste` provider
+---@field macro_recording AstroUIProviderMacroRecordingOpts? default options for the `macro_recording` provider
+---@field showcmd AstroUIProviderShowcmdOpts? default options for the `showcmd` provider
+---@field search_count AstroUIProviderSearchCountOpts? default options for the `search_count` provider
+---@field mode_text AstroUIProviderModeTextOpts? default options for the `mode_text` provider
+---@field percentage AstroUIProviderPercentageOpts? default options for the `percentage` provider
+---@field ruler AstroUIProviderRulerOpts? default options for the `ruler` provider
+---@field scrollbar AstroUIProviderScrollbarOpts? default options for the `scrollbar` provider
+---@field close_button AstroUIProviderCloseButtonOpts? default options for the `close_button` provider
+---@field filetype AstroUIProviderFiletypeOpts? default options for the `filetype` provider
+---@field filename AstroUIProviderFilenameOpts? default options for the `filename` provider
+---@field file_encoding AstroUIProviderFileEncodingOpts? default options for the `file_encoding` provider
+---@field file_format AstroUIProviderFileFormatOpts? default options for the `file_format` provider
+---@field unique_path AstroUIProviderUniquePathOpts? default options for the `unique_path` provider
+---@field file_modified AstroUIProviderFileModifiedOpts? default options for the `file_modified` provider
+---@field file_read_only AstroUIProviderFileReadOnlyOpts? default options for the `file_read_only` provider
+---@field file_icon AstroUIProviderFileIconOpts? default options for the `file_icon` provider
+---@field git_branch AstroUIProviderGitBranchOpts? default options for the `git_branch` provider
+---@field git_diff AstroUIProviderGitDiffOpts? default options for the `git_diff` provider
+---@field diagnostics AstroUIProviderDiagnosticsOpts? default options for the `diagnostics` provider
+---@field lsp_progress AstroUIProviderLspProgressOpts? default options for the `lsp_progress` provider
+---@field lsp_client_names AstroUIProviderLspClientNamesOpts? default options for the `lsp_client_names` provider
+---@field virtual_env AstroUIProviderVirtualEnvOpts? default options for the `virtual_env` provider
+---@field treesitter_status AstroUIProviderTreesitterStatusOpts? default options for the `treesitter_status` provider
+---@field str AstroUIProviderStrOpts? default options for the `str` provider
+
 ---@class AstroUISeparators
 ---@field none string[]? placeholder separator for elements with "no" separator, typically two empty strings
 ---@field left string[]? Separators used for elements designated as being on the left of the statusline
@@ -95,7 +231,7 @@
 ---  }
 ---}
 ---```
----@field providers table?
+---@field providers AstroUIProviders?
 ---Configure characters used as separators for various elements
 ---Example:
 ---
@@ -464,6 +600,7 @@ return {
     mode_text = { pad_text = false },
     percentage = { escape = false, fixed_width = true, edge_text = true },
     ruler = { pad_ruler = { line = 3, char = 2 } },
+    scrollbar = { chars = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" } },
     close_button = { kind = "BufferClose" },
     filename = {
       fallback = "Untitled",

@@ -53,18 +53,19 @@ end
 
 --- Add left and/or right padding to a string
 ---@param str string the string to add padding to
----@param padding table a table of the format `{ left = 0, right = 0}` that defines the number of spaces to include to the left and the right of the string
+---@param padding AstroUIStatusPadding a table of the format `{ left = 0, right = 0}` that defines the number of spaces to include to the left and the right of the string
 ---@return string # the padded string
 function M.pad_string(str, padding)
   padding = padding or {}
   return str and str ~= "" and (" "):rep(padding.left or 0) .. str .. (" "):rep(padding.right or 0) or ""
 end
 
+---@param str string the string to escape
 local function escape(str) return str:gsub("%%", "%%%%") end
 
 --- A utility function to stylize a string with an icon from lspkind, separators, and left/right padding
 ---@param str? string the string to stylize
----@param opts? table options of `{ padding = { left = 0, right = 0 }, separator = { left = "|", right = "|" }, escape = true, show_empty = false, icon = { kind = "NONE", padding = { left = 0, right = 0 } } }`
+---@param opts? AstroUIStatusStylizeOpts options for stylizing the string
 ---@return string # the stylized string
 -- @usage local string = require("astroui.status").utils.stylize("Hello", { padding = { left = 1, right = 1 }, icon = { kind = "String" } })
 function M.stylize(str, opts)
