@@ -11,7 +11,7 @@ AstroUI provides a simple API for configuring and setting up the user interface 
 ## ⚡️ Requirements
 
 - Neovim >= 0.10
-- [astrocore][astrocore] (_optional_)
+- [astrocore][astrocore]
 
 ## 📦 Installation
 
@@ -27,19 +27,25 @@ Install the plugin with your plugin manager of choice:
   opts = {
     -- set configuration options  as described below
   }
+  specs = {
+    {
+      "AstroNvim/astrocore",
+      opts = {},
+    }
+  }
 }
 ```
 
 [**packer.nvim**](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use({
-  "AstroNvim/astroui",
-})
+use "AstroNvim/astrocore"
+use "AstroNvim/astroui"
 
-require("astroui").setup({
+require("astroui").setup {
   -- set configuration options  as described below
-})
+}
+require("astrocore").setup() -- setup AstroCore after AstroUI
 ```
 
 ## ⚙️ Configuration
