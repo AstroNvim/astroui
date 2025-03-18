@@ -36,6 +36,14 @@ function M.setup(opts)
   require("astroui.lazygit").setup()
 end
 
+--- Set the configured colorscheme
+function M.set_colorscheme()
+  local colorscheme = M.config.colorscheme
+  if colorscheme and not pcall(vim.cmd.colorscheme, colorscheme) then
+    require("astrocore").notify(("Error setting up colorscheme: `%s`"):format(colorscheme), vim.log.levels.ERROR)
+  end
+end
+
 --- Get highlight properties for a given highlight name
 ---@param name string The highlight group name
 ---@param fallback? table The fallback highlight properties
