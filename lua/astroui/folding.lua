@@ -85,6 +85,20 @@ function M.info(bufnr)
   require("astrocore").notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "AstroNvim Folding" })
 end
 
+-- TODO: remove helper function when dropping support for Neovim v0.10
+
+---@param client vim.lsp.Client
+---@param method string
+---@param bufnr? integer
+local function supports_method(client, method, bufnr)
+  if vim.fn.has "nvim-0.11" == 1 then
+    return client:supports_method(method, bufnr)
+  else
+    ---@diagnostic disable-next-line: param-type-mismatch
+    return client.supports_method(method, { bufnr = bufnr })
+  end
+end
+
 function M.setup()
   vim.api.nvim_create_user_command("AstroFoldInfo", function() M.info() end, { desc = "Display folding information" })
   -- TODO: remove check when dropping support for Neovim v0.10
@@ -95,7 +109,7 @@ function M.setup()
       group = augroup,
       callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-        if client.supports_method "textDocument/foldingRange" then lsp_bufs[args.buf] = true end
+        if supports_method(client, "textDocument/foldingRange", args.buf) then lsp_bufs[args.buf] = true end
       end,
     })
     vim.api.nvim_create_autocmd("LspDetach", {
@@ -104,7 +118,9 @@ function M.setup()
       callback = function(args)
         if not vim.api.nvim_buf_is_valid(args.buf) then return end
         for _, client in pairs(vim.lsp.get_clients { bufnr = args.buf }) do
-          if client.id ~= args.data.client_id and client.supports_method "textDocument/foldingRange" then return end
+          if client.id ~= args.data.client_id and supports_method(client, "textDocument/foldingRange", args.buf) then
+            return
+          end
         end
         lsp_bufs[args.buf] = nil
       end,
