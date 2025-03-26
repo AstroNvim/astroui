@@ -1,5 +1,36 @@
 # Changelog
 
+## [3.0.0](https://github.com/AstroNvim/astroui/compare/v2.8.0...v3.0.0) (2025-03-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* leave `colorscheme` up to be set up later
+* require Neovim v0.10+
+
+### Features
+
+* add `folding` module with custom `foldexpr` function ([d8963a2](https://github.com/AstroNvim/astroui/commit/d8963a2feb11616083574c3b0756ec9b319b0109))
+* add `set_colorscheme` helper function ([d196e30](https://github.com/AstroNvim/astroui/commit/d196e30a6706e2a1cf8d1da1690869aff40162ff))
+* **folding:** add `:AstroFoldInfo` command for checking the current fold information ([730bda9](https://github.com/AstroNvim/astroui/commit/730bda93f2f020d8fa96740eb0b24e389bcb8861))
+* **folding:** add configuration for folding ([85241fc](https://github.com/AstroNvim/astroui/commit/85241fc80c1d23774c5ae28651e8952a02402f86))
+* **folding:** add fallback to indentation based folding ([6863bce](https://github.com/AstroNvim/astroui/commit/6863bced6fd3860c474fe3e6893b50b7c423c4cb))
+* **status:** allow configuration of default status component options through the setup function ([2247b44](https://github.com/AstroNvim/astroui/commit/2247b441e60454af6c4ae2a8734a2596924f2716))
+* **status:** allow configuration of status provider options through `setup` function ([195b649](https://github.com/AstroNvim/astroui/commit/195b649dcffddea7950081f7520e937a400a7b6f))
+
+
+### Bug Fixes
+
+* **folding:** make treesitter folding backwards compatible with Neovim v0.10 ([a282ec7](https://github.com/AstroNvim/astroui/commit/a282ec79ec2611843407c02e22f3f0a1a5928f4a))
+* **status:** remove old `diagnostics_mode` check ([95e3171](https://github.com/AstroNvim/astroui/commit/95e31716e37129e423275b6ee5abcf24508793f3))
+* update to use non-deprecated LSP client methods in Neovim v0.11 ([07cf995](https://github.com/AstroNvim/astroui/commit/07cf995f92043f565e3b9d7e2b6a475d8183c261))
+
+
+### Code Refactoring
+
+* leave `colorscheme` up to be set up later ([706439a](https://github.com/AstroNvim/astroui/commit/706439a9fd55d23ea8bfdfc3f2acd25b3bb08858))
+* require Neovim v0.10+ ([80c0f84](https://github.com/AstroNvim/astroui/commit/80c0f84a86731c73d7b6aa768ce031bf62ededec))
+
 ## [2.8.0](https://github.com/AstroNvim/astroui/compare/v2.7.0...v2.8.0) (2025-03-05)
 
 
