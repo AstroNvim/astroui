@@ -57,6 +57,15 @@ function astroui.get_spinner(kind: string, ...any)
 
 *return* `spinners` — A collected table of spinning icons in sequential order or nil if none exist
 
+### set_colorscheme
+
+
+```lua
+function astroui.set_colorscheme()
+```
+
+ Set the configured colorscheme
+
 ### setup
 
 
@@ -73,13 +82,13 @@ function astroui.setup(opts: AstroUIOpts)
 
 
 ```lua
-function astroui.status.component.breadcrumbs(opts?: table)
+function astroui.status.component.breadcrumbs(opts?: AstroUIComponentBreadcrumbsOpts)
   -> table
 ```
 
  A function to build a set of children components for an LSP breadcrumbs section
 
-*param* `opts` — options for configuring breadcrumbs and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -89,13 +98,13 @@ function astroui.status.component.breadcrumbs(opts?: table)
 
 
 ```lua
-function astroui.status.component.builder(opts?: table)
+function astroui.status.component.builder(opts?: AstroUIComponentBuilderOpts)
   -> table
 ```
 
  A general function to build a section of astronvim status providers with highlights, conditions, and section surrounding
 
-*param* `opts` — a list of components to build into a section
+*param* `opts` — component builder options
 
 *return* — The Heirline component table
 
@@ -105,13 +114,13 @@ function astroui.status.component.builder(opts?: table)
 
 
 ```lua
-function astroui.status.component.cmd_info(opts?: table)
+function astroui.status.component.cmd_info(opts?: AstroUIComponentCmdInfoOpts)
   -> table
 ```
 
  A function to build a set of children components for information shown in the cmdline
 
-*param* `opts` — options for configuring macro recording, search count, and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -121,13 +130,13 @@ function astroui.status.component.cmd_info(opts?: table)
 
 
 ```lua
-function astroui.status.component.diagnostics(opts?: table)
+function astroui.status.component.diagnostics(opts?: AstroUIComponentDiagnosticsOpts)
   -> table
 ```
 
  A function to build a set of children components for a diagnostics section
 
-*param* `opts` — options for configuring diagnostic providers and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -137,13 +146,13 @@ function astroui.status.component.diagnostics(opts?: table)
 
 
 ```lua
-function astroui.status.component.file_info(opts?: table)
+function astroui.status.component.file_info(opts?: AstroUIComponentFileInfoOpts)
   -> table
 ```
 
  A function to build a set of children components for an entire file information section
 
-*param* `opts` — options for configuring file_icon, filename, filetype, file_modified, file_read_only, and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -169,13 +178,13 @@ function astroui.status.component.fill(opts?: table)
 
 
 ```lua
-function astroui.status.component.foldcolumn(opts?: table)
+function astroui.status.component.foldcolumn(opts?: AstroUIComponentFoldcolumnOpts)
   -> table
 ```
 
  A function to build a set of components for a foldcolumn section in a statuscolumn
 
-*param* `opts` — options for configuring foldcolumn and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -185,13 +194,13 @@ function astroui.status.component.foldcolumn(opts?: table)
 
 
 ```lua
-function astroui.status.component.git_branch(opts?: table)
+function astroui.status.component.git_branch(opts?: AstroUIComponentGitBranchOpts)
   -> table
 ```
 
  A function to build a set of children components for a git branch section
 
-*param* `opts` — options for configuring git branch and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -201,13 +210,13 @@ function astroui.status.component.git_branch(opts?: table)
 
 
 ```lua
-function astroui.status.component.git_diff(opts?: table)
+function astroui.status.component.git_diff(opts?: AstroUIComponentGitDiffOpts)
   -> table
 ```
 
  A function to build a set of children components for a git difference section
 
-*param* `opts` — options for configuring git changes and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -217,13 +226,13 @@ function astroui.status.component.git_diff(opts?: table)
 
 
 ```lua
-function astroui.status.component.lsp(opts?: table)
+function astroui.status.component.lsp(opts?: AstroUIComponentLspOpts)
   -> table
 ```
 
  A function to build a set of children components for an LSP section
 
-*param* `opts` — options for configuring lsp progress and client_name providers and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -233,13 +242,13 @@ function astroui.status.component.lsp(opts?: table)
 
 
 ```lua
-function astroui.status.component.mode(opts?: table)
+function astroui.status.component.mode(opts?: AstroUIComponentModeOpts)
   -> table
 ```
 
  A function to build a set of children components for a mode section
 
-*param* `opts` — options for configuring mode_text, paste, spell, and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -249,13 +258,13 @@ function astroui.status.component.mode(opts?: table)
 
 
 ```lua
-function astroui.status.component.nav(opts?: table)
+function astroui.status.component.nav(opts?: AstroUIComponentNavOpts)
   -> table
 ```
 
  A function to build a set of children components for an entire navigation section
 
-*param* `opts` — options for configuring ruler, percentage, scrollbar, and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -265,13 +274,13 @@ function astroui.status.component.nav(opts?: table)
 
 
 ```lua
-function astroui.status.component.numbercolumn(opts?: table)
+function astroui.status.component.numbercolumn(opts?: AstroUIComponentNumbercolumnOpts)
   -> table
 ```
 
  A function to build a set of components for a numbercolumn section in statuscolumn
 
-*param* `opts` — options for configuring numbercolumn and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -281,13 +290,13 @@ function astroui.status.component.numbercolumn(opts?: table)
 
 
 ```lua
-function astroui.status.component.separated_path(opts?: table)
+function astroui.status.component.separated_path(opts?: AstroUIComponentSeparatedPathOpts)
   -> table
 ```
 
  A function to build a set of children components for the current file path
 
-*param* `opts` — options for configuring path and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -297,13 +306,13 @@ function astroui.status.component.separated_path(opts?: table)
 
 
 ```lua
-function astroui.status.component.signcolumn(opts?: table)
+function astroui.status.component.signcolumn(opts?: AstroUIComponentSigncolumnOpts)
   -> table
 ```
 
  A function to build a set of components for a signcolumn section in statuscolumn
 
-*param* `opts` — options for configuring signcolumn and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -313,13 +322,13 @@ function astroui.status.component.signcolumn(opts?: table)
 
 
 ```lua
-function astroui.status.component.tabline_file_info(opts?: table)
+function astroui.status.component.tabline_file_info(opts?: AstroUIComponentTablineFileInfoOpts)
   -> table
 ```
 
  A function with different file_info defaults specifically for use in the tabline
 
-*param* `opts` — options for configuring file_icon, filename, filetype, file_modified, file_read_only, and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -329,13 +338,13 @@ function astroui.status.component.tabline_file_info(opts?: table)
 
 
 ```lua
-function astroui.status.component.treesitter(opts?: table)
+function astroui.status.component.treesitter(opts?: AstroUIComponentTreesitterOpts)
   -> table
 ```
 
  A function to build a set of children components for a Treesitter section
 
-*param* `opts` — options for configuring diagnostic providers and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -345,13 +354,13 @@ function astroui.status.component.treesitter(opts?: table)
 
 
 ```lua
-function astroui.status.component.virtual_env(opts?: table)
+function astroui.status.component.virtual_env(opts?: AstroUIComponentVirtualEnvOpts)
   -> table
 ```
 
  A function to build a set of children components for a git branch section
 
-*param* `opts` — options for configuring git branch and the overall padding
+*param* `opts` — provider options
 
 *return* — The Heirline component table
 
@@ -379,7 +388,7 @@ function astroui.status.condition.aerial_available()
 
 
 ```lua
-function astroui.status.condition.buffer_matches(patterns: table<"bufname"|"buftype"|"filetype", string|string[]>, bufnr?: integer, op?: "and"|"or")
+function astroui.status.condition.buffer_matches(patterns: table<BufMatcherKinds, BufMatcherPatterns>, bufnr?: integer, op?: "and"|"or")
   -> boolean
 ```
 
@@ -807,13 +816,13 @@ function astroui.status.hl.mode_bg()
 
 
 ```lua
-function astroui.status.init.breadcrumbs(opts?: table)
+function astroui.status.init.breadcrumbs(opts?: AstroUIInitBreadcrumbsOpts)
   -> function
 ```
 
  An `init` function to build a set of children components for LSP breadcrumbs
 
-*param* `opts` — options for configuring the breadcrumbs (default: `{ max_depth = 5, separator = "  ", icon = { enabled = true, hl = false }, padding = { left = 0, right = 0 } }`)
+*param* `opts` — component init options
 
 *return* — The Heirline init function
 
@@ -823,13 +832,13 @@ function astroui.status.init.breadcrumbs(opts?: table)
 
 
 ```lua
-function astroui.status.init.separated_path(opts?: table)
+function astroui.status.init.separated_path(opts?: AstroUIInitSeparatedPathOpts)
   -> function
 ```
 
  An `init` function to build a set of children components for a separated path to file
 
-*param* `opts` — options for configuring the breadcrumbs (default: `{ max_depth = 3, path_func = provider.unique_path(), delimiter = "/", separator = "  ", suffix = true, padding = { left = 0, right = 0 } }`)
+*param* `opts` — component init options
 
 *return* — The Heirline init function
 
@@ -839,7 +848,7 @@ function astroui.status.init.separated_path(opts?: table)
 
 
 ```lua
-function astroui.status.init.update_events(opts: AstroUIUpdateEvent|AstroUIUpdateEvent[])
+function astroui.status.init.update_events(opts: AstroUIUpdateEvents)
   -> function
 ```
 
@@ -858,13 +867,13 @@ function astroui.status.init.update_events(opts: AstroUIUpdateEvent|AstroUIUpdat
 
 
 ```lua
-function astroui.status.provider.close_button(opts?: table)
+function astroui.status.provider.close_button(opts?: AstroUIProviderCloseButtonOpts)
   -> string
 ```
 
  A provider to simply show a close button icon
 
-*param* `opts` — options passed to the stylize function and the kind of icon to use
+*param* `opts` — provider options
 
 *return* — the stylized icon
 
@@ -875,13 +884,13 @@ function astroui.status.provider.close_button(opts?: table)
 
 
 ```lua
-function astroui.status.provider.diagnostics(opts: table)
+function astroui.status.provider.diagnostics(opts?: AstroUIProviderDiagnosticsOpts)
   -> function|nil
 ```
 
  A provider function for showing the current diagnostic count of a specific severity
 
-*param* `opts` — options for severity of diagnostic and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the diagnostic count
 
@@ -892,13 +901,13 @@ function astroui.status.provider.diagnostics(opts: table)
 
 
 ```lua
-function astroui.status.provider.file_encoding(opts?: table)
+function astroui.status.provider.file_encoding(opts?: AstroUIProviderFileEncodingOpts)
   -> function
 ```
 
  A provider function for showing the current file encoding
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the file encoding
 
@@ -909,13 +918,13 @@ function astroui.status.provider.file_encoding(opts?: table)
 
 
 ```lua
-function astroui.status.provider.file_format(opts?: table)
+function astroui.status.provider.file_format(opts?: AstroUIProviderFileFormatOpts)
   -> function
 ```
 
  A provider function for showing the current file format
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the file format
 
@@ -926,13 +935,13 @@ function astroui.status.provider.file_format(opts?: table)
 
 
 ```lua
-function astroui.status.provider.file_icon(opts?: table)
+function astroui.status.provider.file_icon(opts?: AstroUIProviderFileIconOpts)
   -> function
 ```
 
  A provider function for showing the current filetype icon
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the filetype icon
 
@@ -943,13 +952,13 @@ function astroui.status.provider.file_icon(opts?: table)
 
 
 ```lua
-function astroui.status.provider.file_modified(opts?: table)
+function astroui.status.provider.file_modified(opts?: AstroUIProviderFileModifiedOpts)
   -> function
 ```
 
  A provider function for showing if the current file is modifiable
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the indicator if the file is modified
 
@@ -960,13 +969,13 @@ function astroui.status.provider.file_modified(opts?: table)
 
 
 ```lua
-function astroui.status.provider.file_read_only(opts?: table)
+function astroui.status.provider.file_read_only(opts?: AstroUIProviderFileReadOnlyOpts)
   -> function
 ```
 
  A provider function for showing if the current file is read-only
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the indicator if the file is read-only
 
@@ -977,13 +986,13 @@ function astroui.status.provider.file_read_only(opts?: table)
 
 
 ```lua
-function astroui.status.provider.filename(opts?: table)
+function astroui.status.provider.filename(opts?: AstroUIProviderFilenameOpts)
   -> function
 ```
 
  A provider function for showing the current filename
 
-*param* `opts` — options for argument to fnamemodify to format filename and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the filename
 
@@ -994,13 +1003,13 @@ function astroui.status.provider.filename(opts?: table)
 
 
 ```lua
-function astroui.status.provider.filetype(opts?: table)
+function astroui.status.provider.filetype(opts?: AstroUIProviderFiletypeOpts)
   -> function
 ```
 
  A provider function for showing the current filetype
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the filetype
 
@@ -1025,13 +1034,13 @@ function astroui.status.provider.fill()
 
 
 ```lua
-function astroui.status.provider.foldcolumn(opts?: table)
+function astroui.status.provider.foldcolumn(opts?: AstroUIProviderFoldcolumnOpts)
   -> function
 ```
 
  A provider function for building a foldcolumn
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — a custom foldcolumn function for the statuscolumn that doesn't show the nest levels
 
@@ -1042,13 +1051,13 @@ function astroui.status.provider.foldcolumn(opts?: table)
 
 
 ```lua
-function astroui.status.provider.git_branch(opts: table)
+function astroui.status.provider.git_branch(opts?: AstroUIProviderGitBranchOpts)
   -> function
 ```
 
  A provider function for showing the current git branch
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the git branch
 
@@ -1059,13 +1068,13 @@ function astroui.status.provider.git_branch(opts: table)
 
 
 ```lua
-function astroui.status.provider.git_diff(opts?: table)
+function astroui.status.provider.git_diff(opts?: AstroUIProviderGitDiffOpts)
   -> function|nil
 ```
 
  A provider function for showing the current git diff count of a specific type
 
-*param* `opts` — options for type of git diff and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the git diff
 
@@ -1076,13 +1085,13 @@ function astroui.status.provider.git_diff(opts?: table)
 
 
 ```lua
-function astroui.status.provider.lsp_client_names(opts?: table)
+function astroui.status.provider.lsp_client_names(opts?: AstroUIProviderLspClientNamesOpts)
   -> function
 ```
 
  A provider function for showing the connected LSP client names
 
-*param* `opts` — options for explanding null_ls clients, max width percentage, and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the LSP client names
 
@@ -1093,13 +1102,13 @@ function astroui.status.provider.lsp_client_names(opts?: table)
 
 
 ```lua
-function astroui.status.provider.lsp_progress(opts?: table)
+function astroui.status.provider.lsp_progress(opts?: AstroUIProviderLspProgressOpts)
   -> function
 ```
 
  A provider function for showing the current progress of loading language servers
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the LSP progress
 
@@ -1110,13 +1119,13 @@ function astroui.status.provider.lsp_progress(opts?: table)
 
 
 ```lua
-function astroui.status.provider.macro_recording(opts?: table)
+function astroui.status.provider.macro_recording(opts?: AstroUIProviderMacroRecordingOpts)
   -> function
 ```
 
  A provider function for displaying if a macro is currently being recorded
 
-*param* `opts` — a prefix before the recording register and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — a function that returns a string of the current recording status
 
@@ -1127,13 +1136,13 @@ function astroui.status.provider.macro_recording(opts?: table)
 
 
 ```lua
-function astroui.status.provider.mode_text(opts?: table)
+function astroui.status.provider.mode_text(opts?: AstroUIProviderModeTextOpts)
   -> function
 ```
 
  A provider function for showing the text of the current vim mode
 
-*param* `opts` — options for padding the text and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for displaying the text of the current vim mode
 
@@ -1144,13 +1153,13 @@ function astroui.status.provider.mode_text(opts?: table)
 
 
 ```lua
-function astroui.status.provider.numbercolumn(opts?: table)
+function astroui.status.provider.numbercolumn(opts?: AstroUIProviderNumbercolumnOpts)
   -> function
 ```
 
  A provider function for the numbercolumn string
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the statuscolumn string for adding the numbercolumn
 
@@ -1161,13 +1170,13 @@ function astroui.status.provider.numbercolumn(opts?: table)
 
 
 ```lua
-function astroui.status.provider.paste(opts?: table)
+function astroui.status.provider.paste(opts?: AstroUIProviderPasteOpts)
   -> function
 ```
 
  A provider function for showing if paste is enabled
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting if paste is enabled
 
@@ -1178,13 +1187,13 @@ function astroui.status.provider.paste(opts?: table)
 
 
 ```lua
-function astroui.status.provider.percentage(opts?: table)
+function astroui.status.provider.percentage(opts?: AstroUIProviderPercentageOpts)
   -> function
 ```
 
  A provider function for showing the percentage of the current location in a document
 
-*param* `opts` — options for Top/Bot text, fixed width, and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the statusline string for displaying the percentage of current document location
 
@@ -1195,13 +1204,13 @@ function astroui.status.provider.percentage(opts?: table)
 
 
 ```lua
-function astroui.status.provider.ruler(opts?: table)
+function astroui.status.provider.ruler(opts?: AstroUIProviderRulerOpts)
   -> function
 ```
 
  A provider function for showing the current line and character in a document
 
-*param* `opts` — options for padding the line and character locations and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the statusline string for showing location in document line_num:char_num
 
@@ -1212,13 +1221,13 @@ function astroui.status.provider.ruler(opts?: table)
 
 
 ```lua
-function astroui.status.provider.scrollbar(opts?: table)
+function astroui.status.provider.scrollbar(opts?: AstroUIProviderScrollbarOpts)
   -> function
 ```
 
  A provider function for showing the current location as a scrollbar
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the scrollbar
 
@@ -1229,13 +1238,13 @@ function astroui.status.provider.scrollbar(opts?: table)
 
 
 ```lua
-function astroui.status.provider.search_count(opts?: table)
+function astroui.status.provider.search_count(opts?: AstroUIProviderSearchCountOpts)
   -> function
 ```
 
  A provider function for displaying the current search count
 
-*param* `opts` — options for `vim.fn.searchcount` and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — a function that returns a string of the current search location
 
@@ -1246,13 +1255,13 @@ function astroui.status.provider.search_count(opts?: table)
 
 
 ```lua
-function astroui.status.provider.showcmd(opts?: table)
+function astroui.status.provider.showcmd(opts?: AstroUIProviderShowcmdOpts)
   -> string
 ```
 
  A provider function for displaying the current command
 
-*param* `opts` — of options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the statusline string for showing the current command
 
@@ -1263,13 +1272,13 @@ function astroui.status.provider.showcmd(opts?: table)
 
 
 ```lua
-function astroui.status.provider.signcolumn(opts?: table)
+function astroui.status.provider.signcolumn(opts?: AstroUIProviderSigncolumnOpts)
   -> string
 ```
 
  A provider function for the signcolumn string
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the statuscolumn string for adding the signcolumn
 
@@ -1280,13 +1289,13 @@ function astroui.status.provider.signcolumn(opts?: table)
 
 
 ```lua
-function astroui.status.provider.spell(opts?: table)
+function astroui.status.provider.spell(opts?: AstroUIProviderSpellOpts)
   -> function
 ```
 
  A provider function for showing if spellcheck is on
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting if spell is enabled
 
@@ -1297,13 +1306,13 @@ function astroui.status.provider.spell(opts?: table)
 
 
 ```lua
-function astroui.status.provider.str(opts?: table)
+function astroui.status.provider.str(opts?: AstroUIProviderStrOpts)
   -> string
 ```
 
  A provider function for displaying a single string
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the stylized statusline string
 
@@ -1318,7 +1327,7 @@ function astroui.status.provider.tabnr()
   -> function
 ```
 
- A provider function for the current tab numbre
+ A provider function for the current tab number
 
 *return* — the statusline function to return a string for a tab number
 
@@ -1328,13 +1337,13 @@ function astroui.status.provider.tabnr()
 
 
 ```lua
-function astroui.status.provider.treesitter_status(opts?: table)
+function astroui.status.provider.treesitter_status(opts?: AstroUIProviderTreesitterStatusOpts)
   -> function
 ```
 
  A provider function for showing if treesitter is connected
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — function for outputting TS if treesitter is connected
 
@@ -1345,13 +1354,13 @@ function astroui.status.provider.treesitter_status(opts?: table)
 
 
 ```lua
-function astroui.status.provider.unique_path(opts?: table)
+function astroui.status.provider.unique_path(opts?: AstroUIProviderUniquePathOpts)
   -> function
 ```
 
  Get a unique filepath between all buffers
 
-*param* `opts` — options for function to get the buffer name, a buffer number, max length, and options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — path to file that uniquely identifies each buffer
 
@@ -1362,13 +1371,13 @@ function astroui.status.provider.unique_path(opts?: table)
 
 
 ```lua
-function astroui.status.provider.virtual_env(opts: table)
+function astroui.status.provider.virtual_env(opts?: AstroUIProviderVirtualEnvOpts)
   -> function
 ```
 
  A provider function for showing the current virtual environment name
 
-*param* `opts` — options passed to the stylize function
+*param* `opts` — provider options
 
 *return* — the function for outputting the virtual environment
 
@@ -1480,7 +1489,7 @@ function astroui.status.utils.null_ls_sources(params: table)
 
 
 ```lua
-function astroui.status.utils.pad_string(str: string, padding: table)
+function astroui.status.utils.pad_string(str: string, padding: AstroUIStatusPadding)
   -> string
 ```
 
@@ -1538,7 +1547,7 @@ function astroui.status.utils.statuscolumn_clickargs(self: any, minwid: any, cli
 
 
 ```lua
-function astroui.status.utils.stylize(str?: string, opts?: table)
+function astroui.status.utils.stylize(str?: string, opts?: AstroUIStatusStylizeOpts)
   -> string
 ```
 
@@ -1546,7 +1555,7 @@ function astroui.status.utils.stylize(str?: string, opts?: table)
 
 *param* `str` — the string to stylize
 
-*param* `opts` — options of `{ padding = { left = 0, right = 0 }, separator = { left = "|", right = "|" }, escape = true, show_empty = false, icon = { kind = "NONE", padding = { left = 0, right = 0 } } }`
+*param* `opts` — options for stylizing the string
 
 *return* — the stylized string
 
@@ -1556,7 +1565,7 @@ function astroui.status.utils.stylize(str?: string, opts?: table)
 
 
 ```lua
-function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: AstroUIUpdateEvent|AstroUIUpdateEvent[])
+function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: AstroUIUpdateEvents)
   -> table
 ```
 
