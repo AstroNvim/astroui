@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.3](https://github.com/AstroNvim/astroui/compare/v3.0.2...v3.0.3) (2025-03-31)
+
+
+### Bug Fixes
+
+* **folding:** wait until `nvim-treesitter` is loaded to cache parser value ([238a8ea](https://github.com/AstroNvim/astroui/commit/238a8eaf185bcab7acb86bfa8251a7b513e97669))
+
 ## [3.0.2](https://github.com/AstroNvim/astroui/compare/v3.0.1...v3.0.2) (2025-03-31)
 
 
