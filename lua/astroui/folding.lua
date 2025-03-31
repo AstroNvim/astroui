@@ -109,7 +109,12 @@ function M.setup()
       group = augroup,
       callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-        if supports_method(client, "textDocument/foldingRange", args.buf) then lsp_bufs[args.buf] = true end
+        if supports_method(client, "textDocument/foldingRange", args.buf) then
+          -- HACK: start with a single `foldexpr` call as this helps with restoring sessions
+          if vim.api.nvim_buf_call(args.buf, function() return vim.lsp.foldexpr(1) end) then
+            lsp_bufs[args.buf] = true
+          end
+        end
       end,
     })
     vim.api.nvim_create_autocmd("LspDetach", {
