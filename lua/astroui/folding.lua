@@ -12,13 +12,17 @@ local config = require("astroui").config.folding
 
 local is_setup = false
 local lsp_bufs = {}
+local ts_bufs = {}
 
 local fold_methods = {
   lsp = function(lnum, bufnr)
     if lsp_bufs[bufnr or vim.api.nvim_get_current_buf()] then return vim.lsp.foldexpr(lnum) end
   end,
   treesitter = function(lnum, bufnr)
-    if vim.bo.filetype and pcall(vim.treesitter.get_parser, bufnr) then return vim.treesitter.foldexpr(lnum) end
+    if ts_bufs[bufnr] == nil then
+      ts_bufs[bufnr] = vim.bo.filetype and pcall(vim.treesitter.get_parser, bufnr) or false
+    end
+    if ts_bufs[bufnr] then return vim.treesitter.foldexpr(lnum) end
   end,
   indent = function(lnum, bufnr)
     if not lnum then lnum = vim.v.lnum end
