@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/AstroNvim/astroui/compare/v3.0.0...v3.0.1) (2025-03-31)
+
+
+### Bug Fixes
+
+* **folding:** prime lsp buffers with a single `vim.lsp.foldexpr` call ([91cb3a7](https://github.com/AstroNvim/astroui/commit/91cb3a751dd7a39768d82dead8ba4fbf57ee458c))
+
 ## [3.0.0](https://github.com/AstroNvim/astroui/compare/v2.8.0...v3.0.0) (2025-03-26)
 
 
