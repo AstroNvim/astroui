@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/AstroNvim/astroui/compare/v3.0.3...v3.1.0) (2025-04-04)
+
+
+### Features
+
+* **status:** add `bufnr` provider and add to `fileinfo` component ([961df85](https://github.com/AstroNvim/astroui/commit/961df851ab00d3a3c342305b6754ccf06c92b0f3))
+
+
+### Bug Fixes
+
+* **status:** check for fg and bg color to exist ([66d1afe](https://github.com/AstroNvim/astroui/commit/66d1afe74d6424b02e5e6216b7a587e7474d9259))
+
 ## [3.0.3](https://github.com/AstroNvim/astroui/compare/v3.0.2...v3.0.3) (2025-03-31)
 
 
