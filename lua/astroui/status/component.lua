@@ -34,6 +34,7 @@ function M.file_info(opts)
   opts = extend_tbl(vim.tbl_get(config, "components", "file_info"), opts)
   return M.builder(status_utils.setup_providers(opts, {
     "file_icon",
+    "bufnr",
     "unique_path",
     "filename",
     "filetype",

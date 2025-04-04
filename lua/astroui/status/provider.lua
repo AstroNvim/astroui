@@ -301,6 +301,21 @@ function M.filetype(opts)
   return function(self) return status_utils.stylize(vim.bo[self and self.bufnr or 0].filetype, opts) end
 end
 
+--- A provider function for showing the buffer number
+---@param opts? AstroUIProviderBufnrOpts provider options
+---@return function  # the function for outputting the buffer number
+-- @usage local heirline_component = { provider = require("astroui.status").provider.bufnr() }
+-- @see astroui.status.utils.stylize
+function M.bufnr(opts)
+  opts = extend_tbl(vim.tbl_get(config, "providers", "bufnr"), opts)
+  return function(self)
+    return status_utils.stylize(
+      tostring(self and self.bufnr or vim.api.nvim_get_current_buf()) .. (opts.suffix or ""),
+      opts
+    )
+  end
+end
+
 --- A provider function for showing the current filename
 ---@param opts? AstroUIProviderFilenameOpts provider options
 ---@return function # the function for outputting the filename

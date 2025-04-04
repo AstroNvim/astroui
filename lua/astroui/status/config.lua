@@ -71,6 +71,9 @@
 
 ---@class AstroUIProviderFiletypeOpts: AstroUIStatusStylizeOpts
 
+---@class AstroUIProviderBufnrOpts: AstroUIStatusStylizeOpts
+---@field suffix string? string to append after the buffer number
+
 ---@class AstroUIProviderFilenameOpts: AstroUIStatusStylizeOpts
 ---@field fname (fun(bufnr: integer): string)? function for calculating the buffer name
 ---@field modify string? modifiers to pass to `fnamemodify` on final path
@@ -133,6 +136,7 @@
 ---@field scrollbar AstroUIProviderScrollbarOpts? default options for the `scrollbar` provider
 ---@field close_button AstroUIProviderCloseButtonOpts? default options for the `close_button` provider
 ---@field filetype AstroUIProviderFiletypeOpts? default options for the `filetype` provider
+---@field bufnr AstroUIProviderBufnrOpts? default options for the `bufnr` provider
 ---@field filename AstroUIProviderFilenameOpts? default options for the `filename` provider
 ---@field file_encoding AstroUIProviderFileEncodingOpts? default options for the `file_encoding` provider
 ---@field file_format AstroUIProviderFileFormatOpts? default options for the `file_format` provider
@@ -379,6 +383,7 @@ return {
         hl = function(self) return require("astroui.status.hl").file_icon "statusline"(self) end,
         padding = { left = 1, right = 1 },
       },
+      bufnr = false,
       filename = false,
       filetype = {},
       file_modified = {
@@ -715,6 +720,7 @@ return {
     ruler = { pad_ruler = { line = 3, char = 2 } },
     scrollbar = { chars = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" } },
     close_button = { kind = "BufferClose" },
+    bufnr = { suffix = "." },
     filename = {
       fallback = "Untitled",
       fname = function(bufnr) return vim.api.nvim_buf_get_name(bufnr) end,
