@@ -388,7 +388,7 @@ function astroui.status.condition.aerial_available()
 
 
 ```lua
-function astroui.status.condition.buffer_matches(patterns: table<"bufname"|"buftype"|"filetype", string|string[]>, bufnr?: integer, op?: "and"|"or")
+function astroui.status.condition.buffer_matches(patterns: table<BufMatcherKinds, BufMatcherPatterns>, bufnr?: integer, op?: "and"|"or")
   -> boolean
 ```
 
@@ -848,7 +848,7 @@ function astroui.status.init.separated_path(opts?: AstroUIInitSeparatedPathOpts)
 
 
 ```lua
-function astroui.status.init.update_events(opts: AstroUIUpdateEvent|AstroUIUpdateEvent[])
+function astroui.status.init.update_events(opts: AstroUIUpdateEvents)
   -> function
 ```
 
@@ -862,6 +862,23 @@ function astroui.status.init.update_events(opts: AstroUIUpdateEvent|AstroUIUpdat
 
 
 ## astroui.status.provider
+
+### bufnr
+
+
+```lua
+function astroui.status.provider.bufnr(opts?: AstroUIProviderBufnrOpts)
+  -> function
+```
+
+ A provider function for showing the buffer number
+
+*param* `opts` — provider options
+
+*return* — the function for outputting the buffer number
+
+ @usage local heirline_component = { provider = require("astroui.status").provider.bufnr() }
+ @see astroui.status.utils.stylize
 
 ### close_button
 
@@ -1565,7 +1582,7 @@ function astroui.status.utils.stylize(str?: string, opts?: AstroUIStatusStylizeO
 
 
 ```lua
-function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: AstroUIUpdateEvent|AstroUIUpdateEvent[])
+function astroui.status.utils.surround(separator: string|string[], color: string|function|table, component: table, condition: boolean|function, update?: AstroUIUpdateEvents)
   -> table
 ```
 
