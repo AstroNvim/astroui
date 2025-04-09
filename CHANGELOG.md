@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/AstroNvim/astroui/compare/v3.1.0...v3.1.1) (2025-04-09)
+
+
+### Reverts
+
+* hack no longer necessary, moved to resession extension ([119d998](https://github.com/AstroNvim/astroui/commit/119d99828d7e5f3dbac6b5a972c46671f64fc46b))
+
 ## [3.1.0](https://github.com/AstroNvim/astroui/compare/v3.0.3...v3.1.0) (2025-04-04)
 
 
