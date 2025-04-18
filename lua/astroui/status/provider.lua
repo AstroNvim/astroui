@@ -545,9 +545,14 @@ function M.lsp_client_names(opts)
     local buf_client_names_set, client_name_lookup = {}, {}
     for _, client in ipairs(buf_client_names) do
       local mapping = opts.mappings and (opts.mappings[client] or opts.mappings["*"])
-      if mapping then client = type(mapping) == "string" and mapping or mapping(client) end
-      if opts.mappings and opts.mappings[client] then client = opts.mappings[client] end
-      if not client_name_lookup[client] then
+      if mapping then
+        if type(mapping) == "function" then
+          client = mapping(client)
+        else
+          client = mapping
+        end
+      end
+      if client and client ~= "" and not client_name_lookup[client] then
         client_name_lookup[client] = true
         table.insert(buf_client_names_set, client)
       end

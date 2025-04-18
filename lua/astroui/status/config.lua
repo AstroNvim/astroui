@@ -108,7 +108,7 @@
 
 ---@class AstroUIProviderLspClientNamesOpts: AstroUIStatusStylizeOpts
 ---@field integrations { null_ls: boolean?, conform: boolean?, nvim-lint: boolean? }? enable or disable client name integrations
----@field mappings { [string]: (string|fun(client: string): string)? }? add custom client name mappings ("*" will apply to all as a fallback)
+---@field mappings { [string]: false|string|fun(client: string): (false|string|nil) }? add custom client name mappings ("*" will apply to all as a fallback)
 ---@field truncate number? percentage of statusline of the maximum width before truncation with ellipsis
 
 ---@class AstroUIProviderVirtualEnvOpts: AstroUIStatusStylizeOpts
