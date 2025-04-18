@@ -38,6 +38,7 @@ end
 
 --- Set the configured colorscheme
 function M.set_colorscheme()
+  if vim.g.vscode then return end -- don't set colorscheme when using neovim in VS Code
   local colorscheme = M.config.colorscheme
   if colorscheme and not pcall(vim.cmd.colorscheme, colorscheme) then
     require("astrocore").notify(("Error setting up colorscheme: `%s`"):format(colorscheme), vim.log.levels.ERROR)
