@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.3](https://github.com/AstroNvim/astroui/compare/v3.1.2...v3.1.3) (2025-04-18)
+
+
+### Bug Fixes
+
+* don't set colorscheme when using vs code ([794ef83](https://github.com/AstroNvim/astroui/commit/794ef83874470c95b40fac5fb61f54ff22c0da48))
+
 ## [3.1.2](https://github.com/AstroNvim/astroui/compare/v3.1.1...v3.1.2) (2025-04-18)
 
 
