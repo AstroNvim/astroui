@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/AstroNvim/astroui/compare/v3.1.1...v3.1.2) (2025-04-18)
+
+
+### Bug Fixes
+
+* **status:** improve `lsp_client_names` mappings configuration ([1d93501](https://github.com/AstroNvim/astroui/commit/1d9350109fe958abcf23da3aa1519de94e5188e6))
+
 ## [3.1.1](https://github.com/AstroNvim/astroui/compare/v3.1.0...v3.1.1) (2025-04-09)
 
 
