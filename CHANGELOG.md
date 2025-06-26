@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.4](https://github.com/AstroNvim/astroui/compare/v3.1.3...v3.1.4) (2025-06-26)
+
+
+### Bug Fixes
+
+* **heirline:** fix some icons not being correctly highlighted ([6827e18](https://github.com/AstroNvim/astroui/commit/6827e18d3a96558afdea556f187642c748656758))
+
 ## [3.1.3](https://github.com/AstroNvim/astroui/compare/v3.1.2...v3.1.3) (2025-04-18)
 
 
