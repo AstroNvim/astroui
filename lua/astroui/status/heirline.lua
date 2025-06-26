@@ -30,11 +30,21 @@ function M.tab_type(self, prefix)
   return (prefix or "buffer") .. tab_type
 end
 
+local function cached_func(func, ...)
+  local cached
+  local args = { ... }
+  return function(self)
+    if cached == nil then cached = func(unpack(args)) end
+    if type(cached) == "function" then return cached(self) end
+    return cached
+  end
+end
+
 --- Make a list of buffers, rendering each buffer with the provided component
 ---@param component table
 ---@return table
 function M.make_buflist(component)
-  local overflow_hl = hl.get_attributes("buffer_overflow", true)
+  local overflow_hl = cached_func(hl.get_attributes, "buffer_overflow", true)
   return require("heirline.utils").make_buflist(
     status_utils.surround(
       "tab",
@@ -70,7 +80,7 @@ function M.make_buflist(component)
             end
           end,
           provider = function(self) return provider.str { str = self.label, padding = { left = 1, right = 1 } } end,
-          hl = hl.get_attributes "buffer_picker",
+          hl = cached_func(hl.get_attributes, "buffer_picker"),
         },
         component, -- create buffer component
       },
