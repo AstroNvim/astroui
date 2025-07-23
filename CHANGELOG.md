@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.5](https://github.com/AstroNvim/astroui/compare/v3.1.4...v3.1.5) (2025-07-23)
+
+
+### Performance Improvements
+
+* **lazygit:** optimize lazygit setting ([5447ea0](https://github.com/AstroNvim/astroui/commit/5447ea00c9b791404045ad3ec0b56c0ba2666810))
+
 ## [3.1.4](https://github.com/AstroNvim/astroui/compare/v3.1.3...v3.1.4) (2025-06-26)
 
 
