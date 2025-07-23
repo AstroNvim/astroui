@@ -39,7 +39,7 @@ function M.update_config()
     for k, v in pairs(tbl) do
       table.insert(lines, string.rep(" ", indent) .. k .. (type(v) == "table" and ":" or ": " .. yaml_val(v)))
       if type(v) == "table" then
-        if (vim.islist or vim.tbl_islist)(v) then
+        if vim.islist(v) then
           for _, item in ipairs(v) do
             table.insert(lines, string.rep(" ", indent + 2) .. "- " .. yaml_val(item))
           end
@@ -56,22 +56,24 @@ end
 function M.setup()
   if type(config) ~= "table" then return end
 
-  M.update_config()
+  if config.theme_path then
+    if not vim.uv.fs_stat(config.theme_path) then vim.schedule(M.update_config) end
 
-  local lg_config_file = vim.env.LG_CONFIG_FILE --[[ @as string? ]]
-  if not lg_config_file and vim.fn.executable "lazygit" == 1 then
-    lg_config_file = require("astrocore").cmd({ "lazygit", "-cd" }, false)
-    if lg_config_file then lg_config_file = vim.split(lg_config_file, "\n", { plain = true })[1] .. "/config.yml" end
+    local lg_config_file = vim.env.LG_CONFIG_FILE --[[ @as string? ]]
+    if not lg_config_file and vim.fn.executable "lazygit" == 1 then
+      lg_config_file = require("astrocore").cmd({ "lazygit", "-cd" }, false)
+      if lg_config_file then lg_config_file = vim.split(lg_config_file, "\n", { plain = true })[1] .. "/config.yml" end
+    end
+    lg_config_file = lg_config_file and lg_config_file .. "," or ""
+    vim.env.LG_CONFIG_FILE = vim.fs.normalize(lg_config_file .. config.theme_path)
+
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "AstroColorScheme",
+      group = vim.api.nvim_create_augroup("astroui_lazygit", { clear = true }),
+      desc = "Update lazygit theme configuration when changing colorscheme",
+      callback = function() vim.schedule(M.update_config) end,
+    })
   end
-  lg_config_file = lg_config_file and lg_config_file .. "," or ""
-  vim.env.LG_CONFIG_FILE = vim.fs.normalize(lg_config_file .. config.theme_path)
-
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "AstroColorScheme",
-    group = vim.api.nvim_create_augroup("astroui_lazygit", { clear = true }),
-    desc = "Update lazygit theme configuration when changing colorscheme",
-    callback = M.update_config,
-  })
 end
 
 return M
