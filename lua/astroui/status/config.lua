@@ -274,6 +274,8 @@
 ---@field disabled table<BufMatcherKinds, BufMatcherPattern[]>? Buffer matching patterns for blacklisting buffers from enabling winbar
 
 ---@class AstroUIStatusOpts
+---Configure whether to show the close button in the tabline
+---@field show_close_button boolean? whether to show the close button in the tabline (default: true)
 ---Configure attributes of components defined in the `status` API. Check the AstroNvim documentation for a complete list of color names, this applies to colors that have `_fg` and/or `_bg` names with the suffix removed (ex. `git_branch_fg` as attributes from `git_branch`).
 ---Example:
 ---
@@ -375,6 +377,7 @@
 
 ---@type AstroUIStatusOpts
 return {
+  show_close_button = true,
   attributes = {},
   colors = {},
   components = {
