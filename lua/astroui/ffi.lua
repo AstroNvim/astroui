@@ -1,5 +1,7 @@
 -- AstroUI C Extensions
 
+-- TODO: Delete when dropping support for Neovim v0.11
+
 local ffi = require "ffi"
 
 -- Custom C extension to get direct fold information from Neovim

@@ -81,11 +81,13 @@ end
 
 --- A provider function for building a foldcolumn
 ---@param opts? AstroUIProviderFoldcolumnOpts provider options
----@return function # a custom foldcolumn function for the statuscolumn that doesn't show the nest levels
+---@return function|string # a custom foldcolumn function for the statuscolumn that doesn't show the nest levels
 -- @usage local heirline_component = { provider = require("astroui.status").provider.foldcolumn }
 -- @see astroui.status.utils.stylize
 function M.foldcolumn(opts)
   opts = extend_tbl(vim.tbl_get(config, "providers", "foldcolumn"), opts)
+  if vim.fn.has "nvim-0.12" == 1 then return status_utils.stylize("%C", opts) end
+  -- TODO: Remove code when deprecating Neovim 0.11 support
   local ffi = require "astroui.ffi" -- get AstroUI C extensions
   local fillchars = vim.opt.fillchars:get()
   local foldopen = fillchars.foldopen or get_icon "FoldOpened"
