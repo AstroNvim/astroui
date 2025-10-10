@@ -190,7 +190,7 @@ end
 function M.treesitter_available(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
-  return vim.treesitter.highlighter.active[bufnr] ~= nil
+  return require("astrocore.treesitter").is_enabled(bufnr)
 end
 
 --- A condition function if the foldcolumn is enabled
