@@ -636,7 +636,9 @@ return {
       },
       on_click = {
         name = "heirline_lsp",
-        callback = function() vim.schedule(vim.cmd.LspInfo) end,
+        callback = function()
+          vim.schedule(function() vim.cmd.checkhealth "vim.lsp" end)
+        end,
       },
     },
     virtual_env = {
