@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.0.0](https://github.com/AstroNvim/astroui/compare/v3.1.5...v4.0.0) (2026-03-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Neovim v0.10
+
+### Features
+
+* **status:** use default fold column in Neovim v0.12 after addition of `foldinner` ([240377e](https://github.com/AstroNvim/astroui/commit/240377e3955f6ec0ebb1d768b0999dd88251d9a3))
+* update to using new treesitter utilities in AstroCore ([6ee81cd](https://github.com/AstroNvim/astroui/commit/6ee81cddfccd38072208beb095a8f7a4e7926492))
+
+
+### Code Refactoring
+
+* drop support for Neovim v0.10 ([1e36aa9](https://github.com/AstroNvim/astroui/commit/1e36aa9a006d696904e46f21fc35503fe665dc59))
+
 ## [3.1.5](https://github.com/AstroNvim/astroui/compare/v3.1.4...v3.1.5) (2025-07-23)
 
 
