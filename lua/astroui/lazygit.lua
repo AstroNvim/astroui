@@ -5,6 +5,11 @@ local M = {}
 local astroui = require "astroui"
 local config = astroui.config.lazygit
 
+--- Whether Neovim's stdout is a terminal that can receive escape sequences.
+--- With a GUI frontend (Neovide, neovim-qt, any `--embed` client) stdout is the
+--- msgpack-RPC channel instead, so writing to it corrupts the protocol stream.
+local function stdout_is_tty() return vim.uv.guess_handle(1) == "tty" end
+
 -- Build theme configuration file
 function M.update_config()
   if not config then return end
@@ -23,7 +28,8 @@ function M.update_config()
       if v[modifier] then table.insert(color, modifier) end
     end
     if type(k) == "number" then
-      pcall(io.write, ("\27]4;%d;%s\7"):format(k, color[1]))
+      -- numeric keys set terminal palette entries, which only a terminal can act on
+      if stdout_is_tty() then pcall(io.write, ("\27]4;%d;%s\7"):format(k, color[1])) end
     else
       theme[k] = color
     end
