@@ -5,10 +5,18 @@ local M = {}
 local astroui = require "astroui"
 local config = astroui.config.lazygit
 
---- Whether Neovim's stdout is a terminal that can receive escape sequences.
---- With a GUI frontend (Neovide, neovim-qt, any `--embed` client) stdout is the
---- msgpack-RPC channel instead, so writing to it corrupts the protocol stream.
-local function stdout_is_tty() return vim.uv.guess_handle(1) == "tty" end
+--- Whether the builtin TUI is attached to a terminal that can receive escape
+--- sequences, checked at call time since UIs can attach and detach over a
+--- session. This is the same check Neovim core uses before emitting escape
+--- sequences (`runtime/lua/vim/_defaults.lua`). With a GUI frontend (Neovide,
+--- neovim-qt, any `--embed` client) stdout is the msgpack-RPC channel instead,
+--- so writing to it corrupts the protocol stream.
+local function tui_attached()
+  for _, ui in ipairs(vim.api.nvim_list_uis()) do
+    if ui.chan == 1 and ui.stdout_tty then return true end
+  end
+  return false
+end
 
 -- Build theme configuration file
 function M.update_config()
@@ -29,7 +37,11 @@ function M.update_config()
     end
     if type(k) == "number" then
       -- numeric keys set terminal palette entries, which only a terminal can act on
-      if stdout_is_tty() then pcall(io.write, ("\27]4;%d;%s\7"):format(k, color[1])) end
+      if vim.api.nvim_ui_send then -- Neovim 0.12+: routed to the TUI host terminal, no-op for GUIs
+        pcall(vim.api.nvim_ui_send, ("\27]4;%d;%s\7"):format(k, color[1]))
+      elseif tui_attached() then
+        pcall(io.write, ("\27]4;%d;%s\7"):format(k, color[1]))
+      end
     else
       theme[k] = color
     end
