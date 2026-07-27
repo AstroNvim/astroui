@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/AstroNvim/astroui/compare/v4.0.0...v4.0.1) (2026-07-27)
+
+
+### Bug Fixes
+
+* **lazygit:** only write palette escapes when stdout is a terminal ([22c649b](https://github.com/AstroNvim/astroui/commit/22c649b5fb0f270a3b6caa00594c40d2f3453239))
+
 ## [4.0.0](https://github.com/AstroNvim/astroui/compare/v3.1.5...v4.0.0) (2026-03-30)
 
 
