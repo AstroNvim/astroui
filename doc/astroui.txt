@@ -1,4 +1,5 @@
-*astroui.txt*          For Neovim >= 0.9.0          Last change: 2026 March 30
+*astroui.txt*
+                              For Neovim >= 0.9.0    Last change: 2026 July 27
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -999,7 +1000,7 @@ _param_ `self` — the self table from a heirline component function
 _param_ `prefix` — the prefix of the type, either "tab" or "buffer" (Default:
 "buffer")
 
-_return_ — the string of prefix with the type (i.e. “_active” or
+_return_ — the string of prefix with the type (i.e. “_active” or
 “_visible”)
 
 
