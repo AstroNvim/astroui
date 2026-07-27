@@ -11,6 +11,16 @@ function M.update_config()
   ---@type table<string, string[]>
   local theme = {}
 
+  -- Check if TUI is attached
+  -- TODO: REMOVE WHEN DROPPING SUPPORT FOR NEOVIM v0.11
+  local tui_attached = false
+  for _, ui in ipairs(vim.api.nvim_list_uis()) do
+    if ui.chan == 1 and ui.stdout_tty then
+      tui_attached = true
+      break
+    end
+  end
+
   for k, v in pairs(config.theme or {}) do
     local color = {}
     for _, c in ipairs { "fg", "bg" } do
@@ -23,7 +33,9 @@ function M.update_config()
       if v[modifier] then table.insert(color, modifier) end
     end
     if type(k) == "number" then
-      pcall(io.write, ("\27]4;%d;%s\7"):format(k, color[1]))
+      -- numeric keys set terminal palette entries, which only a terminal can act on
+      -- TODO: REMOVE io.write WHEN DROPPING SUPPORT FOR NEOVIM v0.11
+      if tui_attached then pcall(vim.api.nvim_ui_send or io.write, ("\27]4;%d;%s\7"):format(k, color[1])) end
     else
       theme[k] = color
     end
