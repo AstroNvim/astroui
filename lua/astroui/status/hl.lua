@@ -48,7 +48,7 @@ end
 ---@return table # a table of highlight information
 -- @usage local heirline_component = { provider = "Example Provider", hl = require("astroui.status").hl.get_attributes("treesitter") },
 function M.get_attributes(name, include_bg)
-  local hl = config.attributes[name] or {}
+  local hl = vim.deepcopy(config.attributes[name] or {})
   local loaded_colors = require("heirline.highlights").get_loaded_colors()
   if loaded_colors[name .. "_fg"] then hl.fg = name .. "_fg" end
   if include_bg and loaded_colors[name .. "_bg"] then hl.bg = name .. "_bg" end
