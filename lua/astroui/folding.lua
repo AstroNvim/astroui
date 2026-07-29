@@ -26,8 +26,10 @@ local fold_methods = {
   indent = function(lnum, bufnr)
     if not lnum then lnum = vim.v.lnum end
     if not bufnr then bufnr = vim.api.nvim_get_current_buf() end
+    local shiftwidth = vim.bo[bufnr].shiftwidth
+    if shiftwidth == 0 then shiftwidth = vim.bo[bufnr].tabstop end
     return vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, false)[1]:match "^%s*$" and "="
-      or math.floor(vim.fn.indent(lnum) / vim.bo[bufnr].shiftwidth)
+      or math.floor(vim.fn.indent(lnum) / shiftwidth)
   end,
 }
 
