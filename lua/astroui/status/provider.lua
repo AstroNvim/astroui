@@ -584,7 +584,10 @@ function M.virtual_env(opts)
     elseif opts.conda.enabled and conda then
       if conda ~= "base" or not opts.conda.ignore_base then env_str = conda end
     end
-    if env_str then return status_utils.stylize(opts.format and opts.format:format(env_str) or env_str, opts) end
+    if env_str and opts.format then
+      env_str = type(opts.format) == "function" and opts.format(env_str) or opts.format:format(env_str)
+    end
+    if env_str then return status_utils.stylize(env_str, opts) end
   end
 end
 
