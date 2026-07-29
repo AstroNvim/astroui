@@ -158,9 +158,16 @@ function M.is_file(bufnr)
 end
 
 --- A condition function if a virtual environment is activated
+---@param conda? { enabled: boolean?, ignore_base: boolean? } Conda environment display options
 ---@return boolean # whether or not virtual environment is activated
 -- @usage local heirline_component = { provider = "Example Provider", condition = require("astroui.status").condition.has_virtual_env }
-function M.has_virtual_env() return vim.env.VIRTUAL_ENV ~= nil or vim.env.CONDA_DEFAULT_ENV ~= nil end
+function M.has_virtual_env(conda)
+  local venv = vim.env.VIRTUAL_ENV
+  if venv and venv ~= "" then return true end
+  local conda_env = vim.env.CONDA_DEFAULT_ENV
+  if not conda_env or conda_env == "" then return false end
+  return not conda or (conda.enabled ~= false and (conda_env ~= "base" or not conda.ignore_base))
+end
 
 --- A condition function if Aerial is available
 ---@return boolean # whether or not aerial plugin is installed

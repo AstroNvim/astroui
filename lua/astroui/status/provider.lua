@@ -577,11 +577,11 @@ function M.virtual_env(opts)
     local conda = vim.env.CONDA_DEFAULT_ENV
     local venv = vim.env.VIRTUAL_ENV
     local env_str
-    if venv then
+    if venv and venv ~= "" then
       local path = vim.fn.split(venv, "/")
       env_str = path[#path]
       if #path > 1 and vim.tbl_contains(opts.env_names, env_str) then env_str = path[#path - 1] end
-    elseif opts.conda.enabled and conda then
+    elseif opts.conda.enabled and conda and conda ~= "" then
       if conda ~= "base" or not opts.conda.ignore_base then env_str = conda end
     end
     if env_str and opts.format then

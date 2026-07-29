@@ -646,7 +646,6 @@ return {
       surround = {
         separator = "right",
         color = "virtual_env_bg",
-        condition = function() return require("astroui.status.condition").has_virtual_env() end,
       },
       hl = function() return require("astroui.status.hl").get_attributes "virtual_env" end,
       on_click = {

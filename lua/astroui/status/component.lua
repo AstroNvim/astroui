@@ -14,6 +14,7 @@ local extend_tbl = astro.extend_tbl
 
 local ui = require "astroui"
 local config = assert(ui.config.status)
+local condition = require "astroui.status.condition"
 local init = require "astroui.status.init"
 local provider = require "astroui.status.provider"
 local status_utils = require "astroui.status.utils"
@@ -179,6 +180,14 @@ end
 -- @usage local heirline_component = require("astroui.status").component.git_branch()
 function M.virtual_env(opts)
   opts = extend_tbl(vim.tbl_get(config, "components", "virtual_env"), opts)
+  if opts.surround and opts.surround.condition == nil then
+    opts.surround = vim.tbl_extend("force", {}, opts.surround)
+    local virtual_env_opts = opts.virtual_env
+      and extend_tbl(vim.tbl_get(config, "providers", "virtual_env"), opts.virtual_env)
+    opts.surround.condition = function()
+      return virtual_env_opts and condition.has_virtual_env(virtual_env_opts.conda) or false
+    end
+  end
   return M.builder(status_utils.setup_providers(opts, { "virtual_env" }))
 end
 
