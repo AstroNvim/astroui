@@ -114,7 +114,7 @@
 ---@class AstroUIProviderVirtualEnvOpts: AstroUIStatusStylizeOpts
 ---@field env_names string[]? base environment names to replace with the project directory name
 ---@field conda { enabled: boolean?, ignore_base: boolean? }? enable/disable conda environments and base conda environment
----@field format (fun(env: string): string)? function to customize formatting of environment name
+---@field format (string|fun(env: string): string)? string or function to customize formatting of environment name
 
 ---@class AstroUIProviderTreesitterStatusOpts: AstroUIStatusStylizeOpts
 
