@@ -152,9 +152,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.paste(opts)
   opts = extend_tbl(vim.tbl_get(config, "providers", "paste"), opts)
-  local paste = vim.opt.paste
-  if type(paste) ~= "boolean" then paste = paste:get() end
-  return function() return status_utils.stylize(paste and opts.str or nil, opts) end
+  return function() return status_utils.stylize(vim.o.paste and opts.str or nil, opts) end
 end
 
 --- A provider function for displaying if a macro is currently being recorded
