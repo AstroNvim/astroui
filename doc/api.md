@@ -533,11 +533,13 @@ function astroui.status.condition.has_filetype(bufnr: integer|table)
 
 
 ```lua
-function astroui.status.condition.has_virtual_env()
+function astroui.status.condition.has_virtual_env(conda?: { enabled: boolean?, ignore_base: boolean? })
   -> boolean
 ```
 
  A condition function if a virtual environment is activated
+
+*param* `conda` — Conda environment display options
 
 *return* — whether or not virtual environment is activated
 
