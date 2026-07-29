@@ -1,5 +1,5 @@
 *astroui.txt*
-                              For Neovim >= 0.9.0    Last change: 2026 July 27
+                              For Neovim >= 0.9.0    Last change: 2026 July 29
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -55,7 +55,7 @@ Install the plugin with your plugin manager of choice:
       priority = 10000, -- load AstroUI first
       opts = {
         -- set configuration options  as described below
-      }
+      },
       specs = {
         {
           "AstroNvim/astrocore",
@@ -80,12 +80,12 @@ Install the plugin with your plugin manager of choice:
 
 CONFIGURATION                                  *astroui-astroui-configuration*
 
-**AstroUI** comes with the no defaults, but can be configured fully through the
-`opts` table in lazy or through calling `require("astroui").setup({})`. Here
-are descriptions of the options and some example usages:
+**AstroUI** provides default configuration that can be fully customized through
+the `opts` table in lazy.nvim or by calling `require("astroui").setup({})`.
+Here are descriptions of the options and some example usages:
 
 >lua
-    ---@type AstroUIConfig
+    ---@type AstroUIOpts
     {
       -- Colorscheme set on startup, a string that is used with `:colorscheme astrodark`
       colorscheme = "astrodark",
