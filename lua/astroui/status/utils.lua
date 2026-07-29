@@ -138,7 +138,7 @@ function M.surround(separator, color, component, condition, update)
   return surrounded
 end
 
----@type false|fun(bufname: string, filetype: string, buftype: string): string?,string?
+---@type false|nil|fun(bufname: string, filetype: string, buftype: string): string?,string?
 local cached_icon_provider
 --- Resolve the icon and color information for a given buffer
 ---@param bufnr integer the buffer number to resolve the icon and color of
@@ -150,7 +150,10 @@ function M.icon_provider(bufnr)
   local filetype = vim.bo[bufnr].filetype
   local buftype = vim.bo[bufnr].buftype
   if cached_icon_provider then return cached_icon_provider(bufname, filetype, buftype) end
-  if cached_icon_provider == false then return end
+  if cached_icon_provider == false then
+    if not _G.MiniIcons and not package.loaded["nvim-web-devicons"] then return end
+    cached_icon_provider = nil
+  end
 
   local _, mini_icons = pcall(require, "mini.icons")
   -- mini.icons
