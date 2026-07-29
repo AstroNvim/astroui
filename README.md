@@ -50,10 +50,10 @@ require("astrocore").setup() -- setup AstroCore after AstroUI
 
 ## ⚙️ Configuration
 
-**AstroUI** comes with the no defaults, but can be configured fully through the `opts` table in lazy or through calling `require("astroui").setup({})`. Here are descriptions of the options and some example usages:
+**AstroUI** provides default configuration that can be fully customized through the `opts` table in lazy.nvim or by calling `require("astroui").setup({})`. Here are descriptions of the options and some example usages:
 
 ```lua
----@type AstroUIConfig
+---@type AstroUIOpts
 {
   -- Colorscheme set on startup, a string that is used with `:colorscheme astrodark`
   colorscheme = "astrodark",
