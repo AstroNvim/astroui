@@ -5,11 +5,62 @@ local M = {}
 local astroui = require "astroui"
 local config = astroui.config.lazygit
 
+local function yaml_scalar(value)
+  if type(value) == "string" then return vim.json.encode(value) end
+  if type(value) == "number" or type(value) == "boolean" then return tostring(value) end
+  if value == nil then return "null" end
+  error(("Cannot serialize %s as YAML"):format(type(value)))
+end
+
+local function yaml_key(key)
+  if type(key) == "number" then return tostring(key) end
+  if key:match "^[%a_][%w_-]*$" then return key end
+  return vim.json.encode(key)
+end
+
+local function yaml_keys(tbl)
+  local keys = vim.tbl_keys(tbl)
+  table.sort(keys, function(left, right) return tostring(left) < tostring(right) end)
+  return keys
+end
+
+local function yaml_empty_collection(tbl) return vim.islist(tbl) and "[]" or "{}" end
+
+local function to_yaml(value, indent)
+  local lines = {}
+  local padding = string.rep(" ", indent)
+  if vim.islist(value) then
+    for _, item in ipairs(value) do
+      if type(item) ~= "table" then
+        table.insert(lines, padding .. "- " .. yaml_scalar(item))
+      elseif next(item) == nil then
+        table.insert(lines, padding .. "- " .. yaml_empty_collection(item))
+      else
+        table.insert(lines, padding .. "-")
+        vim.list_extend(lines, to_yaml(item, indent + 2))
+      end
+    end
+  else
+    for _, key in ipairs(yaml_keys(value)) do
+      local item = value[key]
+      if type(item) ~= "table" then
+        table.insert(lines, padding .. yaml_key(key) .. ": " .. yaml_scalar(item))
+      elseif next(item) == nil then
+        table.insert(lines, padding .. yaml_key(key) .. ": " .. yaml_empty_collection(item))
+      else
+        table.insert(lines, padding .. yaml_key(key) .. ":")
+        vim.list_extend(lines, to_yaml(item, indent + 2))
+      end
+    end
+  end
+  return lines
+end
+
 -- Build theme configuration file
 function M.update_config()
   if not config then return end
   ---@type table<string, string[]>
-  local theme = {}
+  local theme = vim.empty_dict()
 
   -- Check if TUI is attached
   -- TODO: REMOVE WHEN DROPPING SUPPORT FOR NEOVIM v0.11
@@ -42,27 +93,7 @@ function M.update_config()
   end
 
   local lg_config = vim.tbl_deep_extend("force", { gui = { theme = theme } }, config.config or {})
-
-  local function yaml_val(val) return type(val) == "string" and not val:find "^\"'`" and ("%q"):format(val) or val end
-
-  local function to_yaml(tbl, indent)
-    indent = indent or 0
-    local lines = {}
-    for k, v in pairs(tbl) do
-      table.insert(lines, string.rep(" ", indent) .. k .. (type(v) == "table" and ":" or ": " .. yaml_val(v)))
-      if type(v) == "table" then
-        if vim.islist(v) then
-          for _, item in ipairs(v) do
-            table.insert(lines, string.rep(" ", indent + 2) .. "- " .. yaml_val(item))
-          end
-        else
-          vim.list_extend(lines, to_yaml(v, indent + 2))
-        end
-      end
-    end
-    return lines
-  end
-  vim.fn.writefile(to_yaml(lg_config), config.theme_path)
+  vim.fn.writefile(to_yaml(lg_config, 0), config.theme_path)
 end
 
 function M.setup()
