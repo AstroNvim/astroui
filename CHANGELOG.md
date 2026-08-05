@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.2](https://github.com/AstroNvim/astroui/compare/v4.0.1...v4.0.2) (2026-08-05)
+
+
+### Bug Fixes
+
+* **folding:** handle zero shiftwidth ([e26026e](https://github.com/AstroNvim/astroui/commit/e26026e7653757dbeea8385dacb74ee4f07c34b4))
+* **folding:** refresh buffer provider state ([e7d26c2](https://github.com/AstroNvim/astroui/commit/e7d26c267237afde69ec1d29d391564a4b547aa3))
+* **lazygit:** serialize nested configuration ([714f36d](https://github.com/AstroNvim/astroui/commit/714f36d091162957e9881897b265d20acd573fe8))
+* **status:** align providers with displayed state ([0086f46](https://github.com/AstroNvim/astroui/commit/0086f4650ef04c65c736a27db27b6eb9ab5c3c00))
+* **status:** align virtual environment visibility ([a99e3b1](https://github.com/AstroNvim/astroui/commit/a99e3b15dd9eebe4cf688544219d0d6ad62e0213))
+* **status:** avoid mutating highlight attributes ([e244016](https://github.com/AstroNvim/astroui/commit/e2440163854c71c3b6f930f673e509148321ffa1))
+* **status:** preserve dynamic component identity ([807896a](https://github.com/AstroNvim/astroui/commit/807896a77f097801b4556493975b26a4561e9144))
+* **status:** refresh late icon providers ([9864d1a](https://github.com/AstroNvim/astroui/commit/9864d1ad8bde7e2fda4bc7a0611eb24457e66e0f))
+* **status:** refresh paste state when rendering ([8eb7da1](https://github.com/AstroNvim/astroui/commit/8eb7da178458d8239e6591ffc351afdf6e55997c))
+* **status:** support virtual environment formatters ([daf4c3c](https://github.com/AstroNvim/astroui/commit/daf4c3c9c0e741b56208d076c70d5b1d635c0ea7))
+
 ## [4.0.1](https://github.com/AstroNvim/astroui/compare/v4.0.0...v4.0.1) (2026-07-27)
 
 
