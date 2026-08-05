@@ -17,6 +17,7 @@ local extend_tbl = astro.extend_tbl
 
 local provider = require "astroui.status.provider"
 local status_utils = require "astroui.status.utils"
+local breadcrumbs_id = 0
 
 --- An `init` function to build a set of children components for LSP breadcrumbs
 ---@param opts? AstroUIInitBreadcrumbsOpts component init options
@@ -29,7 +30,13 @@ function M.breadcrumbs(opts)
     icon = { enabled = true, hl = config.icon_highlights.breadcrumbs },
     padding = { left = 0, right = 0 },
   }, opts)
+  breadcrumbs_id = breadcrumbs_id + 1
+  local click_name = "heirline_breadcrumbs_" .. breadcrumbs_id .. "_"
+  local positions = {}
   return function(self)
+    local winid = vim.fn.win_getid(self.winnr)
+    positions[winid] = {}
+    local window_positions = positions[winid]
     local data = require("aerial").get_location(true) or {}
     local children = {}
     -- add prefix if needed, use the separator if true, or use the provided character
@@ -44,15 +51,20 @@ function M.breadcrumbs(opts)
     -- create a child for each level
     for i, d in ipairs(data) do
       if i > start_idx then
+        local click_id = #window_positions + 1
+        window_positions[click_id] = { lnum = d.lnum, col = d.col }
         local child = {
           { provider = d.name:gsub("%%", "%%%%"):gsub("%s*->%s*", "") }, -- add symbol name
           on_click = { -- add on click function
-            minwid = status_utils.encode_pos(d.lnum, d.col, self.winnr),
+            minwid = click_id,
             callback = function(_, minwid)
-              local lnum, col, winnr = status_utils.decode_pos(minwid)
-              vim.api.nvim_win_set_cursor(assert(vim.fn.win_getid(winnr)), { lnum, col })
+              local position = positions[winid] and positions[winid][minwid]
+              if position and vim.api.nvim_win_is_valid(winid) then
+                vim.api.nvim_win_set_cursor(winid, { position.lnum, position.col })
+              end
             end,
-            name = "heirline_breadcrumbs",
+            name = click_name .. winid,
+            update = true,
           },
         }
         if opts.icon.enabled then -- add icon and highlight if enabled
@@ -129,6 +141,7 @@ end
 
 ---@class AstroUIUpdateEvent: vim.api.keyset.create_autocmd
 ---@field [1] any
+---@field callback? fun(instance:table,args:vim.api.keyset.create_autocmd.callback_args):boolean?
 
 ---@alias AstroUIUpdateEvents AstroUIUpdateEvent|AstroUIUpdateEvent[]
 
@@ -141,16 +154,23 @@ function M.update_events(opts)
   ---@cast opts AstroUIUpdateEvent[]
   return function(self)
     if not rawget(self, "once") then
-      local function clear_cache() self._win_cache = nil end
+      local component = setmetatable({ self }, { __mode = "v" })
+      local function clear_cache()
+        local instance = component[1]
+        if not instance then return true end
+        instance._win_cache = nil
+      end
       for _, event in ipairs(opts) do
         local event_opts = { callback = clear_cache }
         if type(event) == "table" then
           event_opts.pattern = event.pattern
           if event.callback then
-            local callback = event.callback
+            local callback = assert(event.callback)
             event_opts.callback = function(args)
-              clear_cache()
-              callback(self, args)
+              local instance = component[1]
+              if not instance then return true end
+              instance._win_cache = nil
+              callback(instance, args)
             end
           end
           event = event[1]

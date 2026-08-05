@@ -16,6 +16,8 @@ local status_utils = require "astroui.status.utils"
 local buf_utils = require "astrocore.buffer"
 local get_icon = require("astroui").get_icon
 
+local picker_fallback_labels = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 --- A helper function to get the type a tab or buffer is
 ---@param self table the self table from a heirline component function
 ---@param prefix? string the prefix of the type, either "tab" or "buffer" (Default: "buffer")
@@ -66,7 +68,8 @@ function M.make_buflist(component)
           condition = function(self) return self._show_picker end,
           update = false,
           init = function(self)
-            if not vim.tbl_get(self._picker_labels, self.label) then
+            if vim.tbl_get(self._picker_labels, self.label) ~= self.bufnr then
+              self.label = nil
               local bufname = provider.filename()(self)
               local label = bufname:sub(1, 1)
               local i = 2
@@ -75,11 +78,25 @@ function M.make_buflist(component)
                 label = bufname:sub(i, i)
                 i = i + 1
               end
-              self._picker_labels[label] = self.bufnr
-              self.label = label
+              if #label ~= 1 or self._picker_labels[label] then
+                for j = 1, #picker_fallback_labels do
+                  local fallback_label = picker_fallback_labels:sub(j, j)
+                  if not self._picker_labels[fallback_label] then
+                    label = fallback_label
+                    break
+                  end
+                end
+              end
+              if #label == 1 and not self._picker_labels[label] then
+                self._picker_labels[label] = self.bufnr
+                self.label = label
+              end
             end
           end,
-          provider = function(self) return provider.str { str = self.label, padding = { left = 1, right = 1 } } end,
+          provider = function(self)
+            if not self.label then return "" end
+            return provider.str { str = self.label, padding = { left = 1, right = 1 } }
+          end,
           hl = cached_func(hl.get_attributes, "buffer_picker"),
         },
         component, -- create buffer component
@@ -103,24 +120,26 @@ function M.make_tablist(...) return require("heirline.utils").make_tablist(...) 
 ---@param callback function with a single parameter of the buffer number
 function M.buffer_picker(callback)
   local tabline = require("heirline").tabline
-  -- if buflist then
   local prev_showtabline = vim.opt.showtabline:get()
   if prev_showtabline ~= 2 then vim.opt.showtabline = 2 end
-  vim.cmd.redrawtabline()
-  ---@diagnostic disable-next-line: undefined-field
-  local buflist = vim.tbl_get(tabline, "_buflist", 1)
-  if buflist then
-    buflist._picker_labels = {}
-    buflist._show_picker = true
+  local buflist
+  local ok, err = pcall(function()
     vim.cmd.redrawtabline()
-    local char = vim.fn.getcharstr()
-    local bufnr = buflist._picker_labels[char]
-    if bufnr then callback(bufnr) end
-    buflist._show_picker = false
-  end
+    ---@diagnostic disable-next-line: undefined-field
+    buflist = vim.tbl_get(tabline, "_buflist", 1)
+    if buflist then
+      buflist._picker_labels = {}
+      buflist._show_picker = true
+      vim.cmd.redrawtabline()
+      local char = vim.fn.getcharstr()
+      local bufnr = buflist._picker_labels[char]
+      if bufnr then callback(bufnr) end
+    end
+  end)
+  if buflist then buflist._show_picker = false end
   if prev_showtabline ~= 2 then vim.opt.showtabline = prev_showtabline end
   vim.cmd.redrawtabline()
-  -- end
+  if not ok then error(err, 0) end
 end
 
 --- Refresh heirline colors
