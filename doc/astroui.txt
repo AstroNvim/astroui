@@ -1,5 +1,5 @@
 *astroui.txt*
-                              For Neovim >= 0.9.0    Last change: 2026 July 29
+                            For Neovim >= 0.9.0    Last change: 2026 August 05
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -218,7 +218,7 @@ GET_HLGROUP ~
 
 >lua
     function astroui.get_hlgroup(name: string, fallback?: table)
-      -> properties: table
+      -> properties: AstroUIHighlight
 <
 
 Get highlight properties for a given highlight name
@@ -595,14 +595,15 @@ VIRTUAL_ENV ~
       -> table
 <
 
-A function to build a set of children components for a git branch section
+A function to build a set of children components for a virtual environment
+section
 
 _param_ `opts` — provider options
 
 _return_ — The Heirline component table
 
 @usage local heirline_component =
-require("astroui.status").component.git_branch()
+require("astroui.status").component.virtual_env()
 
 
 ASTROUI.STATUS.CONDITION            *astroui-lua-api-astroui.status.condition*
@@ -1458,7 +1459,7 @@ _return_ — the function for outputting the LSP client names
 
 @usage local heirline_component = { provider =
 require("astroui.status").provider.lsp_client_names({ integrations = { null_ls
-= true, conform = true, lint = true }, truncate = 0.25 }) } @see
+= true, conform = true, ["nvim-lint"] = true }, truncate = 0.25 }) } @see
 astroui.status.utils.stylize
 
 
@@ -1833,6 +1834,14 @@ _param_ `winnr` — a window number
 _return_ `the` — encoded position
 
 
+GET_SIGNS ~
+
+>lua
+    function astroui.status.utils.get_signs(bufnr: any, row: any)
+      -> table
+<
+
+
 ICON_PROVIDER ~
 
 >lua
@@ -1916,6 +1925,14 @@ name, provider index and returns the setup provider table, optional, default is
 
 _return_ — the fully setup options table with the appropriately ordered
 providers
+
+
+SIGN_IS_HIGHER ~
+
+>lua
+    function astroui.status.utils.sign_is_higher(current: any, sign: any)
+      -> boolean
+<
 
 
 STATUSCOLUMN_CLICKARGS ~

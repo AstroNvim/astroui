@@ -25,7 +25,7 @@ AstroUIOpts
 
 ```lua
 function astroui.get_hlgroup(name: string, fallback?: table)
-  -> properties: table
+  -> properties: AstroUIHighlight
 ```
 
  Get highlight properties for a given highlight name
@@ -376,13 +376,13 @@ function astroui.status.component.virtual_env(opts?: AstroUIComponentVirtualEnvO
   -> table
 ```
 
- A function to build a set of children components for a git branch section
+ A function to build a set of children components for a virtual environment section
 
 *param* `opts` — provider options
 
 *return* — The Heirline component table
 
- @usage local heirline_component = require("astroui.status").component.git_branch()
+ @usage local heirline_component = require("astroui.status").component.virtual_env()
 
 
 ## astroui.status.condition
@@ -1177,7 +1177,7 @@ function astroui.status.provider.lsp_client_names(opts?: AstroUIProviderLspClien
 
 *return* — the function for outputting the LSP client names
 
- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }) }
+ @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, ["nvim-lint"] = true }, truncate = 0.25 }) }
  @see astroui.status.utils.stylize
 
 ### lsp_progress
@@ -1531,6 +1531,14 @@ function astroui.status.utils.encode_pos(line: integer, col: integer, winnr: int
 
 *return* `the` — encoded position
 
+### get_signs
+
+
+```lua
+function astroui.status.utils.get_signs(bufnr: any, row: any)
+  -> table
+```
+
 ### icon_provider
 
 
@@ -1609,6 +1617,14 @@ function astroui.status.utils.setup_providers(opts: table, providers: string[], 
 *param* `setup` — a function that takes provider options table, provider name, provider index and returns the setup provider table, optional, default is `M.build_provider`
 
 *return* — the fully setup options table with the appropriately ordered providers
+
+### sign_is_higher
+
+
+```lua
+function astroui.status.utils.sign_is_higher(current: any, sign: any)
+  -> boolean
+```
 
 ### statuscolumn_clickargs
 
