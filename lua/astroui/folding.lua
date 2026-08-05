@@ -42,6 +42,20 @@ function M.is_enabled(bufnr)
   return enabled == true
 end
 
+--- Refresh LSP folding availability for a buffer
+---@param bufnr? integer The buffer to refresh (defaults to the current buffer)
+function M.refresh(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  if not vim.api.nvim_buf_is_valid(bufnr) then return end
+  for _, client in pairs(vim.lsp.get_clients { bufnr = bufnr }) do
+    if client:supports_method("textDocument/foldingRange", bufnr) then
+      lsp_bufs[bufnr] = true
+      return
+    end
+  end
+  lsp_bufs[bufnr] = nil
+end
+
 --- A fold expression for doing LSP and Treesitter based folding
 ---@param lnum? integer the current line number
 ---@return string foldlevel the calculated fold level
@@ -96,10 +110,7 @@ function M.setup()
   vim.api.nvim_create_autocmd("LspAttach", {
     desc = "Monitor attached LSP clients with fold providers",
     group = augroup,
-    callback = function(args)
-      local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-      if client:supports_method("textDocument/foldingRange", args.buf) then lsp_bufs[args.buf] = true end
-    end,
+    callback = function(args) M.refresh(args.buf) end,
   })
   vim.api.nvim_create_autocmd("LspDetach", {
     group = augroup,
@@ -112,6 +123,22 @@ function M.setup()
         end
       end
       lsp_bufs[args.buf] = nil
+    end,
+  })
+  vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+    group = augroup,
+    desc = "Remove LSP folding providers for deleted buffers",
+    callback = function(args) lsp_bufs[args.buf] = nil end,
+  })
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "AstroLspCapability",
+    group = augroup,
+    desc = "Refresh folding providers after LSP capability changes",
+    callback = function(args)
+      local data = args.data
+      if type(data) == "table" and type(data.client_id) == "number" and type(data.bufnr) == "number" then
+        M.refresh(data.bufnr)
+      end
     end,
   })
   is_setup = true
