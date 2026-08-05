@@ -165,6 +165,7 @@ function M.icon_provider(bufnr)
       end
       local color = require("astroui").get_hlgroup(hl).fg
       if type(color) == "number" then color = string.format("#%06x", color) end
+      ---@cast color string?
       return icon, color
     end
     return cached_icon_provider(bufname, filetype, bufname)
@@ -192,12 +193,86 @@ end
 ---@param col integer column number of position
 ---@param winnr integer a window number
 ---@return integer the encoded position
-function M.encode_pos(line, col, winnr) return bit.bor(bit.lshift(line, 16), bit.lshift(col, 6), winnr) end
+function M.encode_pos(line, col, winnr)
+  local function validate(value, maximum, name)
+    if type(value) ~= "number" or value % 1 ~= 0 or value < 0 or value > maximum then
+      error(("%s must be an integer between 0 and %d"):format(name, maximum), 3)
+    end
+  end
+  validate(line, 65535, "line")
+  validate(col, 1023, "col")
+  validate(winnr, 63, "winnr")
+  return bit.bor(bit.lshift(line, 16), bit.lshift(col, 6), winnr)
+end
 
 --- Decode a previously encoded position to it's sub parts
 ---@param c integer the encoded position
 ---@return integer line, integer column, integer window
 function M.decode_pos(c) return bit.rshift(c, 16), bit.band(bit.rshift(c, 6), 1023), bit.band(c, 63) end
+
+---@private
+function M.sign_is_higher(current, sign)
+  if not current then return true end
+  local current_priority, priority = current.priority or 0, sign.priority or 0
+  if priority ~= current_priority then return priority > current_priority end
+  local current_id, id = current.id or 0, sign.id or 0
+  if id ~= current_id then return id > current_id end
+  local current_rank, rank = current.rank or math.huge, sign.rank or math.huge
+  local current_ranked, ranked = current_rank ~= math.huge, rank ~= math.huge
+  if ranked ~= current_ranked then return ranked end
+  if ranked and rank ~= current_rank then return rank < current_rank end
+  return (sign.order or 0) > (current.order or 0)
+end
+
+---@class AstroUIStatusSign: vim.api.keyset.extmark_details
+---@field anonymous boolean
+---@field id integer
+---@field namespace string
+---@field order integer
+---@field rank number
+
+function M.get_signs(bufnr, row)
+  local namespaces = {}
+  for namespace, ns_id in pairs(vim.api.nvim_get_namespaces()) do
+    namespaces[ns_id] = namespace
+  end
+
+  local placements = {}
+  local placed = vim.fn.sign_getplaced(bufnr, { group = "*", lnum = row + 1 })[1]
+  for rank, sign in ipairs(placed and placed.signs or {}) do
+    local key = sign.group .. "\0" .. sign.id
+    if not placements[key] then placements[key] = {} end
+    table.insert(placements[key], rank)
+  end
+
+  local placement_indices, signs = {}, {}
+  for order, extmark in
+    ipairs(
+      vim.api.nvim_buf_get_extmarks(
+        bufnr,
+        -1,
+        { row, 0 },
+        { row, -1 },
+        { details = true, type = "sign", overlap = true }
+      )
+    )
+  do
+    local details = extmark[4] --[[@as AstroUIStatusSign]]
+    local namespace_name = details.ns_id and namespaces[details.ns_id]
+    local namespace = namespace_name or (details.ns_id and ("#" .. details.ns_id)) or ""
+    local placement_key = namespace_name and (namespace_name .. "\0" .. extmark[1])
+      or not details.ns_id and ("\0" .. extmark[1])
+    if placement_key then placement_indices[placement_key] = (placement_indices[placement_key] or 0) + 1 end
+    local ranks = placement_key and placements[placement_key]
+    details.anonymous = details.ns_id ~= nil and namespace_name == nil
+    details.id = extmark[1]
+    details.namespace = namespace
+    details.order = order
+    details.rank = ranks and ranks[placement_indices[placement_key]] or math.huge
+    table.insert(signs, details)
+  end
+  return signs
+end
 
 --- Get a list of registered null-ls providers for a given filetype
 ---@param params table parameters to use for null-ls providers
@@ -256,30 +331,111 @@ function M.statuscolumn_clickargs(self, minwid, clicks, button, mods)
   args.char = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol)
   if args.char == " " then args.char = vim.fn.screenstring(args.mousepos.screenrow, args.mousepos.screencol - 1) end
 
-  if not self.signs then self.signs = {} end
-  args.sign = self.signs[args.char]
-  if not args.sign then -- update signs if not found on first click
-    if not self.bufnr then self.bufnr = vim.api.nvim_get_current_buf() end
-    local row = args.mousepos.line - 1
-    for _, extmark in
-      ipairs(vim.api.nvim_buf_get_extmarks(self.bufnr, -1, { row, 0 }, { row, -1 }, { details = true, type = "sign" }))
-    do
-      local sign = extmark[4]
-      if not (self.namespaces and self.namespaces[sign.ns_id]) then
-        self.namespaces = {}
-        for ns, ns_id in pairs(vim.api.nvim_get_namespaces()) do
-          self.namespaces[ns_id] = ns
-        end
+  self.bufnr = vim.api.nvim_win_get_buf(args.mousepos.winid)
+  self.signs = {}
+  local ambiguous = {}
+  local rendered_signs = {}
+  local function set_sign(key, sign)
+    local conflict = ambiguous[key]
+    if conflict then
+      if sign.priority > conflict.priority or (sign.priority == conflict.priority and sign.id > conflict.id) then
+        ambiguous[key], self.signs[key] = nil, sign
       end
-      if sign.sign_text then
-        self.signs[sign.sign_text:gsub("%s", "")] = {
-          name = sign.sign_name,
-          text = sign.sign_text,
-          texthl = sign.sign_hl_group or "NoTexthl",
-          namespace = sign.ns_id and self.namespaces[sign.ns_id],
-        }
+      return
+    end
+    local current = self.signs[key]
+    if
+      current
+      and (current.anonymous or sign.anonymous)
+      and current.priority == sign.priority
+      and current.id == sign.id
+      and (current.ns_id ~= sign.ns_id or current.anonymous ~= sign.anonymous)
+    then
+      self.signs[key], ambiguous[key] = nil, { priority = sign.priority, id = sign.id }
+    elseif M.sign_is_higher(current, sign) then
+      self.signs[key] = sign
+    end
+  end
+  local function insert_rendered_sign(sign)
+    for index, current in ipairs(rendered_signs) do
+      if M.sign_is_higher(current, sign) then
+        table.insert(rendered_signs, index, sign)
+        return
       end
     end
+    table.insert(rendered_signs, sign)
+  end
+  local row = args.mousepos.line - 1
+  for _, sign in ipairs(M.get_signs(self.bufnr, row)) do
+    if sign.sign_text then
+      local text = sign.sign_text:gsub("%s", "")
+      local sign_info = {
+        name = sign.sign_name,
+        anonymous = sign.anonymous,
+        text = sign.sign_text,
+        texthl = sign.sign_hl_group or "NoTexthl",
+        namespace = sign.namespace,
+        priority = sign.priority or 0,
+        id = sign.id,
+        ns_id = sign.ns_id,
+        order = sign.order,
+        rank = sign.rank,
+        matches = {},
+      }
+      set_sign(text, sign_info)
+      sign_info.matches[text] = true
+      for index = 0, vim.fn.strchars(text) - 1 do
+        local char = vim.fn.strcharpart(text, index, 1)
+        set_sign(char, sign_info)
+        sign_info.matches[char] = true
+      end
+      insert_rendered_sign(sign_info)
+    end
+  end
+  local signcolumn = vim.wo[args.mousepos.winid].signcolumn
+  local sign_slots
+  if signcolumn == "yes" or signcolumn == "number" then
+    sign_slots = 1
+  elseif signcolumn:find "^yes:" then
+    sign_slots = tonumber(signcolumn:match "%d+")
+  elseif signcolumn == "auto" then
+    sign_slots = #rendered_signs > 0 and 1 or 0
+  else
+    local minimum, maximum = signcolumn:match "^auto:(%d+)%-(%d+)$"
+    if minimum then
+      local min = assert(tonumber(minimum))
+      local max = assert(tonumber(maximum))
+      sign_slots = math.max(min, math.min(#rendered_signs, max))
+    else
+      maximum = tonumber(signcolumn:match "^auto:(%d+)$")
+      sign_slots = maximum and math.min(#rendered_signs, maximum) or 0
+    end
+  end
+  local wininfo = vim.fn.getwininfo(args.mousepos.winid)[1]
+  local signcolumn_start = wininfo and wininfo.textoff - sign_slots * 2 + 1
+  local slot = signcolumn_start
+    and args.mousepos.wincol
+    and args.mousepos.wincol >= signcolumn_start
+    and args.mousepos.wincol < signcolumn_start + sign_slots * 2
+    and math.ceil((args.mousepos.wincol - signcolumn_start + 1) / 2)
+  local slot_sign = slot and rendered_signs[slot]
+  if slot_sign and slot_sign.matches[args.char] then
+    local slot_ambiguous = false
+    for _, sign in ipairs(rendered_signs) do
+      if
+        sign ~= slot_sign
+        and sign.matches[args.char]
+        and (sign.anonymous or slot_sign.anonymous)
+        and sign.priority == slot_sign.priority
+        and sign.id == slot_sign.id
+        and (sign.ns_id ~= slot_sign.ns_id or sign.anonymous ~= slot_sign.anonymous)
+      then
+        slot_ambiguous = true
+        break
+      end
+    end
+    args.sign = not slot_ambiguous and slot_sign or nil
+  else
     args.sign = self.signs[args.char]
   end
   vim.api.nvim_set_current_win(args.mousepos.winid)

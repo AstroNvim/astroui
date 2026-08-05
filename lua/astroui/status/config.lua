@@ -373,6 +373,19 @@
 ---A collection of click handlers for internal heirline components such as `gitsigns`, `diagnostics`, and `dap`
 ---@field sign_handlers table<string,fun(args:table)>?
 
+local function handle_sign_click(args)
+  if not args.sign then return false end
+  local config = assert(require("astroui").config.status)
+  local handler = args.sign.name ~= "" and config.sign_handlers[args.sign.name]
+  if not handler then handler = config.sign_handlers[args.sign.namespace] end
+  if not handler then handler = config.sign_handlers[args.sign.texthl] end
+  if handler then
+    handler(args)
+    return true
+  end
+  return false
+end
+
 ---@type AstroUIStatusOpts
 return {
   attributes = {},
@@ -682,6 +695,8 @@ return {
           if args.mods:find "c" then
             local dap_avail, dap = pcall(require, "dap")
             if dap_avail then dap.toggle_breakpoint() end
+          else
+            handle_sign_click(args)
           end
         end,
       },
@@ -693,13 +708,7 @@ return {
         name = "sign_click",
         callback = function(...)
           local args = require("astroui.status.utils").statuscolumn_clickargs(...)
-          local config = assert(require("astroui").config.status)
-          if args.sign then
-            local handler = args.sign.name ~= "" and config.sign_handlers[args.sign.name]
-            if not handler then handler = config.sign_handlers[args.sign.namespace] end
-            if not handler then handler = config.sign_handlers[args.sign.texthl] end
-            if handler then handler(args) end
-          end
+          handle_sign_click(args)
         end,
       },
     },

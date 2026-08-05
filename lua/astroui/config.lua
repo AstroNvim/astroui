@@ -9,8 +9,11 @@
 
 ---@alias StringMap table<string,string>
 ---@alias AstroUIIconHighlight (fun(self:table):boolean)|boolean
----@alias AstroUIHighlight vim.api.keyset.highlight
----@alias AstroUIHighlights table<string,vim.api.keyset.highlight>
+---@class AstroUIHighlight: vim.api.keyset.highlight
+---@field fg? integer|string
+---@field bg? integer|string
+---@field reverse? boolean
+---@alias AstroUIHighlights table<string,AstroUIHighlight>
 
 ---@class AstroUIFileIconHighlights
 ---@field tabline AstroUIIconHighlight? enable or disabling file icon highlighting in the tabline

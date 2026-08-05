@@ -174,14 +174,13 @@ function M.lsp(opts)
   ))
 end
 
---- A function to build a set of children components for a git branch section
+--- A function to build a set of children components for a virtual environment section
 ---@param opts? AstroUIComponentVirtualEnvOpts provider options
 ---@return table # The Heirline component table
--- @usage local heirline_component = require("astroui.status").component.git_branch()
+-- @usage local heirline_component = require("astroui.status").component.virtual_env()
 function M.virtual_env(opts)
   opts = extend_tbl(vim.tbl_get(config, "components", "virtual_env"), opts)
   if opts.surround and opts.surround.condition == nil then
-    opts.surround = vim.tbl_extend("force", {}, opts.surround)
     local virtual_env_opts = opts.virtual_env
       and extend_tbl(vim.tbl_get(config, "providers", "virtual_env"), opts.virtual_env)
     opts.surround.condition = function()

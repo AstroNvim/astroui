@@ -19,6 +19,27 @@ local get_icon = ui.get_icon
 local condition = require "astroui.status.condition"
 local status_utils = require "astroui.status.utils"
 
+local function truncate_display(str, max_width, suffix)
+  if max_width <= 0 then return "" end
+  if vim.fn.strdisplaywidth(str) <= max_width then return str end
+
+  suffix = suffix or ""
+  local suffix_width = vim.fn.strdisplaywidth(suffix)
+  local available_width = math.max(max_width - suffix_width, 0)
+  local truncated = {}
+  local width = 0
+  for index = 0, vim.fn.strchars(str) - 1 do
+    local char = vim.fn.strcharpart(str, index, 1)
+    local char_width = vim.fn.strdisplaywidth(char)
+    if width + char_width > available_width then break end
+    table.insert(truncated, char)
+    width = width + char_width
+  end
+
+  if suffix_width > max_width then return truncate_display(suffix, max_width) end
+  return table.concat(truncated) .. suffix
+end
+
 --- A provider function for the fill string
 ---@return string # the statusline string for filling the empty space
 -- @usage local heirline_component = { provider = require("astroui.status").provider.fill }
@@ -34,19 +55,6 @@ function M.signcolumn(opts)
   return status_utils.stylize("%s", opts)
 end
 
--- local function to resolve the first sign in the signcolumn
--- specifically for usage when `signcolumn=number`
-local function resolve_sign(bufnr, lnum)
-  local row = lnum - 1
-  local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, -1, { row, 0 }, { row, -1 }, { details = true, type = "sign" })
-  local ret
-  for _, extmark in pairs(extmarks) do
-    local sign_def = extmark[4]
-    if sign_def.sign_text and (not ret or (ret.priority < sign_def.priority)) then ret = sign_def end
-  end
-  if ret then return { text = ret.sign_text, texthl = ret.sign_hl_group } end
-end
-
 --- A provider function for the numbercolumn string
 ---@param opts? AstroUIProviderNumbercolumnOpts provider options
 ---@return function # the statuscolumn string for adding the numbercolumn
@@ -58,22 +66,29 @@ function M.numbercolumn(opts)
     local lnum, rnum, virtnum = vim.v.lnum, vim.v.relnum, vim.v.virtnum
     local num, relnum = vim.opt.number:get(), vim.opt.relativenumber:get()
     local bufnr = self and self.bufnr or 0
-    local sign = vim.opt.signcolumn:get():find "nu" and resolve_sign(bufnr, lnum)
+    local signs = vim.opt.signcolumn:get():find "nu" and status_utils.get_signs(bufnr, lnum - 1)
+    local has_number_sign = false
+    for _, sign in ipairs(signs or {}) do
+      if sign.sign_text or sign.number_hl_group then
+        has_number_sign = true
+        break
+      end
+    end
     local str
     if virtnum ~= 0 then
       str = "%="
-    elseif sign then
-      str = sign.text
-      if sign.texthl then str = "%#" .. sign.texthl .. "#" .. str .. "%*" end
-      str = "%=" .. str
+    elseif has_number_sign then
+      str = "%=%l"
     elseif not num and not relnum then
       str = "%="
     else
       local cur = relnum and (rnum > 0 and rnum or (num and lnum or 0)) or lnum
+      local formatted = tostring(cur)
       if opts.thousands and cur > 999 then
-        cur = tostring(cur):reverse():gsub("%d%d%d", "%1" .. opts.thousands):reverse():gsub("^%" .. opts.thousands, "")
+        formatted =
+          formatted:reverse():gsub("%d%d%d", "%1" .. opts.thousands):reverse():gsub("^%" .. opts.thousands, "")
       end
-      str = (rnum == 0 and not opts.culright and relnum) and cur .. "%=" or "%=" .. cur
+      str = (rnum == 0 and not opts.culright and relnum) and formatted .. "%=" or "%=" .. formatted
     end
     return status_utils.stylize(str, opts)
   end
@@ -89,11 +104,11 @@ function M.foldcolumn(opts)
   if vim.fn.has "nvim-0.12" == 1 then return status_utils.stylize("%C", opts) end
   -- TODO: Remove code when deprecating Neovim 0.11 support
   local ffi = require "astroui.ffi" -- get AstroUI C extensions
-  local fillchars = vim.opt.fillchars:get()
-  local foldopen = fillchars.foldopen or get_icon "FoldOpened"
-  local foldclosed = fillchars.foldclose or get_icon "FoldClosed"
-  local foldsep = fillchars.foldsep or get_icon "FoldSeparator"
   return function() -- move to M.fold_indicator
+    local fillchars = vim.opt_local.fillchars:get()
+    local foldopen = fillchars.foldopen or get_icon "FoldOpened"
+    local foldclosed = fillchars.foldclose or get_icon "FoldClosed"
+    local foldsep = fillchars.foldsep or get_icon "FoldSeparator"
     local wp = ffi.C.find_window_by_handle(0, ffi.new "Error") -- get window handler
     local width = ffi.C.compute_foldcolumn(wp, 0) -- get foldcolumn width
     -- get fold info of current line
@@ -363,39 +378,54 @@ end
 function M.unique_path(opts)
   opts = extend_tbl(vim.tbl_get(config, "providers", "unique_path"), opts)
   local function path_parts(bufnr)
+    local path = vim.api.nvim_buf_get_name(bufnr):gsub("\\", "/")
+    local root = ""
+    if path:sub(1, 1) == "/" then
+      root, path = "/", path:gsub("^/+", "")
+    elseif path:match "^%a:/" then
+      root, path = path:sub(1, 2), path:sub(4)
+    end
     local parts = {}
-    for match in (vim.api.nvim_buf_get_name(bufnr) .. "/"):gmatch("(.-)" .. "/") do
+    for match in path:gmatch "[^/]+" do
       table.insert(parts, match)
     end
-    return parts
+    return { root = root, parts = parts }
+  end
+  local function path_suffix(path, length, include_root)
+    local suffix = table.concat(path.parts, "/", math.max(#path.parts - length, 1), #path.parts - 1)
+    if include_root then suffix = path.root .. (path.root == "/" and "" or "/") .. suffix end
+    return suffix ~= "" and (suffix:sub(-1) == "/" and suffix or suffix .. "/") or suffix
   end
   return function(self)
     local bufnr = self and self.bufnr or opts.bufnr
     local name = opts.buf_name(bufnr)
     local unique_path = ""
     -- check for same buffer names under different dirs
-    local current
+    local current, unique_length
     for _, value in ipairs(vim.t.bufs or {}) do
       if name == opts.buf_name(value) and value ~= bufnr then
         if not current then current = path_parts(bufnr) end
         local other = path_parts(value)
-
-        for i = #current - 1, 1, -1 do
-          if current[i] ~= other[i] then
-            unique_path = current[i] .. "/"
-            break
+        local current_dirs, other_dirs = #current.parts - 1, #other.parts - 1
+        local common_dirs = 0
+        while common_dirs < current_dirs and common_dirs < other_dirs do
+          if current.parts[current_dirs - common_dirs] ~= other.parts[other_dirs - common_dirs] then break end
+          common_dirs = common_dirs + 1
+        end
+        if common_dirs < current_dirs or common_dirs < other_dirs or current.root ~= other.root then
+          local include_root = current.root ~= other.root and common_dirs == current_dirs
+          local length = math.min(common_dirs + 1, current_dirs) + (include_root and 1 or 0)
+          if not unique_length or length >= unique_length then
+            unique_length = length
+            unique_path = path_suffix(current, length - (include_root and 1 or 0), include_root)
           end
         end
       end
     end
-    return status_utils.stylize(
-      (
-        opts.max_length > 0
-        and #unique_path > opts.max_length
-        and unique_path:sub(1, opts.max_length - 2) .. get_icon "Ellipsis" .. "/"
-      ) or unique_path,
-      opts
-    )
+    if opts.max_length > 0 and vim.fn.strdisplaywidth(unique_path) > opts.max_length then
+      unique_path = truncate_display(unique_path, opts.max_length, get_icon "Ellipsis" .. "/")
+    end
+    return status_utils.stylize(unique_path, opts)
   end
 end
 
@@ -500,7 +530,7 @@ end
 --- A provider function for showing the connected LSP client names
 ---@param opts? AstroUIProviderLspClientNamesOpts provider options
 ---@return function # the function for outputting the LSP client names
--- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, lint = true }, truncate = 0.25 }) }
+-- @usage local heirline_component = { provider = require("astroui.status").provider.lsp_client_names({ integrations = { null_ls = true, conform = true, ["nvim-lint"] = true }, truncate = 0.25 }) }
 -- @see astroui.status.utils.stylize
 function M.lsp_client_names(opts)
   opts = extend_tbl(vim.tbl_get(config, "providers", "lsp_client_names"), opts)
@@ -544,13 +574,12 @@ function M.lsp_client_names(opts)
     end
     local buf_client_names_set, client_name_lookup = {}, {}
     for _, client in ipairs(buf_client_names) do
-      local mapping = opts.mappings and (opts.mappings[client] or opts.mappings["*"])
-      if mapping then
-        if type(mapping) == "function" then
-          client = mapping(client)
-        else
-          client = mapping
-        end
+      local mapping = opts.mappings and opts.mappings[client]
+      if mapping == nil and opts.mappings then mapping = opts.mappings["*"] end
+      if type(mapping) == "function" then
+        client = mapping(client)
+      elseif mapping ~= nil then
+        client = mapping
       end
       if client and client ~= "" and not client_name_lookup[client] then
         client_name_lookup[client] = true
@@ -560,7 +589,7 @@ function M.lsp_client_names(opts)
     local str = table.concat(buf_client_names_set, ", ")
     if type(opts.truncate) == "number" then
       local max_width = math.floor(status_utils.width() * opts.truncate)
-      if #str > max_width then str = str:sub(0, max_width) .. "…" end
+      if vim.fn.strdisplaywidth(str) > max_width then str = truncate_display(str, max_width, "…") end
     end
     return status_utils.stylize(str, opts)
   end
@@ -578,7 +607,8 @@ function M.virtual_env(opts)
     local venv = vim.env.VIRTUAL_ENV
     local env_str
     if venv and venv ~= "" then
-      local path = vim.fn.split(venv, "/")
+      venv = venv:gsub([[[/\\]+$]], "")
+      local path = vim.split(venv, [[[/\\]+]])
       env_str = path[#path]
       if #path > 1 and vim.tbl_contains(opts.env_names, env_str) then env_str = path[#path - 1] end
     elseif opts.conda.enabled and conda and conda ~= "" then

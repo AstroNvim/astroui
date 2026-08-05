@@ -48,10 +48,10 @@ end
 --- Get highlight properties for a given highlight name
 ---@param name string The highlight group name
 ---@param fallback? table The fallback highlight properties
----@return table properties # the highlight group properties
+---@return AstroUIHighlight properties # the highlight group properties
 function M.get_hlgroup(name, fallback)
   if vim.fn.hlexists(name) == 1 then
-    local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+    local hl = vim.api.nvim_get_hl(0, { name = name, link = false }) --[[@as AstroUIHighlight]]
     if not hl.fg then hl.fg = "NONE" end
     if not hl.bg then hl.bg = "NONE" end
     if hl.reverse then
@@ -70,7 +70,7 @@ end
 function M.get_icon(kind, padding, no_fallback)
   local icons_enabled = vim.g.icons_enabled ~= false
   if not icons_enabled and no_fallback then return "" end
-  local icon_pack = assert(M.config[icons_enabled and "icons" or "text_icons"])
+  local icon_pack = assert(M.config[icons_enabled and "icons" or "text_icons"]) --[[@as StringMap]]
   local icon = icon_pack[kind]
   return icon and icon .. (" "):rep(padding or 0) or ""
 end
