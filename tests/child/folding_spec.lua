@@ -26,6 +26,7 @@ T["AUI-CHILD-FOLD-01 configures foldexpr for a real buffer without folding algor
 
       assert(vim.wo.foldexpr == "v:lua.require'astroui.folding'.foldexpr()")
       assert(folding.foldexpr(1) == 0)
+      assert(folding.foldexpr(2) == "=")
     ]]
     end
   )

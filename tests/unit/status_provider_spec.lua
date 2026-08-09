@@ -549,13 +549,16 @@ T["AUI-STATUS-PROVIDER-13 renders file state icon git diff and diagnostics with 
 end
 
 T["AUI-STATUS-PROVIDER-14 renders LSP progress with stable spinner time and all fields"] = function()
+  local hrtime = 0
   with_provider({
     loaded = { astrolsp = { lsp_progress = { [1] = { title = "Index", message = "files", percentage = 50 } } } },
   }, function(provider)
-    with_fake_vim(
-      fake_vim { uv = { hrtime = function() return 12e7 end } },
-      function() assert.equals("+Index files (50%)", provider.lsp_progress()()) end
-    )
+    with_fake_vim(fake_vim { uv = { hrtime = function() return hrtime end } }, function()
+      local progress = provider.lsp_progress()
+      assert.equals("-Index files (50%)", progress())
+      hrtime = 120000000
+      assert.equals("+Index files (50%)", progress())
+    end)
   end)
 end
 

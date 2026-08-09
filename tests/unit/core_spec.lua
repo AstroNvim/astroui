@@ -327,7 +327,7 @@ T["AUI-INIT-SPINNER-01 collects sequential spinner icons and returns nil when ab
   with_astroui(
     {
       highlights = {},
-      icons = { Spinner1 = "1", Spinner2 = "2" },
+      icons = { Spinner1 = "1", Spinner2 = "2", Spinner4 = "4" },
       text_icons = {},
       lazygit = false,
     },

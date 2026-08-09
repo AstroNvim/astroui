@@ -77,11 +77,14 @@ T["AUI-STATUS-COMPONENT-02 merges factory options and keeps provider ordering"] 
     file_read_only = false,
     close_button = false,
   }
+  local caller = {
+    file_icon = { marker = "call-icon" },
+    filename = { marker = "call-name", nested = { called = true } },
+  }
+  local default_snapshot = vim.deepcopy(file_info)
+  local caller_snapshot = vim.deepcopy(caller)
   with_component({ components = { file_info = file_info }, providers = {} }, nil, function(component)
-    local children = component.file_info {
-      file_icon = { marker = "call-icon" },
-      filename = { marker = "call-name", nested = { called = true } },
-    }
+    local children = component.file_info(caller)
 
     assert.equals("file_icon:call-icon", children[1].provider)
     assert.is_false(children[2])
@@ -90,6 +93,8 @@ T["AUI-STATUS-COMPONENT-02 merges factory options and keeps provider ordering"] 
     assert.is_true(children[4].opts.nested.defaulted)
     assert.is_true(children[4].opts.nested.called)
   end)
+  assert.same(default_snapshot, file_info)
+  assert.same(caller_snapshot, caller)
 end
 
 T["AUI-STATUS-COMPONENT-03 assigns git and diagnostic provider discriminators"] = function()

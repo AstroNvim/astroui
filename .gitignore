@@ -2,3 +2,7 @@
 .tests/
 .tests.bootstrap/
 .tests.prepare.lock
+
+# BEGIN pi deepwork
+.slim/deepwork/
+# END pi deepwork

@@ -91,13 +91,16 @@ end
 
 T["AUI-STATUS-CONFIG-05 schedules configured redraw callbacks"] = function()
   local redraws = 0
-  with_config({ vim = { cmd = { redrawstatus = function() redraws = redraws + 1 end } } }, function(config)
+  with_config({ vim = { cmd = { redrawstatus = function() redraws = redraws + 1 end } } }, function(config, context)
     config.components.mode.update.callback()
     config.components.git_branch.update.callback()
+    config.components.git_diff.update.callback()
     config.components.lsp.lsp_progress.update.callback()
+    config.components.lsp.lsp_client_names.update.callback()
+    context.drain()
   end)
 
-  assert.equals(3, redraws)
+  assert.equals(5, redraws)
 end
 
 return T

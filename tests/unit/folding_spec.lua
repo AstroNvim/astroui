@@ -134,6 +134,32 @@ T["AUI-FOLD-PRIORITY-02 falls back from unavailable LSP to treesitter"] = functi
   }, function(folding) assert.equals("treesitter-fold", folding.foldexpr(1)) end)
 end
 
+T["AUI-FOLD-PRIORITY-03 skips disabled treesitter and falls through to indent"] = function()
+  local original_buffer = vim.api.nvim_get_current_buf()
+  local buffer = vim.api.nvim_create_buf(false, true)
+  local ok, result = xpcall(function()
+    vim.api.nvim_set_current_buf(buffer)
+    vim.api.nvim_buf_set_lines(buffer, 0, -1, false, { "  content" })
+    vim.bo[buffer].shiftwidth = 2
+
+    with_folding({ enabled = true, methods = { "treesitter", "indent" } }, {
+      loaded = {
+        ["astrocore.treesitter"] = {
+          has_parser = function() return true end,
+          is_enabled = function() return false end,
+        },
+      },
+      vim = {
+        api = setup_api(),
+        treesitter = { foldexpr = function() error "disabled treesitter ran foldexpr" end },
+      },
+    }, function(folding) assert.equals(1, folding.foldexpr(1)) end)
+  end, debug.traceback)
+  vim.api.nvim_set_current_buf(original_buffer)
+  vim.api.nvim_buf_delete(buffer, { force = true })
+  if not ok then error(result, 0) end
+end
+
 T["AUI-FOLD-INDENT-01 handles blank lines and a zero shiftwidth with tabstop"] = function()
   local original_buffer = vim.api.nvim_get_current_buf()
   local buffer = vim.api.nvim_create_buf(false, true)
