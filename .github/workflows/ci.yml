@@ -1,20 +1,376 @@
 name: AstroNvim
+
 on:
   push:
     branches: [main]
   pull_request:
   pull_request_target:
     types: [opened, edited, synchronize]
+  schedule:
+    - cron: "0 6 * * *"
+    - cron: "0 8 * * 1"
+
+permissions:
+  contents: read
 
 jobs:
   CI:
     uses: AstroNvim/.github/.github/workflows/plugin_ci.yml@main
-    if: ${{ github.event_name != 'pull_request_target' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
     secrets: inherit
     with:
       plugin_name: ${{ github.event.repository.name }}
       is_production: ${{ github.event_name == 'push' }}
+
   PR:
     uses: AstroNvim/.github/.github/workflows/validate_pr.yml@main
     if: ${{ github.event_name == 'pull_request_target' }}
     secrets: inherit
+
+  stable-ubuntu-full:
+    name: Stable Ubuntu full validation
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Install Neovim 0.12.4
+        uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7
+        with:
+          version: v0.12.4
+          neovim: true
+          vim: false
+
+      - name: Verify Neovim version
+        shell: bash
+        run: test "$(nvim --version | sed -n '1p')" = "NVIM v0.12.4"
+
+      - name: Install StyLua 2.5.2 and Selene 0.31.0
+        shell: bash
+        run: |
+          cargo install stylua --version 2.5.2 --locked
+          cargo install selene --version 0.31.0 --locked
+          test "$(stylua --version)" = "stylua 2.5.2"
+          test "$(selene --version)" = "selene 0.31.0"
+
+      - name: Check formatting and linting
+        shell: bash
+        run: |
+          stylua --check tests
+          selene tests
+
+      - name: Run diff and harness preflight
+        shell: bash
+        run: |
+          git diff --check
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+          test -f tests/minit.lua
+          test -f tests/print_fingerprint.lua
+
+      - name: Compute environment fingerprint
+        id: fingerprint
+        shell: bash
+        run: echo "value=$(nvim -l tests/print_fingerprint.lua)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore test environment cache
+        id: cache-restore
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: test-environment-${{ runner.os }}-${{ runner.arch }}-nvim-0.12.4-schema-3-${{ steps.fingerprint.outputs.value }}-rotation-1
+
+      - name: Prepare and validate test environment
+        shell: bash
+        run: make test-prepare
+
+      - name: Run full semantic suite
+        shell: bash
+        run: make test
+
+      - name: Run full semantic suite again
+        shell: bash
+        run: make test
+
+      - name: Verify repository immutability
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          git diff --check
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+
+      - name: Save validated test environment cache
+        if: ${{ success() && steps.cache-restore.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: test-environment-${{ runner.os }}-${{ runner.arch }}-nvim-0.12.4-schema-3-${{ steps.fingerprint.outputs.value }}-rotation-1
+
+  semantic:
+    name: Semantic ${{ matrix.os }} Neovim ${{ matrix.neovim }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            neovim: 0.11.0
+            test_mode: full
+          - os: ubuntu-latest
+            neovim: 0.12.4
+            test_mode: full
+          - os: macos-latest
+            neovim: 0.12.4
+            test_mode: full
+          - os: windows-latest
+            neovim: 0.12.4
+            test_mode: full
+          - os: windows-latest
+            neovim: 0.11.0
+            test_mode: ffi
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Install Neovim ${{ matrix.neovim }}
+        uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7
+        with:
+          version: v${{ matrix.neovim }}
+          neovim: true
+          vim: false
+
+      - name: Verify Neovim version
+        if: ${{ runner.os != 'Windows' }}
+        shell: bash
+        run: test "$(nvim --version | sed -n '1p')" = "NVIM v${{ matrix.neovim }}"
+
+      - name: Verify Neovim version on Windows
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          $version = nvim --version | Select-Object -First 1
+          if ($version -ne "NVIM v${{ matrix.neovim }}") {
+            throw "Expected NVIM v${{ matrix.neovim }}, got $version"
+          }
+
+      - name: Compute environment fingerprint
+        if: ${{ runner.os != 'Windows' }}
+        id: fingerprint
+        shell: bash
+        run: echo "value=$(nvim -l tests/print_fingerprint.lua)" >> "$GITHUB_OUTPUT"
+
+      - name: Compute environment fingerprint on Windows
+        if: ${{ runner.os == 'Windows' }}
+        id: fingerprint-windows
+        shell: pwsh
+        run: |
+          $fingerprint = & nvim -l tests/print_fingerprint.lua
+          "value=$fingerprint" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Restore test environment cache
+        id: cache-restore
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: semantic-${{ runner.os }}-${{ runner.arch }}-nvim-${{ matrix.neovim }}-schema-3-${{ steps.fingerprint.outputs.value || steps.fingerprint-windows.outputs.value }}-rotation-1
+
+      - name: Prepare and validate test environment
+        if: ${{ runner.os != 'Windows' }}
+        shell: bash
+        run: make test-prepare
+
+      - name: Prepare and validate test environment on Windows
+        if: ${{ runner.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          & nvim -l tests/bootstrap.lua
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+      - name: Run semantic suite
+        if: ${{ runner.os != 'Windows' }}
+        shell: bash
+        run: make test-semantic
+
+      - name: Run stable Windows semantic suite
+        if: ${{ runner.os == 'Windows' && matrix.test_mode == 'full' }}
+        shell: pwsh
+        run: |
+          $testFiles = @(
+            Get-ChildItem -Path tests/unit -Filter *.lua -File
+            Get-ChildItem -Path tests/child -Filter *.lua -File
+          ) | Sort-Object FullName | ForEach-Object { $_.FullName }
+          & nvim -l tests/minit.lua --minitest $testFiles
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+      - name: Run Windows 0.11 FFI smoke
+        if: ${{ runner.os == 'Windows' && matrix.test_mode == 'ffi' }}
+        shell: pwsh
+        run: |
+          & nvim -l tests/minit.lua --minitest tests/child/ffi_spec.lua
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+      - name: Verify repository immutability
+        if: ${{ always() && runner.os != 'Windows' }}
+        shell: bash
+        run: |
+          git diff --check
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+
+      - name: Verify repository immutability on Windows
+        if: ${{ always() && runner.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          git diff --check
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          $untracked = @(git ls-files --others --exclude-standard)
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          if ($untracked.Count -ne 0) {
+            throw "Repository contains untracked files: $($untracked -join ', ')"
+          }
+
+      - name: Save validated test environment cache
+        if: ${{ success() && steps.cache-restore.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: semantic-${{ runner.os }}-${{ runner.arch }}-nvim-${{ matrix.neovim }}-schema-3-${{ steps.fingerprint.outputs.value || steps.fingerprint-windows.outputs.value }}-rotation-1
+
+  nightly-semantic-smoke:
+    name: Nightly semantic smoke
+    if: ${{ github.event_name == 'schedule' && github.event.schedule == '0 6 * * *' }}
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Install Neovim nightly
+        uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7
+        with:
+          version: nightly
+          neovim: true
+          vim: false
+
+      - name: Verify Neovim version
+        shell: bash
+        run: |
+          version=$(nvim --version | sed -n '1p')
+          case "$version" in
+            "NVIM v0."*) ;;
+            *)
+              printf 'Expected a nightly Neovim version, got: %s\n' "$version" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Compute environment fingerprint
+        id: fingerprint
+        shell: bash
+        run: echo "value=$(nvim -l tests/print_fingerprint.lua)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore nightly test environment cache
+        id: cache-restore
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: nightly-semantic-${{ runner.os }}-${{ runner.arch }}-nvim-nightly-schema-3-${{ steps.fingerprint.outputs.value }}-rotation-1
+
+      - name: Prepare and validate test environment
+        shell: bash
+        run: make test-prepare
+
+      - name: Run semantic smoke
+        shell: bash
+        run: make test-semantic
+
+      - name: Verify repository immutability
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          git diff --check
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+
+      - name: Save validated nightly test environment cache
+        if: ${{ success() && steps.cache-restore.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: nightly-semantic-${{ runner.os }}-${{ runner.arch }}-nvim-nightly-schema-3-${{ steps.fingerprint.outputs.value }}-rotation-1
+
+  weekly-dependency-rebuild:
+    name: Weekly dependency rebuild
+    if: ${{ github.event_name == 'schedule' && github.event.schedule == '0 8 * * 1' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+
+      - name: Install Neovim 0.12.4
+        uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7
+        with:
+          version: v0.12.4
+          neovim: true
+          vim: false
+
+      - name: Verify Neovim version
+        shell: bash
+        run: test "$(nvim --version | sed -n '1p')" = "NVIM v0.12.4"
+
+      - name: Compute environment fingerprint
+        id: fingerprint
+        shell: bash
+        run: echo "value=$(nvim -l tests/print_fingerprint.lua)" >> "$GITHUB_OUTPUT"
+
+      - name: Force dependency rebuild
+        shell: bash
+        run: make test-update-deps
+
+      - name: Run rebuilt semantic suite
+        shell: bash
+        run: make test-semantic
+
+      - name: Verify repository immutability
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          git diff --check
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"
+
+      - name: Save rebuilt test environment cache
+        if: ${{ success() }}
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: .tests
+          key: weekly-rebuild-${{ runner.os }}-${{ runner.arch }}-nvim-0.12.4-schema-3-${{ steps.fingerprint.outputs.value }}-run-${{ github.run_id }}-attempt-${{ github.run_attempt }}
