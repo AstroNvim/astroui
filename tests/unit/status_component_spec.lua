@@ -111,12 +111,18 @@ T["AUI-STATUS-COMPONENT-03 assigns git and diagnostic provider discriminators"] 
 
     assert.equals("git_diff:add", git[1].provider)
     assert.equals("added", git[1].opts.type)
+    assert.equals("git_added", git[1].hl.fg)
     assert.is_false(git[2])
     assert.equals("git_diff:remove", git[3].provider)
+    assert.equals("removed", git[3].opts.type)
+    assert.equals("git_removed", git[3].hl.fg)
     assert.equals("diagnostics:error", diagnostics[1].provider)
     assert.equals("ERROR", diagnostics[1].opts.severity)
+    assert.equals("diag_ERROR", diagnostics[1].hl.fg)
     assert.is_false(diagnostics[2])
     assert.equals("diagnostics:hint", diagnostics[4].provider)
+    assert.equals("HINT", diagnostics[4].opts.severity)
+    assert.equals("diag_HINT", diagnostics[4].hl.fg)
   end)
 end
 

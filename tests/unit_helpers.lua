@@ -1,6 +1,17 @@
 local M = {}
 M.remove = {}
 
+function M.with_finalizer(callback, finalizer)
+  local callback_ok, result = xpcall(callback, debug.traceback)
+  local finalizer_ok, finalizer_error = xpcall(finalizer, debug.traceback)
+  if not callback_ok then
+    if not finalizer_ok then result = result .. "\nCleanup failed: " .. finalizer_error end
+    error(result, 0)
+  end
+  if not finalizer_ok then error("Cleanup failed: " .. finalizer_error, 0) end
+  return result
+end
+
 function M.with_module(module_name, options, callback)
   options = options or {}
   local names = { [module_name] = true }
@@ -41,7 +52,7 @@ function M.with_module(module_name, options, callback)
     end
     if #errors > 0 then error(table.concat(errors, "\n"), 0) end
   end
-  local ok, result = xpcall(function()
+  return M.with_finalizer(function()
     for name, value in pairs(options.loaded or {}) do
       if value == M.remove then
         package.loaded[name] = nil
@@ -62,33 +73,29 @@ function M.with_module(module_name, options, callback)
     vim.schedule = function(callback_fn) table.insert(scheduled, callback_fn) end
 
     return callback(require(module_name), context)
-  end, debug.traceback)
-  local cleanup_errors = {}
-  local function cleanup(callback_fn)
-    local cleanup_ok, cleanup_error = xpcall(callback_fn, debug.traceback)
-    if not cleanup_ok then table.insert(cleanup_errors, cleanup_error) end
-  end
-  cleanup(context.drain)
-  cleanup(function() vim.schedule = original_schedule end)
-  cleanup(function() vim.notify = original_notify end)
-  cleanup(function()
-    for index = #fields, 1, -1 do
-      local field = fields[index]
-      field.target[field.name] = field.value
+  end, function()
+    local cleanup_errors = {}
+    local function cleanup(callback_fn)
+      local cleanup_ok, cleanup_error = xpcall(callback_fn, debug.traceback)
+      if not cleanup_ok then table.insert(cleanup_errors, cleanup_error) end
     end
+    cleanup(context.drain)
+    cleanup(function() vim.schedule = original_schedule end)
+    cleanup(function() vim.notify = original_notify end)
+    cleanup(function()
+      for index = #fields, 1, -1 do
+        local field = fields[index]
+        field.target[field.name] = field.value
+      end
+    end)
+    cleanup(function()
+      for name, package_state in pairs(packages) do
+        package.loaded[name] = package_state.loaded
+        package.preload[name] = package_state.preload
+      end
+    end)
+    if #cleanup_errors > 0 then error(table.concat(cleanup_errors, "\n"), 0) end
   end)
-  cleanup(function()
-    for name, package_state in pairs(packages) do
-      package.loaded[name] = package_state.loaded
-      package.preload[name] = package_state.preload
-    end
-  end)
-  if not ok then
-    if #cleanup_errors > 0 then result = result .. "\nCleanup failed: " .. table.concat(cleanup_errors, "\n") end
-    error(result, 0)
-  end
-  if #cleanup_errors > 0 then error(table.concat(cleanup_errors, "\n"), 0) end
-  return result
 end
 
 return M

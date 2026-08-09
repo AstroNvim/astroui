@@ -62,18 +62,21 @@ T["AUI-STATUS-CONDITION-02 evaluates window, recording, search, and showcmd stat
   local original_window = vim.g.actual_curwin
   local original_hlsearch = vim.v.hlsearch
   local original_showcmdloc = vim.opt.showcmdloc:get()
-  vim.g.actual_curwin = tostring(vim.api.nvim_get_current_win())
-  vim.v.hlsearch = 1
-  vim.opt.showcmdloc = "statusline"
-  with_condition({ vim = { fn = { reg_recording = function() return "q" end } } }, function(condition)
-    assert.is_true(condition.is_active())
-    assert.is_true(condition.is_macro_recording())
-    assert.is_true(condition.is_hlsearch())
-    assert.is_true(condition.is_statusline_showcmd())
+  helpers.with_finalizer(function()
+    vim.g.actual_curwin = tostring(vim.api.nvim_get_current_win())
+    vim.v.hlsearch = 1
+    vim.opt.showcmdloc = "statusline"
+    with_condition({ vim = { fn = { reg_recording = function() return "q" end } } }, function(condition)
+      assert.is_true(condition.is_active())
+      assert.is_true(condition.is_macro_recording())
+      assert.is_true(condition.is_hlsearch())
+      assert.is_true(condition.is_statusline_showcmd())
+    end)
+  end, function()
+    vim.g.actual_curwin = original_window
+    vim.v.hlsearch = original_hlsearch
+    vim.opt.showcmdloc = original_showcmdloc
   end)
-  vim.g.actual_curwin = original_window
-  vim.v.hlsearch = original_hlsearch
-  vim.opt.showcmdloc = original_showcmdloc
 end
 
 T["AUI-STATUS-CONDITION-03 recognizes git changes and buffer states for direct and table buffers"] = function()
@@ -107,25 +110,28 @@ end
 T["AUI-STATUS-CONDITION-04 checks diagnostics and virtual environments"] = function()
   local original_virtual_env = vim.env.VIRTUAL_ENV
   local original_conda_env = vim.env.CONDA_DEFAULT_ENV
-  with_condition(
-    { vim = { diagnostic = { count = function(bufnr) return bufnr == 9 and { [1] = 1 } or {} end } } },
-    function(condition)
-      assert.is_true(condition.has_diagnostics { bufnr = 9 })
-      assert.is_false(condition.has_diagnostics(8))
-    end
-  )
-  vim.env.VIRTUAL_ENV = "/tmp/venv"
-  vim.env.CONDA_DEFAULT_ENV = ""
-  with_condition(nil, function(condition) assert.is_true(condition.has_virtual_env()) end)
-  vim.env.VIRTUAL_ENV = ""
-  vim.env.CONDA_DEFAULT_ENV = "base"
-  with_condition(nil, function(condition)
-    assert.is_false(condition.has_virtual_env { enabled = true, ignore_base = true })
-    assert.is_true(condition.has_virtual_env { enabled = true, ignore_base = false })
-    assert.is_false(condition.has_virtual_env { enabled = false })
+  helpers.with_finalizer(function()
+    with_condition(
+      { vim = { diagnostic = { count = function(bufnr) return bufnr == 9 and { [1] = 1 } or {} end } } },
+      function(condition)
+        assert.is_true(condition.has_diagnostics { bufnr = 9 })
+        assert.is_false(condition.has_diagnostics(8))
+      end
+    )
+    vim.env.VIRTUAL_ENV = "/tmp/venv"
+    vim.env.CONDA_DEFAULT_ENV = ""
+    with_condition(nil, function(condition) assert.is_true(condition.has_virtual_env()) end)
+    vim.env.VIRTUAL_ENV = ""
+    vim.env.CONDA_DEFAULT_ENV = "base"
+    with_condition(nil, function(condition)
+      assert.is_false(condition.has_virtual_env { enabled = true, ignore_base = true })
+      assert.is_true(condition.has_virtual_env { enabled = true, ignore_base = false })
+      assert.is_false(condition.has_virtual_env { enabled = false })
+    end)
+  end, function()
+    vim.env.VIRTUAL_ENV = original_virtual_env
+    vim.env.CONDA_DEFAULT_ENV = original_conda_env
   end)
-  vim.env.VIRTUAL_ENV = original_virtual_env
-  vim.env.CONDA_DEFAULT_ENV = original_conda_env
 end
 
 T["AUI-STATUS-CONDITION-05 gates Aerial, conform, lint, Treesitter, and early LSP lookup"] = function()
@@ -189,28 +195,31 @@ T["AUI-STATUS-CONDITION-06 reflects fold, number, and sign options"] = function(
     relativenumber = vim.opt.relativenumber:get(),
     signcolumn = vim.opt.signcolumn:get(),
   }
-  vim.opt.foldcolumn = "1"
-  vim.opt.number = false
-  vim.opt.relativenumber = true
-  vim.opt.signcolumn = "yes"
-  with_condition(nil, function(condition)
-    assert.is_true(condition.foldcolumn_enabled())
-    assert.is_true(condition.numbercolumn_enabled())
-    assert.is_true(condition.signcolumn_enabled())
+  helpers.with_finalizer(function()
+    vim.opt.foldcolumn = "1"
+    vim.opt.number = false
+    vim.opt.relativenumber = true
+    vim.opt.signcolumn = "yes"
+    with_condition(nil, function(condition)
+      assert.is_true(condition.foldcolumn_enabled())
+      assert.is_true(condition.numbercolumn_enabled())
+      assert.is_true(condition.signcolumn_enabled())
+    end)
+    vim.opt.foldcolumn = "0"
+    vim.opt.number = false
+    vim.opt.relativenumber = false
+    vim.opt.signcolumn = "no"
+    with_condition(nil, function(condition)
+      assert.is_false(condition.foldcolumn_enabled())
+      assert.is_false(condition.numbercolumn_enabled())
+      assert.is_false(condition.signcolumn_enabled())
+    end)
+  end, function()
+    vim.opt.foldcolumn = original.foldcolumn
+    vim.opt.number = original.number
+    vim.opt.relativenumber = original.relativenumber
+    vim.opt.signcolumn = original.signcolumn
   end)
-  vim.opt.foldcolumn = "0"
-  vim.opt.number = false
-  vim.opt.relativenumber = false
-  vim.opt.signcolumn = "no"
-  with_condition(nil, function(condition)
-    assert.is_false(condition.foldcolumn_enabled())
-    assert.is_false(condition.numbercolumn_enabled())
-    assert.is_false(condition.signcolumn_enabled())
-  end)
-  vim.opt.foldcolumn = original.foldcolumn
-  vim.opt.number = original.number
-  vim.opt.relativenumber = original.relativenumber
-  vim.opt.signcolumn = original.signcolumn
 end
 
 return T

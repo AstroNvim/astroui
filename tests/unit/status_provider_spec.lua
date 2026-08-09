@@ -616,6 +616,14 @@ T["AUI-STATUS-PROVIDER-15 joins LSP clients adapters mappings deduplication and 
       }
       assert.equals("Lua, St…", clients { bufnr = bufnr })
       assert.equals(2, #null_requests)
+      assert.equals(
+        "",
+        provider.lsp_client_names {
+          integrations = { null_ls = false, conform = false, ["nvim-lint"] = false },
+          mappings = { lua_ls = "Lua" },
+          truncate = 0,
+        } { bufnr = bufnr }
+      )
       assert.equals("FORMATTING", null_requests[1].method)
       assert.equals("DIAGNOSTICS", null_requests[2].method)
       assert.equals(2, null_requests[1].client_id)

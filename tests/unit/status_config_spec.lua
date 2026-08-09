@@ -5,7 +5,7 @@ local T = MiniTest.new_set()
 
 local function with_config(options, callback)
   options = options or {}
-  local astroui = { config = {} }
+  local astroui = { config = {}, get_icon = function(kind) return kind end }
   local loaded = vim.tbl_extend("force", { astroui = astroui }, options.loaded or {})
   return helpers.with_module("astroui.status.config", { loaded = loaded, vim = options.vim }, function(config, context)
     astroui.config.status = config
@@ -28,10 +28,13 @@ end
 
 T["AUI-STATUS-CONFIG-02 dispatches branch, diff, and diagnostics fallbacks in order"] = function()
   local calls = {}
-  with_config(
-    { loaded = { ["fzf-lua"] = { git_branches = function() table.insert(calls, "fzf-branch") end } } },
-    function(config) config.components.git_branch.on_click.callback() end
-  )
+  with_config({
+    loaded = {
+      ["fzf-lua"] = { git_branches = function() table.insert(calls, "fzf-branch") end },
+      ["telescope.builtin"] = { git_branches = function() table.insert(calls, "telescope-branch") end },
+      snacks = { picker = { git_branches = function() table.insert(calls, "snacks-branch") end } },
+    },
+  }, function(config) config.components.git_branch.on_click.callback() end)
   with_config({
     loaded = {
       ["telescope.builtin"] = {
@@ -101,6 +104,24 @@ T["AUI-STATUS-CONFIG-05 schedules configured redraw callbacks"] = function()
   end)
 
   assert.equals(5, redraws)
+end
+
+T["AUI-STATUS-CONFIG-06 maps fold glyph clicks to close and open commands"] = function()
+  local commands = {}
+  local fillchars = vim.opt_local.fillchars:get()
+  local args = { char = fillchars.foldopen or "FoldOpened" }
+  with_config({
+    loaded = {
+      ["astroui.status.utils"] = { statuscolumn_clickargs = function() return args end },
+    },
+    vim = { cmd = function(command) table.insert(commands, command) end },
+  }, function(config)
+    config.components.foldcolumn.on_click.callback()
+    args.char = fillchars.foldclose or "FoldClosed"
+    config.components.foldcolumn.on_click.callback()
+  end)
+
+  assert.same({ "norm! zc", "norm! zo" }, commands)
 end
 
 return T

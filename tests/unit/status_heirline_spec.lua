@@ -96,26 +96,27 @@ end
 
 T["AUI-STATUS-HEIRLINE-03 filters local tab buffers and exposes overflow providers"] = function()
   local calls = {}
-  with_heirline({
-    calls = calls,
-    loaded = {
-      ["astrocore.buffer"] = { is_valid = function(bufnr) return bufnr % 2 == 0 end },
-      ["heirline.utils"] = {
-        make_buflist = function(...) calls.arguments = { ... } end,
+  local original = vim.t.bufs
+  helpers.with_finalizer(function()
+    with_heirline({
+      calls = calls,
+      loaded = {
+        ["astrocore.buffer"] = { is_valid = function(bufnr) return bufnr % 2 == 0 end },
+        ["heirline.utils"] = {
+          make_buflist = function(...) calls.arguments = { ... } end,
+        },
       },
-    },
-  }, function(heirline)
-    heirline.make_buflist { provider = "buffer" }
-    local original = vim.t.bufs
-    vim.t.bufs = { 1, 2, 3, 4 }
-    local buffers = calls.arguments[4]()
+    }, function(heirline)
+      heirline.make_buflist { provider = "buffer" }
+      vim.t.bufs = { 1, 2, 3, 4 }
+      local buffers = calls.arguments[4]()
 
-    assert.same({ 2, 4 }, buffers)
-    assert.same({ 2, 4 }, vim.t.bufs)
-    vim.t.bufs = original
-    assert.equals("<ArrowLeft> ", calls.arguments[2].provider)
-    assert.equals("<ArrowRight> ", calls.arguments[3].provider)
-  end)
+      assert.same({ 2, 4 }, buffers)
+      assert.same({ 2, 4 }, vim.t.bufs)
+      assert.equals("<ArrowLeft> ", calls.arguments[2].provider)
+      assert.equals("<ArrowRight> ", calls.arguments[3].provider)
+    end)
+  end, function() vim.t.bufs = original end)
 end
 
 T["AUI-STATUS-HEIRLINE-04 assigns unique picker labels for duplicates empties and exhaustion"] = function()
@@ -220,44 +221,45 @@ local function picker_scenario(failure, expected_error)
   local calls = { redraws = 0, callback = 0 }
   local buflist = { _picker_labels = { x = 42 } }
   local previous_showtabline = vim.o.showtabline
-  vim.o.showtabline = 1
-  with_heirline({
-    calls = calls,
-    loaded = { heirline = { tabline = { _buflist = { buflist } } } },
-    vim = {
-      cmd = {
-        redrawtabline = function()
-          calls.redraws = calls.redraws + 1
-          if failure == "first redraw" and calls.redraws == 1 then error(expected_error) end
-          if calls.redraws == 2 then buflist._picker_labels.x = 42 end
-          if failure == "second redraw" and calls.redraws == 2 then error(expected_error) end
-        end,
+  helpers.with_finalizer(function()
+    vim.o.showtabline = 1
+    with_heirline({
+      calls = calls,
+      loaded = { heirline = { tabline = { _buflist = { buflist } } } },
+      vim = {
+        cmd = {
+          redrawtabline = function()
+            calls.redraws = calls.redraws + 1
+            if failure == "first redraw" and calls.redraws == 1 then error(expected_error) end
+            if calls.redraws == 2 then buflist._picker_labels.x = 42 end
+            if failure == "second redraw" and calls.redraws == 2 then error(expected_error) end
+          end,
+        },
+        fn = {
+          getcharstr = function()
+            if failure == "input" then error(expected_error) end
+            return "x"
+          end,
+        },
       },
-      fn = {
-        getcharstr = function()
-          if failure == "input" then error(expected_error) end
-          return "x"
-        end,
-      },
-    },
-  }, function(heirline)
-    local ok, error_message = pcall(heirline.buffer_picker, function(bufnr)
-      calls.callback = calls.callback + 1
-      assert.equals(42, bufnr)
-      if failure == "callback" then error(expected_error) end
+    }, function(heirline)
+      local ok, error_message = pcall(heirline.buffer_picker, function(bufnr)
+        calls.callback = calls.callback + 1
+        assert.equals(42, bufnr)
+        if failure == "callback" then error(expected_error) end
+      end)
+      if failure then
+        assert.is_false(ok)
+        assert.matches(expected_error, error_message)
+      else
+        assert.is_true(ok)
+        assert.equals(1, calls.callback)
+      end
+      assert.is_false(buflist._show_picker or false)
+      assert.equals(1, vim.o.showtabline)
+      assert.is_true(calls.redraws >= 2)
     end)
-    if failure then
-      assert.is_false(ok)
-      assert.matches(expected_error, error_message)
-    else
-      assert.is_true(ok)
-      assert.equals(1, calls.callback)
-    end
-    assert.is_false(buflist._show_picker or false)
-    assert.equals(1, vim.o.showtabline)
-    assert.is_true(calls.redraws >= 2)
-  end)
-  vim.o.showtabline = previous_showtabline
+  end, function() vim.o.showtabline = previous_showtabline end)
 end
 
 T["AUI-STATUS-HEIRLINE-07 runs a picker selection and ignores unmapped input"] = function()
@@ -282,18 +284,19 @@ end
 T["AUI-STATUS-HEIRLINE-08 leaves a missing buffer list unchanged"] = function()
   local calls = { redraws = 0, callback = 0 }
   local previous_showtabline = vim.o.showtabline
-  vim.o.showtabline = 1
-  with_heirline({
-    calls = calls,
-    loaded = { heirline = { tabline = {} } },
-    vim = { cmd = { redrawtabline = function() calls.redraws = calls.redraws + 1 end } },
-  }, function(heirline)
-    heirline.buffer_picker(function() calls.callback = calls.callback + 1 end)
-    assert.equals(0, calls.callback)
-    assert.equals(2, calls.redraws)
-    assert.equals(1, vim.o.showtabline)
-  end)
-  vim.o.showtabline = previous_showtabline
+  helpers.with_finalizer(function()
+    vim.o.showtabline = 1
+    with_heirline({
+      calls = calls,
+      loaded = { heirline = { tabline = {} } },
+      vim = { cmd = { redrawtabline = function() calls.redraws = calls.redraws + 1 end } },
+    }, function(heirline)
+      heirline.buffer_picker(function() calls.callback = calls.callback + 1 end)
+      assert.equals(0, calls.callback)
+      assert.equals(2, calls.redraws)
+      assert.equals(1, vim.o.showtabline)
+    end)
+  end, function() vim.o.showtabline = previous_showtabline end)
 end
 
 T["AUI-STATUS-HEIRLINE-09 rolls picker state back after each operational failure"] = function()

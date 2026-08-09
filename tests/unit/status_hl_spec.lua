@@ -15,20 +15,21 @@ end
 
 T["AUI-STATUS-HL-01 uses lualine colors and falls back when unavailable"] = function()
   local original_colors_name = vim.g.colors_name
-  vim.g.colors_name = nil
-  with_hl(
-    { attributes = {}, modes = {}, icon_highlights = {} },
-    nil,
-    function(hl) assert.equals("fallback", hl.lualine_mode("normal", "fallback")) end
-  )
-  vim.g.colors_name = "testtheme"
-  with_hl({ attributes = {}, modes = {}, icon_highlights = {} }, {
-    loaded = { ["lualine.themes.testtheme"] = { normal = { a = { bg = "#123456" } } } },
-  }, function(hl)
-    assert.equals("#123456", hl.lualine_mode("normal", "fallback"))
-    assert.equals("fallback", hl.lualine_mode("insert", "fallback"))
-  end)
-  vim.g.colors_name = original_colors_name
+  helpers.with_finalizer(function()
+    vim.g.colors_name = nil
+    with_hl(
+      { attributes = {}, modes = {}, icon_highlights = {} },
+      nil,
+      function(hl) assert.equals("fallback", hl.lualine_mode("normal", "fallback")) end
+    )
+    vim.g.colors_name = "testtheme"
+    with_hl({ attributes = {}, modes = {}, icon_highlights = {} }, {
+      loaded = { ["lualine.themes.testtheme"] = { normal = { a = { bg = "#123456" } } } },
+    }, function(hl)
+      assert.equals("#123456", hl.lualine_mode("normal", "fallback"))
+      assert.equals("fallback", hl.lualine_mode("insert", "fallback"))
+    end)
+  end, function() vim.g.colors_name = original_colors_name end)
 end
 
 T["AUI-STATUS-HL-02 returns mode and icon colors through their public helpers"] = function()

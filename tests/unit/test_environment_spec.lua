@@ -311,6 +311,26 @@ T["AUI-HARNESS-07 aggregates callback and lifecycle cleanup errors"] = function(
   assert.is_false(ok)
   assert.is_true(message:find("callback failure", 1, true) ~= nil)
   assert.is_true(message:find("Failed to release", 1, true) ~= nil)
+
+  local completed = false
+  ok, message = pcall(
+    environment.with_lifecycle_lock,
+    {
+      lstat = function() end,
+      mkdir = function() return true end,
+      rmdir = function() return nil, "EACCES" end,
+      now = function() return 0 end,
+      wait = function() end,
+    },
+    "/lock",
+    function()
+      completed = true
+      return "callback result"
+    end
+  )
+  assert.is_false(ok)
+  assert.is_true(completed)
+  assert.is_true(message:find("Failed to release", 1, true) ~= nil)
 end
 
 return T
