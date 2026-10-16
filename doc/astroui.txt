@@ -38,7 +38,7 @@ FEATURES                                            *astroui-astroui-features*
 
 REQUIREMENTS                                    *astroui-astroui-requirements*
 
-- Neovim >= 0.11
+- Neovim >= 0.12
 - astrocore <https://github.com/AstroNvim/astrocore>
 
 

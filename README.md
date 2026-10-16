@@ -10,7 +10,7 @@ AstroUI provides a simple API for configuring and setting up the user interface 
 
 ## ⚡️ Requirements
 
-- Neovim >= 0.11
+- Neovim >= 0.12
 - [astrocore][astrocore]
 
 ## 📦 Installation
