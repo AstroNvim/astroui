@@ -101,46 +101,7 @@ end
 -- @see astroui.status.utils.stylize
 function M.foldcolumn(opts)
   opts = extend_tbl(vim.tbl_get(config, "providers", "foldcolumn"), opts)
-  if vim.fn.has "nvim-0.12" == 1 then return status_utils.stylize("%C", opts) end
-  -- TODO: Remove code when deprecating Neovim 0.11 support
-  local ffi = require "astroui.ffi" -- get AstroUI C extensions
-  return function() -- move to M.fold_indicator
-    local fillchars = vim.opt_local.fillchars:get()
-    local foldopen = fillchars.foldopen or get_icon "FoldOpened"
-    local foldclosed = fillchars.foldclose or get_icon "FoldClosed"
-    local foldsep = fillchars.foldsep or get_icon "FoldSeparator"
-    local wp = ffi.C.find_window_by_handle(0, ffi.new "Error") -- get window handler
-    local width = ffi.C.compute_foldcolumn(wp, 0) -- get foldcolumn width
-    -- get fold info of current line
-    local foldinfo = width > 0 and ffi.C.fold_info(wp, vim.v.lnum) or { start = 0, level = 0, llevel = 0, lines = 0 }
-
-    local str = ""
-    if width ~= 0 then
-      str = vim.v.relnum > 0 and "%#FoldColumn#" or "%#CursorLineFold#"
-      if foldinfo.level == 0 then
-        str = str .. (" "):rep(width)
-      else
-        local closed = foldinfo.lines > 0
-        local first_level = foldinfo.level - width - (closed and 1 or 0) + 1
-        if first_level < 1 then first_level = 1 end
-
-        for col = 1, width do
-          str = str
-            .. (
-              (vim.v.virtnum ~= 0 and foldsep)
-              or ((closed and (col == foldinfo.level or col == width)) and foldclosed)
-              or ((foldinfo.start == vim.v.lnum and first_level + col > foldinfo.llevel) and foldopen)
-              or foldsep
-            )
-          if col == foldinfo.level then
-            str = str .. (" "):rep(width - col)
-            break
-          end
-        end
-      end
-    end
-    return status_utils.stylize(str .. "%*", opts)
-  end
+  return status_utils.stylize("%C", opts)
 end
 
 --- A provider function for the current tab number
