@@ -133,7 +133,6 @@
 ---  theme_path = vim.fs.normalize(vim.fn.stdpath "cache" .. "/lazygit-theme.yml"),
 ---  config = { os = { editPreset = "nvim-remote" } },
 ---  theme = {
----    [241] = { fg = "Special" },
 ---    activeBorderColor = { fg = "MatchParen", bold = true },
 ---    cherryPickedCommitBgColor = { fg = "Identifier" },
 ---    cherryPickedCommitFgColor = { fg = "Function" },
