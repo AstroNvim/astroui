@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/AstroNvim/astroui/compare/v4.0.2...v5.0.0) (2026-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for Neovim v0.11
+
+### Code Refactoring
+
+* drop support for Neovim v0.11 ([a0a0a73](https://github.com/AstroNvim/astroui/commit/a0a0a7339eedcd32e4c1881c96dd4a256b2408d7))
+
 ## [4.0.2](https://github.com/AstroNvim/astroui/compare/v4.0.1...v4.0.2) (2026-08-05)
 
 
