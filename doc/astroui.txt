@@ -1,5 +1,5 @@
 *astroui.txt*
-                            For Neovim >= 0.9.0    Last change: 2026 August 06
+                          For Neovim >= 0.9.0    Last change: 2026 November 25
 
 ==============================================================================
 Table of Contents                                  *astroui-table-of-contents*
@@ -70,7 +70,7 @@ Install the plugin with your plugin manager of choice:
 >lua
     use "AstroNvim/astrocore"
     use "AstroNvim/astroui"
-    
+
     require("astroui").setup {
       -- set configuration options  as described below
     }
@@ -162,7 +162,6 @@ Here are descriptions of the options and some example usages:
       lazygit = {
         theme_path = vim.fs.normalize(vim.fn.stdpath "cache" .. "/lazygit-theme.yml"),
         theme = {
-          [241] = { fg = "Special" },
           activeBorderColor = { fg = "MatchParen", bold = true },
           cherryPickedCommitBgColor = { fg = "Identifier" },
           cherryPickedCommitFgColor = { fg = "Function" },
